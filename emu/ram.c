@@ -3,9 +3,11 @@
 
 typedef enum
 {
-	ADDR_UART_IN  = -2,
-	ADDR_UART_OUT = -3,
-	ADDR_RTC      = -4,
+    ADDR_ISR_INV_INSTR = -2,
+    ADDR_ISR_DIV_ZERO  = -3,
+    ADDR_UART_IN       = -4,
+	ADDR_UART_OUT      = -5,
+	ADDR_RTC           = -6,
 	/*BITMAP DISPLAY*/
 	/*DAC*/
 	/*ADC*/

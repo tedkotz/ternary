@@ -54,8 +54,11 @@ typedef struct TriFlags
 
 typedef struct TriCpu
 {
-	TriWord A;
-	TriWord B;
+	TriWord* A;
+	TriWord* B;
+	TriWord* D;
+	TriWord valA;
+	TriWord valB;
 	TriWord regs[NUM_TRIREGS];
 	uint8_t running;
 } TriCpu;

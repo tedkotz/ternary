@@ -76,10 +76,11 @@ typedef enum
      COND_SN  = 0b11 00,
      COND_CE  = 0b11 01,
      COND_CN  = 0b00 11,
-     COND_VE  = 0b00 00,
-     COND_VN  = 0b00 01,
-     COND_PE  = 0b01 11,
-     COND_PN  = 0b01 00,
+     COND_ZE  = 0b00 00, // Zero Equals: so Always is 000
+     COND_VE  = 0b00 01,
+     COND_VN  = 0b01 11,
+     COND_PE  = 0b01 00,
+     COND_PN  = 0b01 01 
 } CONDITIONALS;
 
 
@@ -87,7 +88,7 @@ typedef union
 {
 	TriWord val;
 	struct {
-	TriWord Reserved:6;
+	TriWord Reserved:6; // for future use
 	TriWord Cond:6;
 	TriWord CondValue:2;
 	TriWord OpCnt:2;
@@ -100,13 +101,22 @@ typedef union
 } InstReg;
 	
 
+static int evalConditon(TriCpu cpu)
+
+static void incClock(TriCpu cpu) 
+{
+	cpu.regs[REG_CLOCK]=TriWord_ADD(cpu.regs[REG_CLOCK], 1);
+    
+}
 
 static void getInstruction(TriCpu cpu)
 {
 	cpu.regs[REG_INST]=ReadRam(cpu.regs[REG_PC]);
 	cpu.regs[REG_PC]=TriWord_ADD(cpu.regs[REG_PC], 1);
-	cpu.regs[REG_CLOCK]=TriWord_ADD(cpu.regs[REG_CLOCK], 1);
+    incClock(cpu);
 }
+
+
 
 static void getOperands(TriCpu cpu)
 {
@@ -120,6 +130,7 @@ static void getOperands(TriCpu cpu)
 	{
 		cpu.A=0;
 	}
+    incClock(cpu);
 		
 
 	if((N!=INST.parts.OpCnt) || (0!=INST.parts.OpCode))
@@ -134,8 +145,8 @@ static void getOperands(TriCpu cpu)
 	{
 		cpu.B=0;
 	}
+    incClock(cpu);
 		
-	cpu.regs[REG_CLOCK]=TriWord_ADD(cpu.regs[REG_CLOCK], 0b01 11);
 }
 
 static void storeResult(TriCpu cpu)
