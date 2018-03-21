@@ -36,21 +36,13 @@ typedef enum TriReg
 	REG_GP17,
 	REG_GP18,
 	REG_GP19,
-	REG_GP20,
+	REG_FLAGS,
 	REG_CLOCK,
 	REG_BASE,
 	REG_INST,
 	NUM_TRIREGS
 } TriReg;
 
-
-typedef struct TriFlags
-{
-	TriWord S :2 ;
-	TriWord C :2 ;
-	TriWord V :2 ;
-	TriWord P :2 ;
-} TriFlags;
 
 typedef struct TriCpu
 {

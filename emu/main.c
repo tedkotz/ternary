@@ -59,6 +59,7 @@ typedef enum
      SHL  = 0b11 00 00,
      RCL  = 0b11 00 01,
      CAL  = 0b11 01 11,
+	 MVF ??
 	 //SPARE -+0 -> 00-
      NOP  = 0b00 00 00,
      ADDB = 0b00 00 01,
@@ -83,25 +84,87 @@ typedef enum
      COND_PN  = 0b01 01 
 } CONDITIONALS;
 
+typedef enum
+{
+	OPMOD_NEG = 0b00 11,
+	OPMOD_NOP = 0b00 00,
+	OPMOD_INC = 0b00 01,
+	OPMOD_DEC = 0b01 11,
+	OPMOD_ABS = 0b01 00,
+	OPMOD_FLT = 0b01 01,
+} OpModifiers;
+
+typedef enum
+{
+	OPType_REG  = 0b11 11,  // Call [--R1]
+	OPType_REG  = 0b11 00,  // Call [R0]
+	OPType_REG  = 0b11 01,  // Call [R0++]
+	OPType_REG  = 0b00 11,  // Call R0
+	OPType_REG  = 0b00 00,  // Call #nnn, If Dest value dropped
+	OPType_REG  = 0b00 01,  // Call [[RO++]]
+} OpTypes;
+
 
 typedef union
 {
 	TriWord val;
 	struct {
-	TriWord Reserved:6; // for future use
-	TriWord Cond:6;
-	TriWord CondValue:2;
-	TriWord OpCnt:2;
-	TriWord OpCode:12;
-	TriWord Op3:10;
-	TriWord Op2:8;
-	TriWord Op1:10;
-    TriWord OpMod:4;
+	TriWord Reserved:6;  // for future use
+	TriWord Cond:6;      // conditional flag
+	TriWord CondValue:2; // conditional test value
+	TriWord OpCnt:2;     // number of operators
+	TriWord OpCode:12;   // instruction number
+	TriWord Op3:10;      // OP2 = OP3 + MOD(OP1)
+	TriWord Op2:8;       // OP2 = OP2 + MOD(OP1)
+	TriWord Op1:10;      // OP1 = + MOD(OP1)
+    TriWord OpMod:4;     // ALU MOdifier to apply to OP1
 	} parts;
 } InstReg;
 	
 
+typedef struct TriFlags
+{
+	TriWord val;
+	struct {
+	TriWord S :2 ;
+	TriWord C :2 ;
+	TriWord V :2 ;
+	TriWord P :2 ;
+	} flags;
+} FlagReg;
+
+
 static int evalConditon(TriCpu cpu)
+{
+	InstReg INST;
+	FlagReg FLGS;
+	INST.val=cpu.regs[REG_INST];
+	FLGS.val=cpu.regs[REG_FLAGS];
+	switch (INST.parts.Cond)
+	{
+		case COND_SE:
+			return( FLGS.flags.S == INST.parts.CondValue );
+		case COND_SN:
+			return( FLGS.flags.S != INST.parts.CondValue );
+		case COND_CE:
+			return( FLGS.flags.C == INST.parts.CondValue );
+		case COND_CN:
+			return( FLGS.flags.C != INST.parts.CondValue );
+		case COND_ZE:
+			return( 0 == INST.parts.CondValue );
+		case COND_VE:
+			return( FLGS.flags.V == INST.parts.CondValue );
+		case COND_VN:
+			return( FLGS.flags.V != INST.parts.CondValue );
+		case COND_PE:
+			return( FLGS.flags.P == INST.parts.CondValue );
+		case COND_PN:
+			return( FLGS.flags.P != INST.parts.CondValue );
+		default:
+			callInst(ReadRam(ADDR_ISR_INV_INSTR));
+			return 0;
+	}
+}
 
 static void incClock(TriCpu cpu) 
 {
@@ -115,7 +178,6 @@ static void getInstruction(TriCpu cpu)
 	cpu.regs[REG_PC]=TriWord_ADD(cpu.regs[REG_PC], 1);
     incClock(cpu);
 }
-
 
 
 static void getOperands(TriCpu cpu)
