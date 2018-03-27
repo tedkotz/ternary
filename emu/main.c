@@ -96,12 +96,12 @@ typedef enum
 
 typedef enum
 {
-	OPType_REG  = 0b11 11,  // Call [--R1]
-	OPType_REG  = 0b11 00,  // Call [R0]
-	OPType_REG  = 0b11 01,  // Call [R0++]
-	OPType_REG  = 0b00 11,  // Call R0
-	OPType_REG  = 0b00 00,  // Call #nnn, If Dest value dropped
-	OPType_REG  = 0b00 01,  // Call [[RO++]]
+	OPType_REG  = 0b11 11,  // [--R0]
+	OPType_REG  = 0b11 00,  // [R0]
+	OPType_REG  = 0b11 01,  // [R0++]
+	OPType_REG  = 0b00 11,  // R0
+	OPType_REG  = 0b00 00,  // #nnn, If Dest value dropped
+	OPType_REG  = 0b00 01,  // [[RO++]]
 } OpTypes;
 
 
@@ -115,7 +115,7 @@ typedef union
 	TriWord OpCnt:2;     // number of operators
 	TriWord OpCode:12;   // instruction number
 	TriWord Op3:10;      // OP2 = OP3 + MOD(OP1)
-	TriWord Op2:8;       // OP2 = OP2 + MOD(OP1)
+	TriWord Op2:10;      // OP2 = OP2 + MOD(OP1)
 	TriWord Op1:10;      // OP1 = + MOD(OP1)
     TriWord OpMod:4;     // ALU MOdifier to apply to OP1
 	} parts;
