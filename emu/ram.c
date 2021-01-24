@@ -1,5 +1,7 @@
+// 3^11 Trites of RAM
 #define RAM_SIZE 177147
 #define BASE_OFFSET (RAM_SIZE/2)
+#define RAM_ADDR_MASK ((1<<(11*2))-1)
 
 typedef enum
 {
@@ -14,11 +16,11 @@ typedef enum
 	/*TIMER_INT*/
 } MemMappedDevices;
 
-TriWord ram[RAM_SIZE];
+Trite ram[RAM_SIZE];
 
-TriWord ReadRam(TriWord addr)
+Trite ReadRam(TriWord addr)
 {
-	int64_t offset=TriWord2int(addr);
+	int64_t offset=TriWord2int(addr & RAM_ADDR_MASK);
 	switch(offset)
 	{
 		case ADDR_UART_IN:
@@ -37,9 +39,9 @@ TriWord ReadRam(TriWord addr)
 	}
 }
 
-void WriteRam(TriWord addr, TriWord Val)
+void WriteRam(TriWord addr, Trite Val)
 {
-	int64_t offset=TriWord2int(addr);
+	int64_t offset=TriWord2int(addr & RAM_ADDR_MASK);
 	switch(offset)
 	{
 		case ADDR_UART_IN:
@@ -51,5 +53,5 @@ void WriteRam(TriWord addr, TriWord Val)
 		default:
 			ram[BASE_OFFSET+offset]=val;
 	}
-	
+
 }

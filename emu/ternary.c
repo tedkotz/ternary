@@ -13,7 +13,7 @@ static const int_fast8_t trigate_set[4][4] = {{ 0, 1, 2, N},{ 1, 1, 2, N},{2,2,2
 static const int_fast8_t trigate_imp[4][4] = {{ 1, 1, 2, 0},{ 0, 1, 2, N},{2,2,2,2},{ 1, 1, 2, 1}};
 static const int_fast8_t trigate_unm[4][4] = {{ 0, 0, 2, 0},{ 0, 1, 2, 0},{2,2,2,2},{ 0, 0, 2, N}};
 
-//                                        A 0  1  X -1 
+//                                        A 0  1  X -1
 static const int_fast8_t trigate_inc[4] = { 1, N, 2, 0};
 static const int_fast8_t trigate_dec[4] = { N, 0, 2, 1};
 static const int_fast8_t trigate_not[4] = { 0, N, 2, 1};
@@ -46,7 +46,7 @@ int64_t TriWord2int( TriWord x )
 //TriWord int2TriWord( int64_t x, int lvl )
 //{
 //	TriWord retVal=0;
-//	
+//
 //	return retVal;
 //}
 
@@ -61,16 +61,16 @@ void TriWordPrint( TriWord x )
 				printf("-");
 				started=1;
 				break;
-			
+
 			case 0:
 				if(started || !i) printf("0");
 				break;
-			
+
 			case 1:
 				printf("1");
 				started=1;
 				break;
-			
+
 			default:
 				printf("X");
 				break;
@@ -83,7 +83,7 @@ void TriWordScan( TriWord* x )
 	TriWord dst=0;
 	int_fast8_t state=2, count=TRITS_PER_WORD;
 	char c;
-	
+
 	while( state && count )
 	{
 		scanf("%c",&c);
@@ -94,20 +94,20 @@ void TriWordScan( TriWord* x )
 				--count;
 				dst = (dst<<2)|N;
 				break;
-				
+
 			case '0':
 				state=1;
 				count--;
 				dst = (dst<<2)|0;
 				break;
-				
+
 			case '1':
 			case '+':
 				state=1;
 				--count;
 				dst = (dst<<2)|1;
 				break;
-				
+
 			default:
 				if(state==1) state=0;
 				break;
@@ -222,12 +222,12 @@ TriWord TriWord_RCL  ( TriWord op1, TriWord op2, unsigned* carry )
 	TriWord wrap;
 		op1 = (TRIWORD_MASK & op1) | ((TriWord)(*carry&3) << BITS_PER_TRIWORD);
 	if(shift<0)
-	{  
+	{
 		shift = (-shift) % (BITS_PER_TRIWORD + 2);
 		wrap= op1 & ((1 << shift) -1);
 		op1=(op1 >> shift) | (wrap << ((BITS_PER_TRIWORD+2) - shift));
 	}
-	else 
+	else
 	if(shift!=0)
 	{
 		shift = shift % (BITS_PER_TRIWORD + 2);
@@ -266,7 +266,7 @@ TriWord TriWord_MUL  ( TriWord op1, TriWord op2 )
 			case 1:
 				product = TriWord_ADD( product, op1 );
 				break;
-				
+
 			case N:
 				product = TriWord_ADD( product, TriWord_NEGB(op1) );
 				break;
@@ -285,20 +285,22 @@ int main( int argc, char** argv )
 	//int64_t i;
 	TriWord A, B;
 	unsigned carry=N;
-		
+
+    printf("A: ");
 	TriWordScan( &A );
+    printf("B: ");
 	TriWordScan( &B );
 
-	printf("\nA = ");  TriWordPrint( A );
-	printf("\nB = ");  TriWordPrint( B );
-	
-	printf("\n\nINC(A)=");  TriWordPrint( TriWord_INCB(A) );
+	printf("\nA = %"PRIi64"  ", TriWord2int(A) );  TriWordPrint( A );
+	printf("\nB = %"PRIi64"  ", TriWord2int(B));  TriWordPrint( B );
+
+	printf("\n\nTritwise unary operations:\nINC(A)=");  TriWordPrint( TriWord_INCB(A) );
 	printf("\nDEC(A)=");  TriWordPrint( TriWord_DECB(A) );
 	printf("\nNEG(A)=");  TriWordPrint( TriWord_NEGB(A) );
 	printf("\nFLT(A)=");  TriWordPrint( TriWord_FLTB(A) );
 	printf("\nABS(A)=");  TriWordPrint( TriWord_ABSB(A) );
 
-	printf("\n\nMUL(A, B)=");  TriWordPrint( TriWord_MULB(A, B) );
+	printf("\n\nTritwise 2 input operations:\nMUL(A, B)=");  TriWordPrint( TriWord_MULB(A, B) );
 	printf("\nADD(A, B)=");  TriWordPrint( TriWord_ADDB(A, B) );
 	printf("\nORR(A, B)=");  TriWordPrint( TriWord_ORRB(A, B) );
 	printf("\nAND(A, B)=");  TriWordPrint( TriWord_ANDB(A, B) );
@@ -311,11 +313,11 @@ int main( int argc, char** argv )
 	printf("\nRCL(A, +--, -)=");  TriWordPrint( TriWord_RCL(A, 0b011111, &carry) ); carry=N;
 	printf("\nRCL(A, 0--, -)=");  TriWordPrint( TriWord_RCL(A, 0b001111, &carry) ); carry=N;
 
-	printf("\n\nADD(A, B)=");  TriWordPrint( TriWord_ADD(A, B) );
-	printf("\nSUB(A, B)=");  TriWordPrint( TriWord_ADD(A, TriWord_NEGB(B)) );
-	printf("\nADC(A, B, -)=");  TriWordPrint( TriWord_ADC(A, B, &carry) ); carry=N;
-	printf("\nMUL(A, B)=");  TriWordPrint( TriWord_MUL(A, B) );
-	
+	printf("\n\nArithmetic operations:\nADD(A, B)=%"PRIi64"  ", TriWord2int(TriWord_ADD(A, B)));  TriWordPrint( TriWord_ADD(A, B) );
+	printf("\nSUB(A, B)=%"PRIi64"  ", TriWord2int(TriWord_ADD(A, TriWord_NEGB(B))));  TriWordPrint( TriWord_ADD(A, TriWord_NEGB(B)) );
+	printf("\nADC(A, B, -)=%"PRIi64"  ", TriWord2int(TriWord_ADC(A, B, &carry))); carry=N; TriWordPrint( TriWord_ADC(A, B, &carry) ); carry=N;
+	printf("\nMUL(A, B)=%"PRIi64"  ", TriWord2int(TriWord_MUL(A, B)));  TriWordPrint( TriWord_MUL(A, B) );
+
 	printf("\ndone.\n");
 	return 0;
 }
