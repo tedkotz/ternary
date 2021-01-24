@@ -56,7 +56,7 @@ typedef enum TriReg
 	REG_GP18       = 0b110000,
 	REG_GP19       = 0b110001,
 	REG_GP20       = 0b110111,
-	REG_GP21       = 0b110100,
+	REG_FLAGS      = 0b110100,
 	REG_CLOCK      = 0b110101,
 	REG_BASE       = 0b001111,
 	REG_INST       = 0b001100,
@@ -79,16 +79,18 @@ typedef enum TriReg
 } TriReg;
 //#define	NUM_TRIREGS (3*3*3)
 #define	NUM_TRIREGS (0b111111)
-//	REG_FLAGS,??
 
-typedef struct TriFlags
+typedef union TriFlags
 {
-	TriWord S :2 ; // Sign
-	TriWord C :2 ; // Carry
-	TriWord V :2 ; // Overflow
-	TriWord P :2 ; // Parity
-	TriWord I :2 ; // Interrupts
-} TriFlags;
+	TriWord val;
+	struct {
+        TriWord S :2 ; // Sign
+        TriWord C :2 ; // Carry
+        TriWord V :2 ; // Overflow
+        TriWord P :2 ; // Parity
+        TriWord I :2 ; // Interrupts
+	} flags;
+} FlagReg;
 
 typedef struct TriCpu
 {
@@ -159,6 +161,30 @@ typedef enum TriOpcode
 // | 00 | 7 OpCode        | 3 R1 | 3 R2 | 3 R3 |
 // | 1- | 7 OpCode        | 3 R1 | 3 R2 | 3 12 Immediate |
 
+
+// | 6 OpCode | 3 R1 | 7 R2+Mod | 7 R3+Mod | 4 Immediate |
+// | 6 OpCode | 3 R1 | 7 R2+Mod | 11 Immediate           |
+// | 6 OpCode | 3 R1 | 18 Immediate                      |
+
+
+// 4 bit Immeditate
+// 0--- -> 27 Neg
+// 0+++ -> 27 Pos
+// 0000 -> 27 Zero
+// 1xxx -> 1 << X + 13
+// -xxx -> - << X + 13
+
+// 5-20 bit Immeditate
+// 0..0--- -> 27 Neg
+// 0..0+++ -> 27 Pos
+// 0..0000 -> 27 Zero
+// n..nxxx -> N << X + 13
+
+// 21-26 bit Immeditate
+// 0..0-- -> 27 Neg
+// 0..0++ -> 27 Pos
+// 0..000 -> 27 Zero
+// n..nxx -> N << X + 4
 
 // MV Rd, Rs     | ADD Rd, Rs, R0
 // MV Rd, immed  | ADDI Rd, R0, immed
