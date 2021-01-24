@@ -79,7 +79,7 @@ typedef enum TriReg
 } TriReg;
 //#define	NUM_TRIREGS (3*3*3)
 #define	NUM_TRIREGS (0b111111)
-
+//	REG_FLAGS,??
 
 typedef struct TriFlags
 {
