@@ -1,3 +1,38 @@
+/**
+ * @file    [FileName.c]
+ * @author  [John Doe <jdoe@example.com>]
+ * @version 1.0
+ *
+ * @section LICENSE
+ *
+ * Copyright 2009-2009 [John Doe].  All rights reserved.
+ *  See license distributed with this file and
+ *  available online at http://[Project Website]/license.html
+ *
+ * @section DESCRIPTION
+ *
+ * [Description]
+ *
+ */
+
+#ifndef   TERNARY_MEM_H
+#define   TERNARY_MEM_H
+/* Includes ******************************************************************/
+/* Defines *******************************************************************/
+/* Types *********************************************************************/
+/* Interfaces ****************************************************************/
+/* Data **********************************************************************/
+/* Functions *****************************************************************/
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
+
+
+/*****************************************************************************/
 // 3^11 Trites of RAM
 #define RAM_SIZE 177147
 #define BASE_OFFSET (RAM_SIZE/2)
@@ -55,3 +90,6 @@ void WriteRam(TriWord addr, Trite Val)
 	}
 
 }
+
+
+#endif /* TERNARY_MEM_H */

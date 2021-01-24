@@ -1,3 +1,37 @@
+/**
+ * @file    [FileName.c]
+ * @author  [John Doe <jdoe@example.com>]
+ * @version 1.0
+ *
+ * @section LICENSE
+ *
+ * Copyright 2009-2009 [John Doe].  All rights reserved.
+ *  See license distributed with this file and
+ *  available online at http://[Project Website]/license.html
+ *
+ * @section DESCRIPTION
+ *
+ * [Description]
+ *
+ */
+
+
+/* Includes ******************************************************************/
+/* Defines *******************************************************************/
+/* Types *********************************************************************/
+/* Interfaces ****************************************************************/
+/* Data **********************************************************************/
+/* Functions *****************************************************************/
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
+
+
+/*****************************************************************************/
 
 
 
@@ -7,25 +41,25 @@
 //     MUL          3
 //     SHL          3
 //     RCL          3
-//     
+//
 //     ADDB         3
 //     MULB         3
 //     ANDB         3
 //     ORRB         3
 //     SETB         3
-//     
+//
 //     MV.Cond      2
 //     CALL         1 Special
 //
 //Operand extras
 //  Negate
-//  
-//  
+//
+//
 //Conditonals (MV, ADD)
 //  Flags (S-Sign, C-Carry, V-Overflow, P-Parity)
 //  Values (P-One, NP-Not One, Z-Zero, NZ-Not Zero, M-Neg One, NM-Not Neg One)
 //  Aliases (LT-SM, GE-SNM, EQ-SZ, NE-SNZ, GT-SP, LE-SNP, CC-CZ, CS-CNZ, VC-VM, VS-VNM, EV-PZ, OD-PNZ)
-//  
+//
 //Virtual Operators
 //  JMP (MV PC, #dest)
 //  RET (MV PC, (SP++))
@@ -35,11 +69,11 @@
 //  TST (MV 0, A)
 //  CFL (MV 0,0)
 //
-//  
-//  
+//
+//
 //Extensions
 //  BRC (ADD PC, PC, #offset)
-// 
+//
 // Stages
 // Inst Fetch
 // A Fetch
@@ -50,7 +84,7 @@
 #include "ternary.h"
 
 
-typedef enum   
+typedef enum
 {
 	 MOV  = 0b11 11 11,
      ADD  = 0b11 11 00,
@@ -70,7 +104,7 @@ typedef enum
 } OPCODES;
 
 
-typedef enum   
+typedef enum
 {
      COND_SE  = 0b11 11,
      COND_SN  = 0b11 00,
@@ -80,7 +114,7 @@ typedef enum
      COND_VE  = 0b00 01,
      COND_VN  = 0b01 11,
      COND_PE  = 0b01 00,
-     COND_PN  = 0b01 01 
+     COND_PN  = 0b01 01
 } CONDITIONALS;
 
 
@@ -99,14 +133,14 @@ typedef union
     TriWord OpMod:4;
 	} parts;
 } InstReg;
-	
+
 
 static int evalConditon(TriCpu cpu)
 
-static void incClock(TriCpu cpu) 
+static void incClock(TriCpu cpu)
 {
 	cpu.regs[REG_CLOCK]=TriWord_ADD(cpu.regs[REG_CLOCK], 1);
-    
+
 }
 
 static void getInstruction(TriCpu cpu)
@@ -131,7 +165,7 @@ static void getOperands(TriCpu cpu)
 		cpu.A=0;
 	}
     incClock(cpu);
-		
+
 
 	if((N!=INST.parts.OpCnt) || (0!=INST.parts.OpCode))
 	{
@@ -146,7 +180,7 @@ static void getOperands(TriCpu cpu)
 		cpu.B=0;
 	}
     incClock(cpu);
-		
+
 }
 
 static void storeResult(TriCpu cpu)

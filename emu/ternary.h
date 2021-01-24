@@ -1,3 +1,38 @@
+/**
+ * @file    [FileName.c]
+ * @author  [John Doe <jdoe@example.com>]
+ * @version 1.0
+ *
+ * @section LICENSE
+ *
+ * Copyright 2009-2009 [John Doe].  All rights reserved.
+ *  See license distributed with this file and
+ *  available online at http://[Project Website]/license.html
+ *
+ * @section DESCRIPTION
+ *
+ * [Description]
+ *
+ */
+
+#ifndef   TERNARY_MATH_H
+#define   TERNARY_MATH_H
+/* Includes ******************************************************************/
+/* Defines *******************************************************************/
+/* Types *********************************************************************/
+/* Interfaces ****************************************************************/
+/* Data **********************************************************************/
+/* Functions *****************************************************************/
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
+
+
+/*****************************************************************************/
 #include <inttypes.h>
 
 #define TRITS_PER_WORD 27
@@ -149,4 +184,6 @@ typedef enum TriOpcode
 
 
 
+
+#endif /* TERNARY_MATH_H */
 

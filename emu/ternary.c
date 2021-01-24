@@ -1,3 +1,37 @@
+/**
+ * @file    [FileName.c]
+ * @author  [John Doe <jdoe@example.com>]
+ * @version 1.0
+ *
+ * @section LICENSE
+ *
+ * Copyright 2009-2009 [John Doe].  All rights reserved.
+ *  See license distributed with this file and
+ *  available online at http://[Project Website]/license.html
+ *
+ * @section DESCRIPTION
+ *
+ * [Description]
+ *
+ */
+
+
+/* Includes ******************************************************************/
+/* Defines *******************************************************************/
+/* Types *********************************************************************/
+/* Interfaces ****************************************************************/
+/* Data **********************************************************************/
+/* Functions *****************************************************************/
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
+
+
+/*****************************************************************************/
 
 #include <stdio.h>
 #include "ternary.h"
@@ -14,11 +48,11 @@ static const int_fast8_t trigate_imp[4][4] = {{ 1, 1, 2, 0},{ 0, 1, 2, N},{2,2,2
 static const int_fast8_t trigate_unm[4][4] = {{ 0, 0, 2, 0},{ 0, 1, 2, 0},{2,2,2,2},{ 0, 0, 2, N}};
 
 //                                        A 0  1  X -1
-static const int_fast8_t trigate_inc[4] = { 1, N, 2, 0};
-static const int_fast8_t trigate_dec[4] = { N, 0, 2, 1};
-static const int_fast8_t trigate_not[4] = { 0, N, 2, 1};
-static const int_fast8_t trigate_flt[4] = { 0, 1, 2, 0};
-static const int_fast8_t trigate_abs[4] = { 0, 1, 2, 1};
+static const int_fast8_t trigate_inc[4] = { 1, N, 2, 0};  // Tritwise Increment
+static const int_fast8_t trigate_dec[4] = { N, 0, 2, 1};  // Tritwise Decrement
+static const int_fast8_t trigate_not[4] = { 0, N, 2, 1};  // Tritwise NOT / Negation
+static const int_fast8_t trigate_flt[4] = { 0, 1, 2, 0};  // Tritwise Flatten
+static const int_fast8_t trigate_abs[4] = { 0, 1, 2, 1};  // Tritwise Decrement
 
 
 int trit2int( unsigned int x )
