@@ -1,15 +1,27 @@
+/****************************************************************************
+ * Copyright (C) 2020 by Ted Kotz                                           *
+ *                                                                          *
+ * This file is part of TernCpuEmu.                                         *
+ *                                                                          *
+ *   TernCpuEmu is free software: you can redistribute it and/or modify it  *
+ *   under the terms of the GNU Lesser General Public License as published  *
+ *   by the Free Software Foundation, either version 2 of the License, or   *
+ *   (at your option) any later version.                                    *
+ *                                                                          *
+ *   TernCpuEmu is distributed in the hope that it will be useful,          *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *   GNU Lesser General Public License for more details.                    *
+ *                                                                          *
+ *   You should have received a copy of the GNU Lesser General Public       *
+ *   License along with TernCpuEmu. If not, see                             *
+ *   <http://www.gnu.org/licenses/>.                                        *
+ ****************************************************************************/
+
 /**
- * @file    [FileName.c]
- * @author  [John Doe <jdoe@example.com>]
- * @version 1.0
- *
- * @section LICENSE
- *
- * Copyright 2009-2009 [John Doe].  All rights reserved.
- *  See license distributed with this file and
- *  available online at http://[Project Website]/license.html
- *
- * @section DESCRIPTION
+ * @file    cpu.c
+ * @author  Ted Kotz <ted@kotz.us>
+ * @version 0.1
  *
  * [Description]
  *
@@ -17,6 +29,9 @@
 
 
 /* Includes ******************************************************************/
+#include "cpu.h"
+#include "mem.h"
+
 /* Defines *******************************************************************/
 /* Types *********************************************************************/
 /* Interfaces ****************************************************************/
@@ -81,41 +96,40 @@
 // Store
 
 
-#include "ternary.h"
 
 
-typedef enum
-{
-	 MOV  = 0b11 11 11,
-     ADD  = 0b11 11 00,
-	 ADC  = 0b11 11 01,
-     MUL  = 0b11 00 11,
-     SHL  = 0b11 00 00,
-     RCL  = 0b11 00 01,
-     CAL  = 0b11 01 11,
-	 //SPARE -+0 -> 00-
-     NOP  = 0b00 00 00,
-     ADDB = 0b00 00 01,
-     MULB = 0b00 01 11,
-     ANDB = 0b00 01 00,
-     ORRB = 0b00 01 01,
-     SETB = 0b01 11 11
-     //Spare 1-0 -> 111
-} OPCODES;
-
-
-typedef enum
-{
-     COND_SE  = 0b11 11,
-     COND_SN  = 0b11 00,
-     COND_CE  = 0b11 01,
-     COND_CN  = 0b00 11,
-     COND_ZE  = 0b00 00, // Zero Equals: so Always is 000
-     COND_VE  = 0b00 01,
-     COND_VN  = 0b01 11,
-     COND_PE  = 0b01 00,
-     COND_PN  = 0b01 01
-} CONDITIONALS;
+//typedef enum
+//{
+//	 MOV  = 0b11 11 11,
+//     ADD  = 0b11 11 00,
+//	 ADC  = 0b11 11 01,
+//     MUL  = 0b11 00 11,
+//     SHL  = 0b11 00 00,
+//     RCL  = 0b11 00 01,
+//     CAL  = 0b11 01 11,
+//	 //SPARE -+0 -> 00-
+//     NOP  = 0b00 00 00,
+//     ADDB = 0b00 00 01,
+//     MULB = 0b00 01 11,
+//     ANDB = 0b00 01 00,
+//     ORRB = 0b00 01 01,
+//     SETB = 0b01 11 11
+//     //Spare 1-0 -> 111
+//} OPCODES;
+//
+//
+//typedef enum
+//{
+//     COND_SE  = 0b11 11,
+//     COND_SN  = 0b11 00,
+//     COND_CE  = 0b11 01,
+//     COND_CN  = 0b00 11,
+//     COND_ZE  = 0b00 00, // Zero Equals: so Always is 000
+//     COND_VE  = 0b00 01,
+//     COND_VN  = 0b01 11,
+//     COND_PE  = 0b01 00,
+//     COND_PN  = 0b01 01
+//} CONDITIONALS;
 
 
 typedef union
@@ -135,71 +149,55 @@ typedef union
 } InstReg;
 
 
-static int evalConditon(TriCpu cpu)
 
-static void incClock(TriCpu cpu)
+void incClock(TriCpu* cpu)
 {
-	cpu.regs[REG_CLOCK]=TriWord_ADD(cpu.regs[REG_CLOCK], 1);
+	cpu->regs[REG_CLOCK]=TriWord_ADD(cpu->regs[REG_CLOCK], 1);
 
 }
 
-static void getInstruction(TriCpu cpu)
+void getInstruction(TriCpu* cpu)
 {
-	cpu.regs[REG_INST]=ReadRam(cpu.regs[REG_PC]);
-	cpu.regs[REG_PC]=TriWord_ADD(cpu.regs[REG_PC], 1);
+	cpu->regs[REG_INST]=ReadAddr(cpu->regs[REG_PC]);
+	cpu->regs[REG_PC]=TriWord_ADD(cpu->regs[REG_PC], 1);
     incClock(cpu);
 }
 
-
-
-static void getOperands(TriCpu cpu)
+void getOperands(TriCpu* cpu)
 {
 	InstReg INST;
-	INST.val=cpu.regs[REG_INST];
+	INST.val=cpu->regs[REG_INST];
 	if(N!=INST.parts.OpCnt)
 	{
-		cpu.A=getOP(INST.parts.Op2);
+//		cpu->A=getOP(INST.parts.Op2);
 	}
 	else
 	{
-		cpu.A=0;
+		cpu->A=0;
 	}
     incClock(cpu);
 
 
 	if((N!=INST.parts.OpCnt) || (0!=INST.parts.OpCode))
 	{
-		cpu.B=getOP(INST.parts.Op1);
+//		cpu->B=getOP(INST.parts.Op1);
 		if(N==INST.parts.OpMod)
 		{
-			cpu.B=TriWord_NEGB(cpu.B);
+			cpu->B=TriWord_NEGB(cpu->B);
 		}
 	}
 	else
 	{
-		cpu.B=0;
+		cpu->B=0;
 	}
     incClock(cpu);
 
 }
 
-static void storeResult(TriCpu cpu)
+void storeResult(TriCpu* cpu)
 {
-	InstReg INST;
-	INST.val=cpu.regs[REG_INST];
-	cpu.regs[REG_INST]=ram[cpu.regs[REG_PC++]];
-	cpu.regs[REG_CLOCK]++;
-}
-
-
-int main( int argc, char** argv )
-{
-	TriCpu cpu;
-	cpu.running = true;
-	while(cpu.running)
-	{
-		getInstruction(cpu);
-		getOperands(cpu);
-		storeResult(cpu);
-	}
+//	InstReg INST;
+//	INST.val=cpu->regs[REG_INST];
+	cpu->regs[REG_INST]=ReadAddr((cpu->regs[REG_PC])++);
+	cpu->regs[REG_CLOCK]++;
 }

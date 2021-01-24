@@ -1,15 +1,27 @@
+/****************************************************************************
+ * Copyright (C) 2020 by Ted Kotz                                           *
+ *                                                                          *
+ * This file is part of TernCpuEmu.                                         *
+ *                                                                          *
+ *   TernCpuEmu is free software: you can redistribute it and/or modify it  *
+ *   under the terms of the GNU Lesser General Public License as published  *
+ *   by the Free Software Foundation, either version 2 of the License, or   *
+ *   (at your option) any later version.                                    *
+ *                                                                          *
+ *   TernCpuEmu is distributed in the hope that it will be useful,          *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *   GNU Lesser General Public License for more details.                    *
+ *                                                                          *
+ *   You should have received a copy of the GNU Lesser General Public       *
+ *   License along with TernCpuEmu. If not, see                             *
+ *   <http://www.gnu.org/licenses/>.                                        *
+ ****************************************************************************/
+
 /**
- * @file    [FileName.c]
- * @author  [John Doe <jdoe@example.com>]
- * @version 1.0
- *
- * @section LICENSE
- *
- * Copyright 2009-2009 [John Doe].  All rights reserved.
- *  See license distributed with this file and
- *  available online at http://[Project Website]/license.html
- *
- * @section DESCRIPTION
+ * @file    cpu.h
+ * @author  Ted Kotz <ted@kotz.us>
+ * @version 0.1
  *
  * [Description]
  *
@@ -19,34 +31,21 @@
 #define   TERNARY_CPU_H
 
 /* Includes ******************************************************************/
+#include "ternary.h"
+
 /* Defines *******************************************************************/
+//#define TRITS_PER_WORD 27
+//#define BITS_PER_TRIT 2
+//#define BITS_PER_TRIWORD ( TRITS_PER_WORD * BITS_PER_TRIT)
+//#define N 3
+//#define TRIWORD_MASK ((1ULL << BITS_PER_TRIWORD) - 1)
+
+//#define PRITRIWORD PRIx64
+//#define SCNTRIWORD SCNi64
+
 /* Types *********************************************************************/
-/* Interfaces ****************************************************************/
-/* Data **********************************************************************/
-/* Functions *****************************************************************/
-
-/**
- * [Description]
- *
- * @param
- * @return
- */
-
-
-/*****************************************************************************/
-#include <inttypes.h>
-
-#define TRITS_PER_WORD 27
-#define BITS_PER_TRIT 2
-#define BITS_PER_TRIWORD ( TRITS_PER_WORD * BITS_PER_TRIT)
-#define N 3
-#define TRIWORD_MASK ((1ULL << BITS_PER_TRIWORD) - 1)
-
-typedef uint64_t TriWord;
-typedef uint32_t Trite;
-
-#define PRITRIWORD PRIx64
-#define SCNTRIWORD SCNi64
+//typedef trint32_t TriWord;
+typedef trint16_t Tryte;
 
 typedef enum TriReg
 {
@@ -78,7 +77,8 @@ typedef enum TriReg
 	REG_GP12       = 0b010100,
 	REG_GP13       = 0b010101,
 } TriReg;
-#define	NUM_TRIREGS (3*3*3)
+//#define	NUM_TRIREGS (3*3*3)
+#define	NUM_TRIREGS (0b111111)
 
 
 typedef struct TriFlags
@@ -92,9 +92,9 @@ typedef struct TriFlags
 
 typedef struct TriCpu
 {
-	TriWord* A;
-	TriWord* B;
-	TriWord* D;
+	TriWord A;
+	TriWord B;
+	TriWord D;
 	TriWord valA;
 	TriWord valB;
 	TriWord regs[NUM_TRIREGS];
@@ -183,7 +183,92 @@ typedef enum TriOpcode
 //               | SWP RR, PC
 // RET           | MV PC, RR
 
+/*****************************************************************************/
 
 
+
+//0000 NOP          0
+//     ADD.Cond     3
+//     ADDC         3
+//     MUL          3
+//     SHL          3
+//     RCL          3
+//
+//     ADDB         3
+//     MULB         3
+//     ANDB         3
+//     ORRB         3
+//     SETB         3
+//
+//     MV.Cond      2
+//     CALL         1 Special
+//
+//Operand extras
+//  Negate
+//
+//
+//Conditonals (MV, ADD)
+//  Flags (S-Sign, C-Carry, V-Overflow, P-Parity)
+//  Values (P-One, NP-Not One, Z-Zero, NZ-Not Zero, M-Neg One, NM-Not Neg One)
+//  Aliases (LT-SM, GE-SNM, EQ-SZ, NE-SNZ, GT-SP, LE-SNP, CC-CZ, CS-CNZ, VC-VM, VS-VNM, EV-PZ, OD-PNZ)
+//
+//Virtual Operators
+//  JMP (MV PC, #dest)
+//  RET (MV PC, (SP++))
+//  SUB (ADD A, B, -C)
+//  NEG (MV A, -B)
+//  CMP (ADD 0, A, -B)
+//  TST (MV 0, A)
+//  CFL (MV 0,0)
+//
+//
+//
+//Extensions
+//  BRC (ADD PC, PC, #offset)
+//
+// Stages
+// Inst Fetch
+// A Fetch
+// B Fetch
+// Store
+
+
+/* Interfaces ****************************************************************/
+/* Data **********************************************************************/
+/* Functions *****************************************************************/
+
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
+extern void incClock(TriCpu* cpu);
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
+extern void getInstruction(TriCpu* cpu);
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
+extern void getOperands(TriCpu* cpu);
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
+extern void storeResult(TriCpu* cpu);
 
 #endif /* TERNARY_CPU_H */
+/*****************************************************************************/

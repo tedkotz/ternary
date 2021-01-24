@@ -1,15 +1,27 @@
+/****************************************************************************
+ * Copyright (C) 2020 by Ted Kotz                                           *
+ *                                                                          *
+ * This file is part of TernCpuEmu.                                         *
+ *                                                                          *
+ *   TernCpuEmu is free software: you can redistribute it and/or modify it  *
+ *   under the terms of the GNU Lesser General Public License as published  *
+ *   by the Free Software Foundation, either version 2 of the License, or   *
+ *   (at your option) any later version.                                    *
+ *                                                                          *
+ *   TernCpuEmu is distributed in the hope that it will be useful,          *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *   GNU Lesser General Public License for more details.                    *
+ *                                                                          *
+ *   You should have received a copy of the GNU Lesser General Public       *
+ *   License along with TernCpuEmu. If not, see                             *
+ *   <http://www.gnu.org/licenses/>.                                        *
+ ****************************************************************************/
+
 /**
- * @file    [FileName.c]
- * @author  [John Doe <jdoe@example.com>]
- * @version 1.0
- *
- * @section LICENSE
- *
- * Copyright 2009-2009 [John Doe].  All rights reserved.
- *  See license distributed with this file and
- *  available online at http://[Project Website]/license.html
- *
- * @section DESCRIPTION
+ * @file    mem.c
+ * @author  Ted Kotz <ted@kotz.us>
+ * @version 0.1
  *
  * [Description]
  *
@@ -17,42 +29,22 @@
 
 
 /* Includes ******************************************************************/
+#include "mem.h"
+
+#include <stdio.h>
 /* Defines *******************************************************************/
 /* Types *********************************************************************/
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
+Tryte ram[RAM_SIZE];
+
 /* Functions *****************************************************************/
 
-/**
- * [Description]
+/*
+ * See Header
  *
- * @param
- * @return
  */
-
-
-/*****************************************************************************/
-// 3^11 Trites of RAM
-#define RAM_SIZE 177147
-#define BASE_OFFSET (RAM_SIZE/2)
-#define RAM_ADDR_MASK ((1<<(11*2))-1)
-
-typedef enum
-{
-    ADDR_ISR_INV_INSTR = -2,
-    ADDR_ISR_DIV_ZERO  = -3,
-    ADDR_UART_IN       = -4,
-	ADDR_UART_OUT      = -5,
-	ADDR_RTC           = -6,
-	/*BITMAP DISPLAY*/
-	/*DAC*/
-	/*ADC*/
-	/*TIMER_INT*/
-} MemMappedDevices;
-
-Trite ram[RAM_SIZE];
-
-Trite ReadRam(TriWord addr)
+Tryte ReadAddr(TriWord addr)
 {
 	int64_t offset=TriWord2int(addr & RAM_ADDR_MASK);
 	switch(offset)
@@ -73,7 +65,11 @@ Trite ReadRam(TriWord addr)
 	}
 }
 
-void WriteRam(TriWord addr, Trite Val)
+/*
+ * See Header
+ *
+ */
+void WriteAddr(TriWord addr, Tryte val)
 {
 	int64_t offset=TriWord2int(addr & RAM_ADDR_MASK);
 	switch(offset)
@@ -89,3 +85,9 @@ void WriteRam(TriWord addr, Trite Val)
 	}
 
 }
+
+
+
+/*****************************************************************************/
+
+

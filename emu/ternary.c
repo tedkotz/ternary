@@ -1,15 +1,27 @@
+/****************************************************************************
+ * Copyright (C) 2020 by Ted Kotz                                           *
+ *                                                                          *
+ * This file is part of TernCpuEmu.                                         *
+ *                                                                          *
+ *   TernCpuEmu is free software: you can redistribute it and/or modify it  *
+ *   under the terms of the GNU Lesser General Public License as published  *
+ *   by the Free Software Foundation, either version 2 of the License, or   *
+ *   (at your option) any later version.                                    *
+ *                                                                          *
+ *   TernCpuEmu is distributed in the hope that it will be useful,          *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *   GNU Lesser General Public License for more details.                    *
+ *                                                                          *
+ *   You should have received a copy of the GNU Lesser General Public       *
+ *   License along with TernCpuEmu. If not, see                             *
+ *   <http://www.gnu.org/licenses/>.                                        *
+ ****************************************************************************/
+
 /**
- * @file    [FileName.c]
- * @author  [John Doe <jdoe@example.com>]
- * @version 1.0
- *
- * @section LICENSE
- *
- * Copyright 2009-2009 [John Doe].  All rights reserved.
- *  See license distributed with this file and
- *  available online at http://[Project Website]/license.html
- *
- * @section DESCRIPTION
+ * @file    ternary.c
+ * @author  Ted Kotz <ted@kotz.us>
+ * @version 0.1
  *
  * [Description]
  *
@@ -17,25 +29,13 @@
 
 
 /* Includes ******************************************************************/
+#include "ternary.h"
+
+#include <stdio.h>
 /* Defines *******************************************************************/
 /* Types *********************************************************************/
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
-/* Functions *****************************************************************/
-
-/**
- * [Description]
- *
- * @param
- * @return
- */
-
-
-/*****************************************************************************/
-
-#include <stdio.h>
-#include "ternary.h"
-
 
 //                                            A 0  0  0  0    1  1  1  1   XXXXXXX   -1 -1 -1 -1
 //                                            B 0  1  X -1    0  1  X -1              0  1  X -1
@@ -54,7 +54,14 @@ static const int_fast8_t trigate_not[4] = { 0, N, 2, 1};  // Tritwise NOT / Nega
 static const int_fast8_t trigate_flt[4] = { 0, 1, 2, 0};  // Tritwise Flatten
 static const int_fast8_t trigate_abs[4] = { 0, 1, 2, 1};  // Tritwise Decrement
 
+/* Functions *****************************************************************/
 
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
 int trit2int( unsigned int x )
 {
 	return (x==N) ? -1 : x;
@@ -355,3 +362,6 @@ int main( int argc, char** argv )
 	printf("\ndone.\n");
 	return 0;
 }
+
+
+/*****************************************************************************/
