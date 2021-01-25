@@ -40,6 +40,11 @@
 //#define N 3
 //#define TRIWORD_MASK ((1ULL << BITS_PER_TRIWORD) - 1)
 
+#define TRITS_PER_TRYTE ( 9 )
+#define BITS_PER_TRYTE ( TRITS_PER_TRYTE * BITS_PER_TRIT )
+#define TRYTES_PER_TRIWORD (3)
+
+
 //#define PRITRIWORD PRIx64
 //#define SCNTRIWORD SCNi64
 
@@ -49,18 +54,18 @@ typedef trint16_t Tryte;
 
 typedef enum TriReg
 {
-	REG_GP14       = 0b111111,
-	REG_GP15       = 0b111100,
-	REG_GP16       = 0b111101,
-	REG_GP17       = 0b110011,
-	REG_GP18       = 0b110000,
-	REG_GP19       = 0b110001,
-	REG_GP20       = 0b110111,
-	REG_FLAGS      = 0b110100,
-	REG_CLOCK      = 0b110101,
-	REG_BASE       = 0b001111,
-	REG_INST       = 0b001100,
-	REG_SP         = 0b001101,
+	REG_GP_13      = 0b111111,
+	REG_GP_12      = 0b111100,
+	REG_GP_11      = 0b111101,
+	REG_GP_10      = 0b110011,
+	REG_GP_09      = 0b110000,
+	REG_GP_08      = 0b110001,
+	REG_GP_07      = 0b110111,
+	REG_GP_06      = 0b110100,
+	REG_GP_05      = 0b110101,
+	REG_RESERVED   = 0b001111,
+	REG_CLOCK      = 0b001100,
+	REG_FLAGS      = 0b001101,
 	REG_PC         = 0b000011,
 	REG_ZERO       = 0b000000,
 	REG_GP01       = 0b000001,
@@ -94,60 +99,70 @@ typedef union TriFlags
 
 typedef struct TriCpu
 {
-	TriWord A;
-	TriWord B;
-	TriWord D;
-	TriWord valA;
-	TriWord valB;
+//	TriWord A;
+//	TriWord B;
+//	TriWord D;
+//	TriWord valA;
+//	TriWord valB;
 	TriWord regs[NUM_TRIREGS];
-	uint8_t running;
+//	uint8_t running;
 } TriCpu;
 
 
 typedef enum TriOpcode
 {
-    //                 __--__--__--
-    OPCODE_LD1     = 0b111111111111,  // Load Rd <- (Rs+immediate) 9 trits
-    OPCODE_LD2     = 0b111111111100,  // Load Rd <- (Rs+immediate) 18 trits
-    OPCODE_LD3     = 0b111111111101,  // Load Rd <- (Rs+immediate) 27 trits
-    OPCODE_ST1     = 0b111111110011,  // Store (Rs1+immediate) <- Rs2 9 trits
-    OPCODE_ST2     = 0b111111110000,  // Store (Rs1+immediate) <- Rs2 18 trits
-    OPCODE_ST3     = 0b111111110001,  // Store (Rs1+immediate) <- Rs2 27 trits
-    OPCODE_POP     = 0b111111110111,  // Load Rd <- (Rs) ; Rs += immediate
-    OPCODE_PSH     = 0b111111110100,  // Store Rd += immediate; (Rd)  <- Rs
-    OPCODE_SWP     = 0b111111110101,  // Rd1 = Rd2 + immeditate | Rd2 = Rd1
-    //                 __--__--__--
-    OPCODE_SUBCSEN = 0b111111001111,  // if S==- , C:Rd = Rs1 - Rs2
-    OPCODE_SUBCSEZ = 0b111111001100,  // if S==0 , C:Rd = Rs1 - Rs2
-    OPCODE_SUBCSEP = 0b111111001101,  // if S==1 , C:Rd = Rs1 - Rs2
-    OPCODE_SUBCRRY = 0b111111000011,  // C:Rd = Rs1 - Rs2 + C
-    OPCODE_SUB     = 0b111111000000,  // C:Rd = Rs1 - Rs2
-//  OPCODE_SUBI    = 0b111111000001,  // C:Rd = Rs1 - immediate
-    OPCODE_SUBCSNN = 0b111111000111,  // if S!=- , C:Rd = Rs1 - Rs2
-    OPCODE_SUBCSNZ = 0b111111000100,  // if S!=0 , C:Rd = Rs1 - Rs2
-    OPCODE_SUBCSNP = 0b111111000101,  // if S!=1 , C:Rd = Rs1 - Rs2
-    //                 __--__--__--
-    OPCODE_ADDCSEN = 0b111111011111,  // if S==- , C:Rd = Rs + immediate
-    OPCODE_ADDCSEZ = 0b111111011100,  // if S==0 , C:Rd = Rs + immediate
-    OPCODE_ADDCSEP = 0b111111011101,  // if S==1 , C:Rd = Rs + immediate
-    OPCODE_ADDCRRY = 0b111111010011,  // C:Rd = Rs1 + Rs2 + C
-    OPCODE_ADDR    = 0b111111010000,  // C:Rd = Rs1 + Rs2
-    OPCODE_ADD     = 0b111111010001,  // C:Rd = Rs + immediate
-    OPCODE_ADDCSNN = 0b111111010111,  // if S!=- , C:Rd = Rs + immediate
-    OPCODE_ADDCSNZ = 0b111111010100,  // if S!=0 , C:Rd = Rs + immediate
-    OPCODE_ADDCSNP = 0b111111010101,  // if S!=1 , C:Rd = Rs + immediate
-    //                 __--__--__--
-    OPCODE_SHLR    = 0b111100111111,  // C:Rd = C:Rs1 << Rs2
-    OPCODE_SHLI    = 0b111100111100,  // C:Rd = C:Rs  << immediate
-    OPCODE_TAND    = 0b111100111101,  // Rd = Tritwise Rs1 & Rs2
-    OPCODE_TOR     = 0b111100110011,  // Rd = Tritwise Rs1 | Rs2
-    OPCODE_TMAJ    = 0b111100110000,  // Rd = Tritwise Majority
-    OPCODE_TADD    = 0b111100110001,  // Rd = Tritwise Rs1 + Rs2
-    OPCODE_TMUL    = 0b111100110111,  // Rd = Tritwise Rs1 * Rs2
-    OPCODE_MUL     = 0b111100110100,  // Rd = Rs1 * Rs2
-    OPCODE_MULU    = 0b111100110101,  // Rd = (Rs1 * Rs2) >> 27
+    //                   __--__--__--
+    OPCODE_LD1       = 0b111111111111,  // Load Rd <- (Rs+immediate) 9 trits
+    OPCODE_LD2       = 0b111111111100,  // Load Rd <- (Rs+immediate) 18 trits
+    OPCODE_LD3       = 0b111111111101,  // Load Rd <- (Rs+immediate) 27 trits
+    OPCODE_ST1       = 0b111111110011,  // Store (Rs1+immediate) <- Rs2 9 trits
+    OPCODE_ST2       = 0b111111110000,  // Store (Rs1+immediate) <- Rs2 18 trits
+    OPCODE_ST3       = 0b111111110001,  // Store (Rs1+immediate) <- Rs2 27 trits
+    OPCODE_POP       = 0b111111110111,  // Load Rd <- (Rs) ; Rs += immediate
+    OPCODE_PSH       = 0b111111110100,  // Store Rd += immediate; (Rd)  <- Rs
+//  OPCODE_          = 0b111111110101,  //
+    //                   __--__--__--
+    OPCODE_ADD_SEN   = 0b111111001111,  // if S==- , C:Rd = Rs1 - Rs2
+    OPCODE_ADD_SEZ   = 0b111111001100,  // if S==0 , C:Rd = Rs1 - Rs2
+    OPCODE_ADD_SEP   = 0b111111001101,  // if S==1 , C:Rd = Rs1 - Rs2
+    OPCODE_ADC       = 0b111111000011,  // C:Rd = Rs1 - Rs2 + C
+    OPCODE_ADD       = 0b111111000000,  // C:Rd = Rs1 - Rs2
+//  OPCODE_          = 0b111111000001,  //
+    OPCODE_ADD_SNN   = 0b111111000111,  // if S!=- , C:Rd = Rs1 - Rs2
+    OPCODE_ADD_SNZ   = 0b111111000100,  // if S!=0 , C:Rd = Rs1 - Rs2
+    OPCODE_ADD_SNP   = 0b111111000101,  // if S!=1 , C:Rd = Rs1 - Rs2
+    //                   __--__--__--
+    OPCODE_ADDI_SEN  = 0b111111011111,  // if S==- , C:Rd = Rs + immediate
+    OPCODE_ADDI_SEZ  = 0b111111011100,  // if S==0 , C:Rd = Rs + immediate
+    OPCODE_ADDI_SEP  = 0b111111011101,  // if S==1 , C:Rd = Rs + immediate
+    OPCODE_ADCI      = 0b111111010011,  // C:Rd = Rs1 + immediate + C
+    OPCODE_ADDI      = 0b111111010000,  // C:Rd = Rs1 + immediate
+//  OPCODE_          = 0b111111010001,  //
+    OPCODE_ADDI_SNN  = 0b111111010111,  // if S!=- , C:Rd = Rs + immediate
+    OPCODE_ADDI_SNZ  = 0b111111010100,  // if S!=0 , C:Rd = Rs + immediate
+    OPCODE_ADDI_SNP  = 0b111111010101,  // if S!=1 , C:Rd = Rs + immediate
+    //                   __--__--__--
+    OPCODE_RTL       = 0b111100111111,  // R1:R2 = R1:R2 Rotate Left by R3
+//  OPCODE_          = 0b111100111100,  //
+    OPCODE_TAND      = 0b111100111101,  // Rd = Tritwise Rs1 & Rs2
+    OPCODE_TOR       = 0b111100110011,  // Rd = Tritwise Rs1 | Rs2
+    OPCODE_TMAJ      = 0b111100110000,  // Rd = Tritwise Majority
+    OPCODE_TADD      = 0b111100110001,  // Rd = Tritwise Rs1 + Rs2
+    OPCODE_TMUL      = 0b111100110111,  // Rd = Tritwise Rs1 * Rs2
+    OPCODE_MUL       = 0b111100110100,  // Rd = Rs1 * Rs2
+    OPCODE_MULU      = 0b111100110101,  // Rd = (Rs1 * Rs2) >> 27
+    //                   __--__--__--
+    OPCODE_RTLI      = 0b111101111111,  // R1:R2 = R1:R2 Rotate Left by immed
+//  OPCODE_          = 0b111101111100,  //
+    OPCODE_TANDI     = 0b111101111101,  // Rd = Tritwise Rs1 & immediate
+    OPCODE_TORI      = 0b111101110011,  // Rd = Tritwise Rs1 | immediate
+    OPCODE_TMAJI     = 0b111101110000,  // Rd = Tritwise Majority
+    OPCODE_TADDI     = 0b111101110001,  // Rd = Tritwise Rs1 + immediate
+    OPCODE_TMULI     = 0b111101110111,  // Rd = Tritwise Rs1 * immediate
+//  OPCODE_          = 0b111101110100,  //
+//  OPCODE_          = 0b111101110101,  //
 
-    OPCODE_NOP     = 0b000000000000,  // NOP
+    OPCODE_NOP       = 0b000000000000,  // NOP
 
 } TriOpcode;
 
@@ -162,9 +177,9 @@ typedef enum TriOpcode
 // | 1- | 7 OpCode        | 3 R1 | 3 R2 | 3 12 Immediate |
 
 
-// | 6 OpCode | 3 R1 | 7 R2+Mod | 7 R3+Mod | 4 Immediate |
-// | 6 OpCode | 3 R1 | 7 R2+Mod | 11 Immediate           |
-// | 6 OpCode | 3 R1 | 18 Immediate                      |
+// | 4 Immediate | 7 R3+Mod | 7 R2+Mod | 3 R1 | 6 OpCode |
+// | 11 Immediate           | 7 R2+Mod | 3 R1 | 6 OpCode |
+// | 18 Immediate                      | 3 R1 | 6 OpCode |
 
 
 // 4 bit Immeditate
@@ -193,6 +208,8 @@ typedef enum TriOpcode
 // NEG Rd, Rs    | SUB Rd, R0, Rs
 // TNOT Rd, Rs   | SUB Rd, R0, Rs
 
+// SWP R1, R2    | RTL R1, R2, #27
+// SHL Rd, Rs    | RTL R0, Rd, Rs
 // MVC2S         | ADDC R0, R0, R0
 // CLRCS         | ADDR R0, R0, R0
 // CMP R1, R2    | SUB R0, R1, R2
@@ -295,6 +312,13 @@ extern void getOperands(TriCpu* cpu);
  * @return
  */
 extern void storeResult(TriCpu* cpu);
+
+extern void resetCPU(TriCpu* cpu);
+
+extern void printCpuState(TriCpu* cpu);
+
+extern void runCPU( TriCpu* cpu, int cycles );
+
 
 #endif /* TERNARY_CPU_H */
 /*****************************************************************************/

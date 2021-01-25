@@ -47,16 +47,15 @@ Tryte ram[RAM_SIZE];
 Tryte ReadAddr(TriWord addr)
 {
 	int64_t offset=TriWord2int(addr & RAM_ADDR_MASK);
-	switch(offset)
+	switch(addr)
 	{
-		case ADDR_UART_IN:
+		case ADDR_UART:
 			// return int2Triword(getchar());
 			return 0;
 			break;
-		case ADDR_UART_OUT:
-			return 0;
-			break;
-		case ADDR_RTC:
+		case ADDR_RTC2:
+		case ADDR_RTC1:
+		case ADDR_RTC0:
 			// return int2TriWord(time(null));
 			return 0;
 			break;
@@ -72,13 +71,14 @@ Tryte ReadAddr(TriWord addr)
 void WriteAddr(TriWord addr, Tryte val)
 {
 	int64_t offset=TriWord2int(addr & RAM_ADDR_MASK);
-	switch(offset)
+	switch(addr)
 	{
-		case ADDR_UART_IN:
-		case ADDR_RTC:
-			break;
-		case ADDR_UART_OUT:
+		case ADDR_UART:
 			putchar(TriWord2int(val));
+			break;
+		case ADDR_RTC2:
+		case ADDR_RTC1:
+		case ADDR_RTC0:
 			break;
 		default:
 			ram[BASE_OFFSET+offset]=val;
@@ -87,6 +87,24 @@ void WriteAddr(TriWord addr, Tryte val)
 }
 
 
+void resetMem( void )
+{
+    int64_t idx = BASE_OFFSET+ 9;
+    ram[BASE_OFFSET- 4]=0b00010000;
+    // LD1 R3, R0+9
+    //           __--__--__--__--__
+    ram[idx++]=0b000100111111111111;
+    ram[idx++]=0b111100000000000000;
+    ram[idx++]=0b000000000001000011;
+    // LD2 R2, R0+9
+    ram[idx++]=0b000111111111111100;
+    ram[idx++]=0b111100000000000000;
+    ram[idx++]=0b000000000001000011;
+    // LD3 R1, R0+9
+    ram[idx++]=0b000001111111111101;
+    ram[idx++]=0b111100000000000000;
+    ram[idx++]=0b000000000001000011;
+}
 
 /*****************************************************************************/
 

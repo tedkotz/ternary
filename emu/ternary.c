@@ -91,10 +91,10 @@ int64_t TriWord2int( TriWord x )
 //	return retVal;
 //}
 
-void TriWordPrint( TriWord x )
+void TriWordPrint( TriWord x, int_fast8_t started)
 {
-	int_fast8_t i, started=0;
-	for(i=58; i>=0; i-=2)
+	int_fast8_t i;
+	for(i=(BITS_PER_TRIWORD-2); i>=0; i-=2)
 	{
 		switch((x >> i) & 0b011)
 		{
@@ -320,7 +320,7 @@ TriWord TriWord_MUL  ( TriWord op1, TriWord op2 )
 
 //TriWord TriWord_DIVMOD  ( TriWord op1, TriWord op2 ){
 //}
-
+#if TERNARY_MATH_MAIN
 int main( int argc, char** argv )
 {
 	//int64_t i;
@@ -362,6 +362,7 @@ int main( int argc, char** argv )
 	printf("\ndone.\n");
 	return 0;
 }
+#endif //TERNARY_MATH_MAIN
 
 
 /*****************************************************************************/

@@ -63,7 +63,7 @@ extern unsigned int int2trit( int x );
 extern int64_t TriWord2int( TriWord x );
 //extern TriWord int2TriWord( int64_t x, int lvl );
 
-extern void TriWordPrint( TriWord x );
+extern void TriWordPrint( TriWord x, int_fast8_t started);
 extern void TriWordScan( TriWord* x );
 
 // BITWISE 1 OP

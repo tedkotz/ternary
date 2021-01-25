@@ -32,14 +32,13 @@
 /* Includes ******************************************************************/
 #include "cpu.h"
 #include "mem.h"
+#include <stdio.h>
 /* Defines *******************************************************************/
 /* Types *********************************************************************/
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
 /* Functions *****************************************************************/
 
-// Temporarily using the ternary library main
-#if 0
 
 /**
  * Main Program entry point.
@@ -50,14 +49,44 @@
  */
 int main( int argc, char** argv )
 {
-	TriCpu cpu;
-	cpu.running = true;
-	while(cpu.running)
-	{
-		getInstruction(&cpu);
-		getOperands(&cpu);
-		storeResult(&cpu);
-	}
-	return 0;
+    char c='\r';
+    TriCpu cpu;
+    TriWord addr;
+    TriWord val;
+    TriCpu disposable;
+    resetMem();
+    resetCPU(&disposable);
+    resetCPU(&cpu);
+    printCpuState(&cpu);
+    c=getchar();
+    while ('q' != c)
+    {
+        switch(c)
+        {
+            case 'r':
+                printf("ADDR: ");
+                TriWordScan( &addr );
+                printf("\nVAL: ");
+                val = ReadAddr(addr);
+                TriWordPrint( val, 0 );
+                printf("\n");
+                break;
+            case 'w':
+                printf("ADDR: ");
+                TriWordScan( &addr );
+                printf("\nVAL: ");
+                TriWordScan( &val );
+                WriteAddr(addr, val);
+                printf("done.\n");
+                break;
+            case 'd':
+                printCpuState(&cpu);
+                break;
+            default:
+                runCPU(&cpu, 1);
+                printCpuState(&cpu);
+        }
+        c=getchar();
+    }
+    return 0;
 }
-#endif
