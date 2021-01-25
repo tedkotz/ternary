@@ -137,43 +137,62 @@ void WriteTryte( TriCpu* cpu, TriWord addr , Tryte val )
 TriWord ReadModReg( TriCpu* cpu, Tryte reg, Tryte mod )
 {
     int32_t shift=TriWord2int(mod);
+    TriWord val=0;
+    if( 0 != reg )
+    {
+        val = cpu->regs[reg];
+    }
+
     switch (mod)
     {
         case OPMOD_NEG:
-            return TriWord_NEGB(cpu->regs[reg]);
+            return TriWord_NEGB(val);
 
         case OPMOD_INC:
-            return TriWord_INCB(cpu->regs[reg]);
+            return TriWord_INCB(val);
 
         case OPMOD_DEC:
-            return TriWord_DECB(cpu->regs[reg]);
+            return TriWord_DECB(val);
 
         case OPMOD_ABN:
-            return TriWord_NEGB(TriWord_ABSB(cpu->regs[reg]));
+            return TriWord_NEGB(TriWord_ABSB(val));
 
         case OPMOD_ABS:
-            return TriWord_ABSB(cpu->regs[reg]);
+            return TriWord_ABSB(val);
 
         case OPMOD_FLT:
-            return TriWord_FLTB(cpu->regs[reg]);
+            return TriWord_FLTB(val);
 
         default:
             if (shift > 26 || shift < -26 )
             {
                 printf("\nInvalid  mod: %X\n", mod);
-                return cpu->regs[reg];
+                return val;
             }
             else if( shift < 0 )
             {
-                return cpu->regs[reg] >> (-2 * shift);
+                return val >> (-2 * shift);
             }
             else
             {
-                return (cpu->regs[reg] << (2 * shift)) & ((1ULL << 54) - 1);
+                return (val << (2 * shift)) & ((1ULL << 54) - 1);
             }
     }
 }
 
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
+void WriteReg( TriCpu* cpu, Tryte reg, TriWord val )
+{
+    if( 0 != reg )
+    {
+        cpu->regs[reg] = val;
+    }
+}
 
 /**
  * [Description]
@@ -249,16 +268,17 @@ void resetCPU(TriCpu* cpu)
 void runCPU( TriCpu* cpu, int cycles )
 {
     TriWord inst=0;
-    TriWord imm4;
+//    TriWord imm4;
     TriWord imm11;
-    TriWord imm18;
+//    TriWord imm18;
     TriWord addr;
+    TriWord val;
     Tryte opcode;
     Tryte r1;
     Tryte r2;
     Tryte r2mod;
-    Tryte r3;
-    Tryte r3mod;
+//    Tryte r3;
+//    Tryte r3mod;
 
     while( cycles-- > 0 )
     {
@@ -272,26 +292,29 @@ void runCPU( TriCpu* cpu, int cycles )
         r1 = (inst >> 12 ) & 0x003F;
         r2mod = (inst >> 18 ) & 0x00FF;
         r2 = (inst >> 26 ) & 0x003F;
-        r3mod = (inst >> 32 ) & 0x00FF;
-        r3 = (inst >> 40 ) & 0x003F;
-        imm4 = expandImmediate((inst >> 46 ) & 0x00FF);
+//        r3mod = (inst >> 32 ) & 0x00FF;
+//        r3 = (inst >> 40 ) & 0x003F;
+//        imm4 = expandImmediate((inst >> 46 ) & 0x00FF);
         imm11 = expandImmediate((inst >> 32 ) & 0x003FFFFF);
-        imm18 = expandImmediate((inst >> 18 ) & 0x0FFFFFFFFFULL);
+//        imm18 = expandImmediate((inst >> 18 ) & 0x0FFFFFFFFFULL);
 
         switch( opcode )
         {
             case OPCODE_NOP       :  // NOP
                 break;
             case OPCODE_LD1       :  // Load Rd <- (Rs+immediate) 9 trits
-                cpu->regs[r1]=ReadTryte(cpu, TriWord_ADD(ReadModReg(cpu, r2, r2mod), imm11));
+                val = ReadTryte(cpu, TriWord_ADD(ReadModReg(cpu, r2, r2mod), imm11));
+                WriteReg(cpu,r1,val);
                 break;
             case OPCODE_LD2       :  // Load Rd <- (Rs+immediate) 18 trits
                 addr = TriWord_ADD(ReadModReg(cpu, r2, r2mod), imm11);
-                cpu->regs[r1]=ReadTryte(cpu, addr);
-                cpu->regs[r1]|=((TriWord)ReadTryte(cpu, TriWord_ADD(addr, 0b0001))<<18) ;
+                val=ReadTryte(cpu, addr);
+                val|=((TriWord)ReadTryte(cpu, TriWord_ADD(addr, 0b0001))<<18) ;
+                WriteReg(cpu,r1,val);
                 break;
             case OPCODE_LD3       :  // Load Rd <- (Rs+immediate) 27 trits
-                cpu->regs[r1]=ReadTriWord(cpu, TriWord_ADD(ReadModReg(cpu, r2, r2mod), imm11));
+                val=ReadTriWord(cpu, TriWord_ADD(ReadModReg(cpu, r2, r2mod), imm11));
+                WriteReg(cpu,r1,val);
                 break;
             case OPCODE_ST1       :  // Store (Rs1+immediate) <- Rs2 9 trits
             case OPCODE_ST2       :  // Store (Rs1+immediate) <- Rs2 18 trits
