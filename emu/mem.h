@@ -92,6 +92,12 @@ extern Tryte ReadAddr(TriWord addr);
  */
 extern void WriteAddr(TriWord addr, Tryte val);
 
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
 extern void resetMem( void );
 
 #endif /* TERNARY_MEM_H */

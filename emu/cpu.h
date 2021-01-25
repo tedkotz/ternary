@@ -167,14 +167,16 @@ typedef enum TriOpcode
 } TriOpcode;
 
 
+typedef enum
+{
+    OPMOD_NEG = 0b11111111,
+    OPMOD_INC = 0b11111100,
+    OPMOD_DEC = 0b11111101,
+    OPMOD_ABN = 0b11110011,
+    OPMOD_ABS = 0b11110000,
+    OPMOD_FLT = 0b11110001,
+} OpModifiers;
 
-// | -- | 4 OpCode | 3 R1 |
-// | -0 | 4 OpCode | 3 R1 |
-// | -1 | 7 OpCode        |
-// | 0- | 6 OpCode     | 4 Immed | 3 R1 | 3 R2 |
-// | XX | 7 OpCode        | 6 Immed     | 3 R1 |
-// | 00 | 7 OpCode        | 3 R1 | 3 R2 | 3 R3 |
-// | 1- | 7 OpCode        | 3 R1 | 3 R2 | 3 12 Immediate |
 
 
 // | 4 Immediate | 7 R3+Mod | 7 R2+Mod | 3 R1 | 6 OpCode |
@@ -200,6 +202,24 @@ typedef enum TriOpcode
 // 0..0++ -> 27 Pos
 // 0..000 -> 27 Zero
 // n..nxx -> N << X + 4
+
+
+// Rx + Mod
+// rrrmmmm
+// R selects Register
+// M selects Modification
+// |  M      | Operation                                   |
+// |---------|---------------------------------------------|
+// | -40     | Negate/Tritwise Not (0->0, -1<->1)          |
+// | -39     | Tritwise Increment (0->1->-1->0)            |
+// | -38     | Tritwise Decrement (0->-1->1->0)            |
+// | -37     | Tritwise Absolute Value (-1 -> 1)           |
+// | -36     | Tritwise Absolute Value Negated (1 -> -1)   |
+// | -35     | Tritwise Flatten (-1->0)                    |
+// |         |                                             |
+// | -26..26 | Left shift by M                             |
+// |         |                                             |
+
 
 // MV Rd, Rs     | ADD Rd, Rs, R0
 // MV Rd, immed  | ADDI Rd, R0, immed
@@ -230,52 +250,6 @@ typedef enum TriOpcode
 
 
 
-//0000 NOP          0
-//     ADD.Cond     3
-//     ADDC         3
-//     MUL          3
-//     SHL          3
-//     RCL          3
-//
-//     ADDB         3
-//     MULB         3
-//     ANDB         3
-//     ORRB         3
-//     SETB         3
-//
-//     MV.Cond      2
-//     CALL         1 Special
-//
-//Operand extras
-//  Negate
-//
-//
-//Conditonals (MV, ADD)
-//  Flags (S-Sign, C-Carry, V-Overflow, P-Parity)
-//  Values (P-One, NP-Not One, Z-Zero, NZ-Not Zero, M-Neg One, NM-Not Neg One)
-//  Aliases (LT-SM, GE-SNM, EQ-SZ, NE-SNZ, GT-SP, LE-SNP, CC-CZ, CS-CNZ, VC-VM, VS-VNM, EV-PZ, OD-PNZ)
-//
-//Virtual Operators
-//  JMP (MV PC, #dest)
-//  RET (MV PC, (SP++))
-//  SUB (ADD A, B, -C)
-//  NEG (MV A, -B)
-//  CMP (ADD 0, A, -B)
-//  TST (MV 0, A)
-//  CFL (MV 0,0)
-//
-//
-//
-//Extensions
-//  BRC (ADD PC, PC, #offset)
-//
-// Stages
-// Inst Fetch
-// A Fetch
-// B Fetch
-// Store
-
-
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
 /* Functions *****************************************************************/
@@ -287,36 +261,22 @@ typedef enum TriOpcode
  * @param
  * @return
  */
-extern void incClock(TriCpu* cpu);
-
-/**
- * [Description]
- *
- * @param
- * @return
- */
-extern void getInstruction(TriCpu* cpu);
-
-/**
- * [Description]
- *
- * @param
- * @return
- */
-extern void getOperands(TriCpu* cpu);
-
-/**
- * [Description]
- *
- * @param
- * @return
- */
-extern void storeResult(TriCpu* cpu);
-
 extern void resetCPU(TriCpu* cpu);
 
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
 extern void printCpuState(TriCpu* cpu);
 
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
 extern void runCPU( TriCpu* cpu, int cycles );
 
 

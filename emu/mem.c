@@ -87,6 +87,10 @@ void WriteAddr(TriWord addr, Tryte val)
 }
 
 
+/*
+ * See Header
+ *
+ */
 void resetMem( void )
 {
     int64_t idx = BASE_OFFSET+ 9;

@@ -77,217 +77,6 @@ static const char* reg_names[] =
  * @param
  * @return
  */
-
-
-/*****************************************************************************/
-
-
-
-//0000 NOP          0
-//     ADD.Cond     3
-//     ADDC         3
-//     MUL          3
-//     SHL          3
-//     RCL          3
-//
-//     ADDB         3
-//     MULB         3
-//     ANDB         3
-//     ORRB         3
-//     SETB         3
-//
-//     MV.Cond      2
-//     CALL         1 Special
-//
-//Operand extras
-//  Negate
-//
-//
-//Conditonals (MV, ADD)
-//  Flags (S-Sign, C-Carry, V-Overflow, P-Parity)
-//  Values (P-One, NP-Not One, Z-Zero, NZ-Not Zero, M-Neg One, NM-Not Neg One)
-//  Aliases (LT-SM, GE-SNM, EQ-SZ, NE-SNZ, GT-SP, LE-SNP, CC-CZ, CS-CNZ, VC-VM, VS-VNM, EV-PZ, OD-PNZ)
-//
-//Virtual Operators
-//  JMP (MV PC, #dest)
-//  RET (MV PC, (SP++))
-//  SUB (ADD A, B, -C)
-//  NEG (MV A, -B)
-//  CMP (ADD 0, A, -B)
-//  TST (MV 0, A)
-//  CFL (MV 0,0)
-//
-//
-//
-//Extensions
-//  BRC (ADD PC, PC, #offset)
-//
-// Stages
-// Inst Fetch
-// A Fetch
-// B Fetch
-// Store
-
-
-
-
-//typedef enum
-//{
-//	 MOV  = 0b11 11 11,
-//     ADD  = 0b11 11 00,
-//	 ADC  = 0b11 11 01,
-//     MUL  = 0b11 00 11,
-//     SHL  = 0b11 00 00,
-//     RCL  = 0b11 00 01,
-//     CAL  = 0b11 01 11,
-//	 //SPARE -+0 -> 00-
-//     NOP  = 0b00 00 00,
-//     ADDB = 0b00 00 01,
-//     MULB = 0b00 01 11,
-//     ANDB = 0b00 01 00,
-//     ORRB = 0b00 01 01,
-//     SETB = 0b01 11 11
-//     //Spare 1-0 -> 111
-//} OPCODES;
-
-
-typedef enum
-{
-     COND_SE  = 0b1111,
-     COND_SN  = 0b1100,
-     COND_CE  = 0b1101,
-     COND_CN  = 0b0011,
-     COND_ZE  = 0b0000, // Zero Equals: so Always is 000
-     COND_VE  = 0b0001,
-     COND_VN  = 0b0111,
-     COND_PE  = 0b0100,
-     COND_PN  = 0b0101
-} CONDITIONALS;
-
-typedef enum
-{
-    OPMOD_NEG = 0b0011,
-    OPMOD_NOP = 0b0000,
-    OPMOD_INC = 0b0001,
-    OPMOD_DEC = 0b0111,
-    OPMOD_ABS = 0b0100,
-    OPMOD_FLT = 0b0101,
-} OpModifiers;
-
-//typedef enum
-//{
-//	OPType_REG  = 0b1111,  // [--R0]
-//	OPType_REG  = 0b1100,  // [R0]
-//	OPType_REG  = 0b1101,  // [R0++]
-//	OPType_REG  = 0b0011,  // R0
-//	OPType_REG  = 0b0000,  // #nnn, If Dest value dropped
-//	OPType_REG  = 0b0001,  // [[RO++]]
-//} OpTypes;
-
-// typedef union
-// {
-//     TriWord val;
-//     struct {
-//     TriWord Reserved:6;  // for future use
-//     TriWord Cond:6;      // conditional flag
-//     TriWord CondValue:2; // conditional test value
-//     TriWord OpCnt:2;     // number of operators
-//     TriWord OpCode:12;   // instruction number
-//     TriWord Op3:10;      // OP2 = OP3 + MOD(OP1)
-//     TriWord Op2:10;      // OP2 = OP2 + MOD(OP1)
-//     TriWord Op1:10;      // OP1 = + MOD(OP1)
-//     TriWord OpMod:4;     // ALU MOdifier to apply to OP1
-//     } parts;
-// } InstReg;
-//
-//
-//
-// int evalConditon(TriCpu* cpu)
-// {
-//     InstReg INST;
-//     FlagReg FLGS;
-//     INST.val=cpu->regs[REG_INST];
-//     FLGS.val=cpu->regs[REG_FLAGS];
-//     switch (INST.parts.Cond)
-//     {
-//         case COND_SE:
-//             return( FLGS.flags.S == INST.parts.CondValue );
-//         case COND_SN:
-//             return( FLGS.flags.S != INST.parts.CondValue );
-//         case COND_CE:
-//             return( FLGS.flags.C == INST.parts.CondValue );
-//         case COND_CN:
-//             return( FLGS.flags.C != INST.parts.CondValue );
-//         case COND_ZE:
-//             return( 0 == INST.parts.CondValue );
-//         case COND_VE:
-//             return( FLGS.flags.V == INST.parts.CondValue );
-//         case COND_VN:
-//             return( FLGS.flags.V != INST.parts.CondValue );
-//         case COND_PE:
-//             return( FLGS.flags.P == INST.parts.CondValue );
-//         case COND_PN:
-//             return( FLGS.flags.P != INST.parts.CondValue );
-//         default:
-// //			callInst(ReadAddr(ADDR_ISR_INV_INSTR));
-//             return 0;
-//     }
-// }
-//
-// void incClock(TriCpu* cpu)
-// {
-//     cpu->regs[REG_CLOCK]=TriWord_ADD(cpu->regs[REG_CLOCK], 1);
-//
-// }
-//
-// void getInstruction(TriCpu* cpu)
-// {
-//     cpu->regs[REG_INST]=ReadAddr(cpu->regs[REG_PC]);
-//     cpu->regs[REG_PC]=TriWord_ADD(cpu->regs[REG_PC], 1);
-//     incClock(cpu);
-// }
-//
-//
-// void getOperands(TriCpu* cpu)
-// {
-//     InstReg INST;
-//     INST.val=cpu->regs[REG_INST];
-//     if(N!=INST.parts.OpCnt)
-//     {
-// //		cpu->A=getOP(INST.parts.Op2);
-//     }
-//     else
-//     {
-//         cpu->A=0;
-//     }
-//     incClock(cpu);
-//
-//
-//     if((N!=INST.parts.OpCnt) || (0!=INST.parts.OpCode))
-//     {
-// //		cpu->B=getOP(INST.parts.Op1);
-//         if(N==INST.parts.OpMod)
-//         {
-//             cpu->B=TriWord_NEGB(cpu->B);
-//         }
-//     }
-//     else
-//     {
-//         cpu->B=0;
-//     }
-//     incClock(cpu);
-//
-// }
-// //
-// void storeResult(TriCpu* cpu)
-// {
-// //	InstReg INST;
-// //	INST.val=cpu->regs[REG_INST];
-//     cpu->regs[REG_INST]=ReadAddr((cpu->regs[REG_PC])++);
-//     cpu->regs[REG_CLOCK]++;
-// }
-
-
 TriWord ReadTriWord( TriCpu* cpu, TriWord addr )
 {
     TriWord tmp = ReadAddr(addr);
@@ -297,6 +86,13 @@ TriWord ReadTriWord( TriCpu* cpu, TriWord addr )
     return tmp;
 }
 
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
 void WriteTriWord( TriCpu* cpu, TriWord addr , TriWord val )
 {
     WriteAddr(addr , val & 0x03FFFF);
@@ -305,23 +101,62 @@ void WriteTriWord( TriCpu* cpu, TriWord addr , TriWord val )
     cpu->regs[REG_CLOCK]=TriWord_ADD(cpu->regs[REG_CLOCK], 0b0100);
 }
 
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
 Tryte ReadTryte( TriCpu* cpu, TriWord addr )
 {
     cpu->regs[REG_CLOCK]=TriWord_ADD(cpu->regs[REG_CLOCK], 0b01);
     return ReadAddr(addr);
 }
 
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
 void WriteTryte( TriCpu* cpu, TriWord addr , Tryte val )
 {
     WriteAddr(addr , val );
     cpu->regs[REG_CLOCK]=TriWord_ADD(cpu->regs[REG_CLOCK], 0b01);
 }
 
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
 TriWord ReadModReg( TriCpu* cpu, Tryte reg, Tryte mod )
 {
     int32_t shift=TriWord2int(mod);
     switch (mod)
     {
+        case OPMOD_NEG:
+            return TriWord_NEGB(cpu->regs[reg]);
+
+        case OPMOD_INC:
+            return TriWord_INCB(cpu->regs[reg]);
+
+        case OPMOD_DEC:
+            return TriWord_DECB(cpu->regs[reg]);
+
+        case OPMOD_ABN:
+            return TriWord_NEGB(TriWord_ABSB(cpu->regs[reg]));
+
+        case OPMOD_ABS:
+            return TriWord_ABSB(cpu->regs[reg]);
+
+        case OPMOD_FLT:
+            return TriWord_FLTB(cpu->regs[reg]);
+
         default:
             if (shift > 26 || shift < -26 )
             {
@@ -339,6 +174,13 @@ TriWord ReadModReg( TriCpu* cpu, Tryte reg, Tryte mod )
     }
 }
 
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
 TriWord expandImmediate( TriWord input )
 {
     if( 0b00111111 == input )
@@ -357,6 +199,10 @@ TriWord expandImmediate( TriWord input )
     }
 }
 
+/*
+ * See Header
+ *
+ */
 void printCpuState(TriCpu* cpu)
 {
     TriCpu disposable;
@@ -382,6 +228,10 @@ void printCpuState(TriCpu* cpu)
 }
 
 
+/*
+ * See Header
+ *
+ */
 void resetCPU(TriCpu* cpu)
 {
     int i;
@@ -392,6 +242,10 @@ void resetCPU(TriCpu* cpu)
     cpu->regs[REG_PC]=ReadTriWord(cpu, ADDR_PC_START0);
 }
 
+/*
+ * See Header
+ *
+ */
 void runCPU( TriCpu* cpu, int cycles )
 {
     TriWord inst=0;
@@ -430,12 +284,6 @@ void runCPU( TriCpu* cpu, int cycles )
                 break;
             case OPCODE_LD1       :  // Load Rd <- (Rs+immediate) 9 trits
                 cpu->regs[r1]=ReadTryte(cpu, TriWord_ADD(ReadModReg(cpu, r2, r2mod), imm11));
-                printf("LD1: ");
-                printf("\n R1: ");TriWordPrint(r1, 0);
-                printf("\n R2: ");TriWordPrint(r2, 0);
-                printf("\n R2MOD: ");TriWordPrint(r2mod, 0);
-                printf("\n IMM11: ");TriWordPrint(imm11, 1);
-                printf("\n");
                 break;
             case OPCODE_LD2       :  // Load Rd <- (Rs+immediate) 18 trits
                 addr = TriWord_ADD(ReadModReg(cpu, r2, r2mod), imm11);
@@ -496,3 +344,4 @@ void runCPU( TriCpu* cpu, int cycles )
     }
 }
 
+/*****************************************************************************/
