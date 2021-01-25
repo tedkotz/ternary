@@ -58,6 +58,7 @@ int main( int argc, char** argv )
     resetCPU(&disposable);
     resetCPU(&cpu);
     printCpuState(&cpu);
+    printf("\n\nh for help, <Enter> for step: \n");
     c=getchar();
     while ('q' != c)
     {
@@ -80,12 +81,37 @@ int main( int argc, char** argv )
                 printf("done.\n");
                 break;
             case 'd':
+                getchar();
                 printCpuState(&cpu);
+                break;
+            case 'c':
+                getchar();
+                resetCPU(&cpu);
+                printCpuState(&cpu);
+                break;
+            case 'm':
+                getchar();
+                resetMem();
+                printCpuState(&cpu);
+                break;
+            case 'h':
+            case '?':
+                getchar();
+                printf("Help for Ternary Computer Emulator \n");
+                printf("NOTE: Addresses and values are entered in balanced ternary(10-). \n");
+                printf(" q : Quit\n");
+                printf(" d : Print CPU State\n");
+                printf(" r <ADDR> : Peek value of Tryte at Address\n");
+                printf(" w <ADDR> <VAL> : Poke Value to Tryte at Address\n");
+                printf(" c : Reset CPU\n");
+                printf(" m : Reset Memory\n");
+                printf(" ? : help\n");
                 break;
             default:
                 runCPU(&cpu, 1);
                 printCpuState(&cpu);
         }
+        printf("\n\nh for help, <Enter> for step: \n");
         c=getchar();
     }
     return 0;

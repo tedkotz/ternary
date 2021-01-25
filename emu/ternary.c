@@ -131,19 +131,29 @@ void TriWordScan( TriWord* x )
 		switch(c)
 		{
 			case '-':
+			case '_':
+			case 'n':
+			case 'N':
 				state=1;
 				--count;
 				dst = (dst<<2)|N;
 				break;
 
 			case '0':
+			case ')':
+			case 'z':
+			case 'Z':
 				state=1;
 				count--;
 				dst = (dst<<2)|0;
 				break;
 
 			case '1':
+			case '!':
 			case '+':
+			case '=':
+			case 'p':
+			case 'P':
 				state=1;
 				--count;
 				dst = (dst<<2)|1;

@@ -37,6 +37,38 @@
 /* Types *********************************************************************/
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
+
+static const char* reg_names[] =
+{
+    "GP_13",
+    "GP_12",
+    "GP_11",
+    "GP_10",
+    "GP_09",
+    "GP_08",
+    "GP_07",
+    "GP_06",
+    "GP_05",
+    "RSRVD",
+    "CLOCK",
+    "FLAGS",
+    "PC   ",
+    "ZERO ",
+    "GP01 ",
+    "GP02 ",
+    "GP03 ",
+    "GP04 ",
+    "GP05 ",
+    "GP06 ",
+    "GP07 ",
+    "GP08 ",
+    "GP09 ",
+    "GP10 ",
+    "GP11 ",
+    "GP12 ",
+    "GP13 ",
+};
+
 /* Functions *****************************************************************/
 
 /**
@@ -330,17 +362,19 @@ void printCpuState(TriCpu* cpu)
     TriCpu disposable;
     Tryte i = 0b00111111;
     int x = -13;
-    printf("       876543210876543210876543210\n");
+    printf("             876543210876543210876543210\n");
     while( 0b00010101 != i )
     {
-        printf(" %03d : ", x);
+        printf(" %s %03d : ", reg_names[x+13], x);
         TriWordPrint(cpu->regs[i], 1);
         printf("(%"PRIi64")\n", TriWord2int(cpu->regs[i]));
         i=TriWord_ADD(i, 0b0001);
         ++x;
     }
-    printf("       876543210876543210876543210\n");
-    printf("      |Imm|R3+Mod|R2+Mod|R1|OpCode|\nINST : ");
+    printf("             876543210876543210876543210\n");
+    printf("            |    Immed 18     |R1|OpCode|\n");
+    printf("            | Immed 11 |R2+Mod|R1|OpCode|\n");
+    printf("            |Im4|R3+Mod|R2+Mod|R1|OpCode|\n Next INST > ");
     disposable.regs[REG_PC]=0;
     disposable.regs[REG_CLOCK]=0;
     TriWordPrint(ReadTriWord(&disposable, cpu->regs[REG_PC]),1);
