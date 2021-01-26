@@ -69,8 +69,8 @@ int main( int argc, char** argv )
                 TriWordScan( &addr );
                 printf("\nVAL: ");
                 val = ReadAddr(addr);
-                TriWordPrint( val, 0 );
-                printf("\n");
+                TriWordPrint( val, 1 );
+                printf("(%"PRIi64")\n", TriWord2int(val));
                 break;
             case 'w':
                 printf("ADDR: ");

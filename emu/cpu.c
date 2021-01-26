@@ -317,23 +317,33 @@ void runCPU( TriCpu* cpu, int cycles )
                 WriteReg(cpu,r1,val);
                 break;
             case OPCODE_ST1       :  // Store (Rs1+immediate) <- Rs2 9 trits
-                val = ReadModReg(cpu, r2, r2mod);
                 addr = TriWord_ADD(ReadModReg(cpu, r1, 0), imm11);
+                val = ReadModReg(cpu, r2, r2mod);
                 WriteTryte(cpu,addr,val & TRYTE_MASK);
                 break;
             case OPCODE_ST2       :  // Store (Rs1+immediate) <- Rs2 18 trits
-                val = ReadModReg(cpu, r2, r2mod);
                 addr = TriWord_ADD(ReadModReg(cpu, r1, 0), imm11);
+                val = ReadModReg(cpu, r2, r2mod);
                 WriteTryte(cpu,addr,val & TRYTE_MASK);
                 WriteTryte(cpu,TriWord_ADD(addr, 0b0001),(val >> BITS_PER_TRYTE)& TRYTE_MASK);
                 break;
             case OPCODE_ST3       :  // Store (Rs1+immediate) <- Rs2 27 trits
-                val = ReadModReg(cpu, r2, r2mod);
                 addr = TriWord_ADD(ReadModReg(cpu, r1, 0), imm11);
+                val = ReadModReg(cpu, r2, r2mod);
                 WriteTriWord(cpu,addr,val);
                 break;
-            case OPCODE_POP       :  // Load Rd <- (Rs) ; Rs += immediate
+            case OPCODE_POP       :  // Load Rd <- (Rs) ; Rs <- Rs + immediate
+                addr = ReadModReg(cpu, r2, r2mod);
+                val=ReadTriWord(cpu, addr);
+                WriteReg(cpu,r1,val);
+                WriteReg(cpu,r2,TriWord_ADD(addr, imm11));
+                break;
             case OPCODE_PSH       :  // Store Rd += immediate; (Rd)  <- Rs
+                addr = TriWord_ADD(ReadModReg(cpu, r1, 0), imm11);
+                val = ReadModReg(cpu, r2, r2mod);
+                WriteTriWord(cpu,addr,val);
+                WriteReg(cpu,r1,addr);
+                break;
 //          case OPCODE_          :  //
             case OPCODE_ADD_SEN   :  // if S==- , C:Rd = Rs1 - Rs2
             case OPCODE_ADD_SEZ   :  // if S==0 , C:Rd = Rs1 - Rs2
