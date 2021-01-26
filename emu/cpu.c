@@ -95,9 +95,9 @@ TriWord ReadTriWord( TriCpu* cpu, TriWord addr )
  */
 void WriteTriWord( TriCpu* cpu, TriWord addr , TriWord val )
 {
-    WriteAddr(addr , val & 0x03FFFF);
-    WriteAddr(TriWord_ADD(addr, 0b0001), (val >>     (BITS_PER_TRYTE)) & 0x03FFFF );
-    WriteAddr(TriWord_ADD(addr, 0b0111), (val >> (2 * BITS_PER_TRYTE)) & 0x03FFFF );
+    WriteAddr(addr , val & TRYTE_MASK);
+    WriteAddr(TriWord_ADD(addr, 0b0001), (val >>     (BITS_PER_TRYTE)) & TRYTE_MASK );
+    WriteAddr(TriWord_ADD(addr, 0b0111), (val >> (2 * BITS_PER_TRYTE)) & TRYTE_MASK );
     cpu->regs[REG_CLOCK]=TriWord_ADD(cpu->regs[REG_CLOCK], 0b0100);
 }
 
@@ -309,7 +309,7 @@ void runCPU( TriCpu* cpu, int cycles )
             case OPCODE_LD2       :  // Load Rd <- (Rs+immediate) 18 trits
                 addr = TriWord_ADD(ReadModReg(cpu, r2, r2mod), imm11);
                 val=ReadTryte(cpu, addr);
-                val|=((TriWord)ReadTryte(cpu, TriWord_ADD(addr, 0b0001))<<18) ;
+                val|=((TriWord)ReadTryte(cpu, TriWord_ADD(addr, 0b0001))<<BITS_PER_TRYTE) ;
                 WriteReg(cpu,r1,val);
                 break;
             case OPCODE_LD3       :  // Load Rd <- (Rs+immediate) 27 trits
@@ -317,8 +317,21 @@ void runCPU( TriCpu* cpu, int cycles )
                 WriteReg(cpu,r1,val);
                 break;
             case OPCODE_ST1       :  // Store (Rs1+immediate) <- Rs2 9 trits
+                val = ReadModReg(cpu, r2, r2mod);
+                addr = TriWord_ADD(ReadModReg(cpu, r1, 0), imm11);
+                WriteTryte(cpu,addr,val & TRYTE_MASK);
+                break;
             case OPCODE_ST2       :  // Store (Rs1+immediate) <- Rs2 18 trits
+                val = ReadModReg(cpu, r2, r2mod);
+                addr = TriWord_ADD(ReadModReg(cpu, r1, 0), imm11);
+                WriteTryte(cpu,addr,val & TRYTE_MASK);
+                WriteTryte(cpu,TriWord_ADD(addr, 0b0001),(val >> BITS_PER_TRYTE)& TRYTE_MASK);
+                break;
             case OPCODE_ST3       :  // Store (Rs1+immediate) <- Rs2 27 trits
+                val = ReadModReg(cpu, r2, r2mod);
+                addr = TriWord_ADD(ReadModReg(cpu, r1, 0), imm11);
+                WriteTriWord(cpu,addr,val);
+                break;
             case OPCODE_POP       :  // Load Rd <- (Rs) ; Rs += immediate
             case OPCODE_PSH       :  // Store Rd += immediate; (Rd)  <- Rs
 //          case OPCODE_          :  //
