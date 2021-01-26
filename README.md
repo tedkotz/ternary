@@ -129,8 +129,12 @@ Schematics, hdl, and other content for actual implementation.
     - Negative infinity
     - NaN
 
+- [ ] Trinary Print should support different fixed widths
 - [ ] Add disassembler to emulator monitor
 - [ ] Load RAM from File
 - [ ] Assembler
-
+- [ ] Expand math operations to cover a full 32 Trits
+- [ ] Trinary I/O should be more generic
+    - [ ] Work with strings
+    - [ ] Work with balanced base 27 input
 
