@@ -43,6 +43,12 @@ typedef enum TriReg
 	NUM_TRIREGS
 } TriReg;
 
+typedef struct {
+	TriWord S :2 ;
+	TriWord C :2 ;
+	TriWord V :2 ;
+	TriWord P :2 ;
+} TriFlags;
 
 typedef struct TriCpu
 {

@@ -18,6 +18,7 @@ static const int_fast8_t trigate_inc[4] = { 1, N, 2, 0};
 static const int_fast8_t trigate_dec[4] = { N, 0, 2, 1};
 static const int_fast8_t trigate_not[4] = { 0, N, 2, 1};
 static const int_fast8_t trigate_flt[4] = { 0, 1, 2, 0};
+static const int_fast8_t trigate_lax[4] = { 1, 1, 2, 0};
 static const int_fast8_t trigate_abs[4] = { 0, 1, 2, 1};
 
 
@@ -201,6 +202,7 @@ TriWord TriWord_UNMB ( TriWord op1, TriWord op2 )
 	return apply_bitwise_TriWord_gate(trigate_unm, op1, op2);
 }
 
+
 // ARITHMETIC 2 OPS
 
 TriWord TriWord_SHL  ( TriWord op1, TriWord op2 )
@@ -251,9 +253,9 @@ TriWord TriWord_ADD  ( TriWord op1, TriWord op2 )
 	return op1;
 }
 
-TriWord TriWord_ADC  ( TriWord op1, TriWord op2, unsigned* carry )
+TriWord TriWord_ADC  ( TriWord op1, TriWord op2, TriFlags* flags)
 {
-	return TriWord_ADD( op1, TriWord_ADD( op2, *carry & 3 ) );
+	return TriWord_ADD( op1, TriWord_ADD( op2, flags->C ) );
 }
 
 TriWord TriWord_MUL  ( TriWord op1, TriWord op2 )

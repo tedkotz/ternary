@@ -100,7 +100,7 @@ typedef enum
 	OPType_REG  = 0b11 00,  // [R0]
 	OPType_REG  = 0b11 01,  // [R0++]
 	OPType_REG  = 0b00 11,  // R0
-	OPType_REG  = 0b00 00,  // #nnn, If Dest value dropped
+	OPType_REG  = 0b00 00,  // #nnn, If Dest value else dropped
 	OPType_REG  = 0b00 01,  // [[RO++]]
 } OpTypes;
 
@@ -120,17 +120,14 @@ typedef union
     TriWord OpMod:4;     // ALU MOdifier to apply to OP1
 	} parts;
 } InstReg;
-	
 
-typedef struct TriFlags
+
+
+
+typedef struct
 {
 	TriWord val;
-	struct {
-	TriWord S :2 ;
-	TriWord C :2 ;
-	TriWord V :2 ;
-	TriWord P :2 ;
-	} flags;
+	TriFlags flags;
 } FlagReg;
 
 
