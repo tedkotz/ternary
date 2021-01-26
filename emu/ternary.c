@@ -253,6 +253,21 @@ TriWord TriWord_UNMB ( TriWord op1, TriWord op2 )
 }
 
 // ARITHMETIC 2 OPS
+TriWord TriWord_SGN  ( TriWord op1 )
+{
+    TriWord sign = 0;
+    while( op1 )
+    {
+        if(op1 & 3)
+        {
+            sign = op1 & 3;
+        }
+        op1 >>= BITS_PER_TRIT;
+    }
+    return sign;
+}
+
+// ARITHMETIC 2 OPS
 
 TriWord TriWord_SHL  ( TriWord op1, TriWord op2 )
 {

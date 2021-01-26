@@ -84,7 +84,7 @@ extern TriWord TriWord_UNMB ( TriWord op1, TriWord op2 );
 
 
 // ARITHMETIC 1 OP
-//extern TriWord TriWord_SGN  ( TriWord op1 );
+extern TriWord TriWord_SGN  ( TriWord op1 );
 
 // ARITHMETIC 2 OPS
 extern TriWord TriWord_SHL  ( TriWord op1, TriWord op2 );

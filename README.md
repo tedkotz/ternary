@@ -10,7 +10,7 @@ When/If implementation starts the emulator will be adjusted to reflect those cha
 
 ## emu
 My emulator for the ternary computer.
-Currently a hodge-podge of ternary support funtions
+Currently a hodge-podge of ternary support functions
 
 For reference each trit is stored in two bits.
 
@@ -111,20 +111,26 @@ Documents, notes, and musings on balanced ternary
 Schematics, hdl, and other content for actual implementation.
 
 ## TODO
-#### Arbitrary length word encoding.
-- an all zero symbol cannot occur inside a non-zero number
-- an all zero symbol is the only legal way to represent 0
-- Only the high trit in the first symbol should be needed to deterime if the number
-  is extendeed or not.
+- [ ] Arbitrary length word encoding.
+    - an all zero symbol cannot occur inside a non-zero number
+    - an all zero symbol is the only legal way to represent 0
+    - Only the high trit in the first symbol should be needed to deterime if the number
+      is extendeed or not.
 
-#### Floating point number encoding
-- Sign Trit is also high Trit in mantissa
-- ??Exponent should be 1/3 of value
-- Maybe 1 sign: 9 exponent : 17 remaining mantissa
-- or 1 sign: 3 exponent : 5 remaining mantissa
-- or 1 sign: 27 exponent : 53 remaining mantissa
-- Efficient use of Sign is 0
-- Negative 0?
-- Positive infinity
-- Negative infinity
-- NaN
+- [ ] Floating point number encoding
+    - Sign Trit is also high Trit in mantissa
+    - ??Exponent should be 1/3 of value
+    - Maybe 1 sign: 9 exponent : 17 remaining mantissa
+    - or 1 sign: 3 exponent : 5 remaining mantissa
+    - or 1 sign: 27 exponent : 53 remaining mantissa
+    - Efficient use of Sign is 0
+    - Negative 0?
+    - Positive infinity
+    - Negative infinity
+    - NaN
+
+- [ ] Add disassembler to emulator monitor
+- [ ] Load RAM from File
+- [ ] Assembler
+
+
