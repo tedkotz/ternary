@@ -19,7 +19,7 @@
  ****************************************************************************/
 
 /**
- * @file    ternary.h
+ * @file    mem.h
  * @author  Ted Kotz <ted@kotz.us>
  * @version 0.1
  *
@@ -27,34 +27,50 @@
  *
  */
 
-#ifndef   TERNARY_MATH_H
-#define   TERNARY_MATH_H
+#ifndef   TERNARY_MEM_H
+#define   TERNARY_MEM_H
 /* Includes ******************************************************************/
-#include <inttypes.h>
+#include "cpu.h"
 
 /* Defines *******************************************************************/
-#define TRITS_PER_WORD 27
-#define BITS_PER_TRIT 2
-#define BITS_PER_TRIWORD ( TRITS_PER_WORD * BITS_PER_TRIT)
-#define N 3
-#define TRIWORD_MASK ((1ULL << BITS_PER_TRIWORD) - 1)
-
-#define PRITRIWORD PRIx64
-#define SCNTRIWORD SCNi64
+// 3^11 Trites of RAM
+#define RAM_SIZE 177147
+#define BASE_OFFSET (RAM_SIZE/2)
+#define RAM_ADDR_MASK ((1<<(11*2))-1)
 
 /* Types *********************************************************************/
-typedef uint64_t TriWord;
-typedef uint64_t trint32_t;
-typedef uint32_t trint16_t;
-
-typedef struct 
+typedef enum
 {
-	TriWord S :2 ; // Sign
-	TriWord C :2 ; // Carry
-	TriWord V :2 ; // Overflow
-	TriWord P :2 ; // Parity
-	TriWord I :2 ; // Interrupts
-} TriFlags;
+    //                   __--__--__--
+    ADDR_UART          = 0b000000000011, // -1 ,
+    ADDR_PC_START2     = 0b000000001101, // -2 ,
+    ADDR_PC_START1     = 0b000000001100, // -3 ,
+    ADDR_PC_START0     = 0b000000001111, // -4 ,
+    ADDR_ERROR_ISR2    = 0b000000110101, // -5 ,
+    ADDR_ERROR_ISR1    = 0b000000110100, // -6 ,
+    ADDR_ERROR_ISR0    = 0b000000110111, // -7 ,
+    ADDR_NMI_ISR2      = 0b000000110001, // -8 ,
+    ADDR_NMI_ISR1      = 0b000000110000, // -9 ,
+    ADDR_NMI_ISR0      = 0b000000110011, // -10,
+    ADDR_EXT_ISR2      = 0b000000111101, // -11,
+    ADDR_EXT_ISR1      = 0b000000111100, // -12,
+    ADDR_EXT_ISR0      = 0b000000111111, // -13,
+    ADDR_RTC2          = 0b000011010101, // -14,
+    ADDR_RTC1          = 0b000011010100, // -15,
+    ADDR_RTC0          = 0b000011010111, // -16,
+//  ADDR_              = 0b000011010001, // -00,
+//  ADDR_              = 0b000011010000, // -00,
+//  ADDR_              = 0b000011010011, // -00,
+//  ADDR_              = 0b000011011101, // -00,
+//  ADDR_              = 0b000011011100, // -00,
+//  ADDR_              = 0b000011011111, // -00,
+
+
+	/*BITMAP DISPLAY*/
+	/*DAC*/
+	/*ADC*/
+	/*TIMER_INT*/
+} MemMappedDevices;
 
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
@@ -66,42 +82,24 @@ typedef struct
  * @param
  * @return
  */
-extern int trit2int( unsigned int x );
-extern unsigned int int2trit( int x );
+extern Tryte ReadAddr(TriWord addr);
 
-extern int64_t TriWord2int( TriWord x );
-//extern TriWord int2TriWord( int64_t x, int lvl );
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
+extern void WriteAddr(TriWord addr, Tryte val);
 
-extern void TriWordPrint( TriWord x, int_fast8_t started);
-extern void TriWordScan( TriWord* x );
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
+extern void resetMem( void );
 
-// BITWISE 1 OP
-extern TriWord TriWord_INCB( TriWord op1 );
-extern TriWord TriWord_DECB( TriWord op1 );
-extern TriWord TriWord_NEGB( TriWord op1 );
-extern TriWord TriWord_FLTB( TriWord op1 );
-extern TriWord TriWord_ABSB( TriWord op1 );
+#endif /* TERNARY_MEM_H */
 
-// BITWISE 2 OPS
-extern TriWord TriWord_ADDB ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_MULB ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_ANDB ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_ORRB ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_SETB ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_IMPB ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_UNMB ( TriWord op1, TriWord op2 );
-
-
-// ARITHMETIC 1 OP
-extern TriWord TriWord_SGN  ( TriWord op1 );
-
-// ARITHMETIC 2 OPS
-extern TriWord TriWord_SHL  ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_RCL  ( TriWord op1, TriWord op2, unsigned* carry );
-extern TriWord TriWord_ADD  ( TriWord op1, TriWord op2 );
-//extern TriWord TriWord_ADC  ( TriWord op1, TriWord op2, unsigned* carry );
-extern TriWord TriWord_MUL  ( TriWord op1, TriWord op2 );
-//extern TriWord TriWord_DIVMOD  ( TriWord op1, TriWord op2 );
-
-#endif /* TERNARY_MATH_H */
 /*****************************************************************************/
