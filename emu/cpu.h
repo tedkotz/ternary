@@ -34,23 +34,20 @@
 #include "ternary.h"
 
 /* Defines *******************************************************************/
-//#define TRITS_PER_WORD 27
-//#define BITS_PER_TRIT 2
-//#define BITS_PER_TRIWORD ( TRITS_PER_WORD * BITS_PER_TRIT)
-//#define N 3
-//#define TRIWORD_MASK ((1ULL << BITS_PER_TRIWORD) - 1)
+#define TRITS_PER_WORD 27
+#define BITS_PER_TRIWORD ( TRITS_PER_WORD * BITS_PER_TRIT)
+#define TRIWORD_MASK ((1ULL << BITS_PER_TRIWORD) - 1)
 
 #define TRITS_PER_TRYTE ( 9 )
 #define BITS_PER_TRYTE ( TRITS_PER_TRYTE * BITS_PER_TRIT )
 #define TRYTES_PER_TRIWORD (3)
-
 #define TRYTE_MASK (( 1UL << BITS_PER_TRYTE ) - 1)
 
-//#define PRITRIWORD PRIx64
-//#define SCNTRIWORD SCNi64
+#define PRITRIWORD PRIx64
+#define SCNTRIWORD SCNi64
 
 /* Types *********************************************************************/
-//typedef trint32_t TriWord;
+typedef trint32_t TriWord;
 typedef trint16_t Tryte;
 
 typedef enum TriReg
@@ -86,7 +83,16 @@ typedef enum TriReg
 //#define	NUM_TRIREGS (3*3*3)
 #define	NUM_TRIREGS (0b111111)
 
-typedef union TriFlags
+typedef struct TriFlags
+{
+	trint32_t S :2 ; // Sign
+	trint32_t C :2 ; // Carry
+	trint32_t V :2 ; // Overflow
+	trint32_t P :2 ; // Parity
+	trint32_t I :2 ; // Interrupts
+} TriFlags;
+
+typedef union FlagReg
 {
 	TriWord val;
 	TriFlags flags;

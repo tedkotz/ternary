@@ -33,28 +33,20 @@
 #include <inttypes.h>
 
 /* Defines *******************************************************************/
-#define TRITS_PER_WORD 27
 #define BITS_PER_TRIT 2
-#define BITS_PER_TRIWORD ( TRITS_PER_WORD * BITS_PER_TRIT)
 #define N 3
-#define TRIWORD_MASK ((1ULL << BITS_PER_TRIWORD) - 1)
 
-#define PRITRIWORD PRIx64
-#define SCNTRIWORD SCNi64
+#define TRITS_PER_TRINT32_T 32
+#define TRITS_PER_TRINT16_T 16
+#define BITS_PER_TRINT32_T ( TRITS_PER_TRINT32_T * BITS_PER_TRIT)
+#define BITS_PER_TRINT16_T ( TRITS_PER_TRINT16_T * BITS_PER_TRIT)
+#define TRINT32_MASK ((1ULL << BITS_PER_TRINT32_T) - 1)
+#define TRINT16_MASK ((1ULL << BITS_PER_TRINT16_T) - 1)
 
 /* Types *********************************************************************/
-typedef uint64_t TriWord;
 typedef uint64_t trint32_t;
 typedef uint32_t trint16_t;
-
-typedef struct 
-{
-	TriWord S :2 ; // Sign
-	TriWord C :2 ; // Carry
-	TriWord V :2 ; // Overflow
-	TriWord P :2 ; // Parity
-	TriWord I :2 ; // Interrupts
-} TriFlags;
+typedef uint_fast8_t trit_t;
 
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
@@ -66,42 +58,42 @@ typedef struct
  * @param
  * @return
  */
-extern int trit2int( unsigned int x );
-extern unsigned int int2trit( int x );
+extern int trit2int( trit_t x );
+extern trit_t int2trit( int x );
 
-extern int64_t TriWord2int( TriWord x );
-//extern TriWord int2TriWord( int64_t x, int lvl );
+extern int64_t ternary2int( trint32_t x );
+//extern trint32_t int2ternary( int64_t x, int lvl );
 
-extern void TriWordPrint( TriWord x, int_fast8_t started);
-extern void TriWordScan( TriWord* x );
+extern void ternaryPrint( trint32_t x, int_fast8_t started);
+extern void ternaryScan( trint32_t* x );
 
 // BITWISE 1 OP
-extern TriWord TriWord_INCB( TriWord op1 );
-extern TriWord TriWord_DECB( TriWord op1 );
-extern TriWord TriWord_NEGB( TriWord op1 );
-extern TriWord TriWord_FLTB( TriWord op1 );
-extern TriWord TriWord_ABSB( TriWord op1 );
+extern trint32_t ternaryINCB( trint32_t op1 );
+extern trint32_t ternaryDECB( trint32_t op1 );
+extern trint32_t ternaryNEGB( trint32_t op1 );
+extern trint32_t ternaryFLTB( trint32_t op1 );
+extern trint32_t ternaryABSB( trint32_t op1 );
 
 // BITWISE 2 OPS
-extern TriWord TriWord_ADDB ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_MULB ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_ANDB ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_ORRB ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_SETB ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_IMPB ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_UNMB ( TriWord op1, TriWord op2 );
+extern trint32_t ternaryADDB ( trint32_t op1, trint32_t op2 );
+extern trint32_t ternaryMULB ( trint32_t op1, trint32_t op2 );
+extern trint32_t ternaryANDB ( trint32_t op1, trint32_t op2 );
+extern trint32_t ternaryORRB ( trint32_t op1, trint32_t op2 );
+extern trint32_t ternarySETB ( trint32_t op1, trint32_t op2 );
+extern trint32_t ternaryIMPB ( trint32_t op1, trint32_t op2 );
+extern trint32_t ternaryUNMB ( trint32_t op1, trint32_t op2 );
 
 
 // ARITHMETIC 1 OP
-extern TriWord TriWord_SGN  ( TriWord op1 );
+extern trint32_t ternarySGN  ( trint32_t op1 );
 
 // ARITHMETIC 2 OPS
-extern TriWord TriWord_SHL  ( TriWord op1, TriWord op2 );
-extern TriWord TriWord_RCL  ( TriWord op1, TriWord op2, unsigned* carry );
-extern TriWord TriWord_ADD  ( TriWord op1, TriWord op2 );
-//extern TriWord TriWord_ADC  ( TriWord op1, TriWord op2, unsigned* carry );
-extern TriWord TriWord_MUL  ( TriWord op1, TriWord op2 );
-//extern TriWord TriWord_DIVMOD  ( TriWord op1, TriWord op2 );
+extern trint32_t ternarySHL  ( trint32_t op1, trint32_t op2 );
+//extern trint32_t ternaryRCL  ( trint32_t op1, trint32_t op2, trit_t* carry );
+extern trint32_t ternaryADD  ( trint32_t op1, trint32_t op2 );
+//extern trint32_t ternaryADC  ( trint32_t op1, trint32_t op2, trit_t* carry );
+extern trint32_t ternaryMUL  ( trint32_t op1, trint32_t op2 );
+//extern trint32_t ternaryDIVMOD  ( trint32_t op1, trint32_t op2 );
 
 #endif /* TERNARY_MATH_H */
 /*****************************************************************************/

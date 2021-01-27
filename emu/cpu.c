@@ -80,9 +80,9 @@ static const char* reg_names[] =
 TriWord ReadTriWord( TriCpu* cpu, TriWord addr )
 {
     TriWord tmp = ReadAddr(addr);
-    tmp |= (TriWord)ReadAddr(TriWord_ADD(addr, 0b0001)) << (BITS_PER_TRYTE);
-    tmp |= (TriWord)ReadAddr(TriWord_ADD(addr, 0b0111)) << (2 * BITS_PER_TRYTE);
-    cpu->regs[REG_CLOCK]=TriWord_ADD(cpu->regs[REG_CLOCK], 0b0100);
+    tmp |= (TriWord)ReadAddr(ternaryADD(addr, 0b0001)) << (BITS_PER_TRYTE);
+    tmp |= (TriWord)ReadAddr(ternaryADD(addr, 0b0111)) << (2 * BITS_PER_TRYTE);
+    cpu->regs[REG_CLOCK]=ternaryADD(cpu->regs[REG_CLOCK], 0b0100);
     return tmp;
 }
 
@@ -96,9 +96,9 @@ TriWord ReadTriWord( TriCpu* cpu, TriWord addr )
 void WriteTriWord( TriCpu* cpu, TriWord addr , TriWord val )
 {
     WriteAddr(addr , val & TRYTE_MASK);
-    WriteAddr(TriWord_ADD(addr, 0b0001), (val >>     (BITS_PER_TRYTE)) & TRYTE_MASK );
-    WriteAddr(TriWord_ADD(addr, 0b0111), (val >> (2 * BITS_PER_TRYTE)) & TRYTE_MASK );
-    cpu->regs[REG_CLOCK]=TriWord_ADD(cpu->regs[REG_CLOCK], 0b0100);
+    WriteAddr(ternaryADD(addr, 0b0001), (val >>     (BITS_PER_TRYTE)) & TRYTE_MASK );
+    WriteAddr(ternaryADD(addr, 0b0111), (val >> (2 * BITS_PER_TRYTE)) & TRYTE_MASK );
+    cpu->regs[REG_CLOCK]=ternaryADD(cpu->regs[REG_CLOCK], 0b0100);
 }
 
 
@@ -110,7 +110,7 @@ void WriteTriWord( TriCpu* cpu, TriWord addr , TriWord val )
  */
 Tryte ReadTryte( TriCpu* cpu, TriWord addr )
 {
-    cpu->regs[REG_CLOCK]=TriWord_ADD(cpu->regs[REG_CLOCK], 0b01);
+    cpu->regs[REG_CLOCK]=ternaryADD(cpu->regs[REG_CLOCK], 0b01);
     return ReadAddr(addr);
 }
 
@@ -124,7 +124,7 @@ Tryte ReadTryte( TriCpu* cpu, TriWord addr )
 void WriteTryte( TriCpu* cpu, TriWord addr , Tryte val )
 {
     WriteAddr(addr , val );
-    cpu->regs[REG_CLOCK]=TriWord_ADD(cpu->regs[REG_CLOCK], 0b01);
+    cpu->regs[REG_CLOCK]=ternaryADD(cpu->regs[REG_CLOCK], 0b01);
 }
 
 
@@ -136,7 +136,7 @@ void WriteTryte( TriCpu* cpu, TriWord addr , Tryte val )
  */
 TriWord ReadModReg( TriCpu* cpu, Tryte reg, Tryte mod )
 {
-    int32_t shift=TriWord2int(mod);
+    int32_t shift=ternary2int(mod);
     TriWord val=0;
     if( 0 != reg )
     {
@@ -146,22 +146,22 @@ TriWord ReadModReg( TriCpu* cpu, Tryte reg, Tryte mod )
     switch (mod)
     {
         case OPMOD_NEG:
-            return TriWord_NEGB(val);
+            return ternaryNEGB(val);
 
         case OPMOD_INC:
-            return TriWord_INCB(val);
+            return ternaryINCB(val);
 
         case OPMOD_DEC:
-            return TriWord_DECB(val);
+            return ternaryDECB(val);
 
         case OPMOD_ABN:
-            return TriWord_NEGB(TriWord_ABSB(val));
+            return ternaryNEGB(ternaryABSB(val));
 
         case OPMOD_ABS:
-            return TriWord_ABSB(val);
+            return ternaryABSB(val);
 
         case OPMOD_FLT:
-            return TriWord_FLTB(val);
+            return ternaryFLTB(val);
 
         default:
             if (shift > 26 || shift < -26 )
@@ -190,7 +190,7 @@ void SetSignTrit( TriCpu* cpu, TriWord val )
 {
     FlagReg tmp;
     tmp.val=cpu->regs[REG_FLAGS];
-    tmp.flags.S=TriWord_SGN(val);
+    tmp.flags.S=ternarySGN(val);
     cpu->regs[REG_FLAGS]=tmp.val;
 }
 
@@ -226,7 +226,7 @@ TriWord expandImmediate( TriWord input )
     }
     else
     {
-        int shift = (TriWord2int(input & 0b00111111) + 13) * 2;
+        int shift = (ternary2int(input & 0b00111111) + 13) * 2;
         input >>= 6;
         return (input << shift);
     }
@@ -245,9 +245,9 @@ void printCpuState(TriCpu* cpu)
     while( 0b00010101 != i )
     {
         printf(" %s %03d : ", reg_names[x+13], x);
-        TriWordPrint(cpu->regs[i], 1);
-        printf("(%"PRIi64")\n", TriWord2int(cpu->regs[i]));
-        i=TriWord_ADD(i, 0b0001);
+        ternaryPrint(cpu->regs[i], 1);
+        printf("(%"PRIi64")\n", ternary2int(cpu->regs[i]));
+        i=ternaryADD(i, 0b0001);
         ++x;
     }
     printf("             876543210876543210876543210\n");
@@ -256,7 +256,7 @@ void printCpuState(TriCpu* cpu)
     printf("            |Im4|R3+Mod|R2+Mod|R1|OpCode|\n Next INST > ");
     disposable.regs[REG_PC]=0;
     disposable.regs[REG_CLOCK]=0;
-    TriWordPrint(ReadTriWord(&disposable, cpu->regs[REG_PC]),1);
+    ternaryPrint(ReadTriWord(&disposable, cpu->regs[REG_PC]),1);
     printf("\n");
 }
 
@@ -297,7 +297,7 @@ void runCPU( TriCpu* cpu, int cycles )
     while( cycles-- > 0 )
     {
         inst = ReadTriWord(cpu, cpu->regs[REG_PC]);
-        cpu->regs[REG_PC]=TriWord_ADD(cpu->regs[REG_PC], 0b0100);
+        cpu->regs[REG_PC]=ternaryADD(cpu->regs[REG_PC], 0b0100);
 
         // | 4 Immediate | 7 R3+Mod | 7 R2+Mod | 3 R1 | 6 OpCode |
         // | 11 Immediate           | 7 R2+Mod | 3 R1 | 6 OpCode |
@@ -317,37 +317,37 @@ void runCPU( TriCpu* cpu, int cycles )
             case OPCODE_NOP       :  // NOP
                 break;
             case OPCODE_LD1       :  // Load Rd <- (Rs+immediate) 9 trits
-                val = ReadTryte(cpu, TriWord_ADD(ReadModReg(cpu, r2, r2mod), imm11));
+                val = ReadTryte(cpu, ternaryADD(ReadModReg(cpu, r2, r2mod), imm11));
                 WriteReg(cpu,r1,val);
                 SetSignTrit(cpu, val);
                 break;
             case OPCODE_LD2       :  // Load Rd <- (Rs+immediate) 18 trits
-                addr = TriWord_ADD(ReadModReg(cpu, r2, r2mod), imm11);
+                addr = ternaryADD(ReadModReg(cpu, r2, r2mod), imm11);
                 val=ReadTryte(cpu, addr);
-                val|=((TriWord)ReadTryte(cpu, TriWord_ADD(addr, 0b0001))<<BITS_PER_TRYTE) ;
+                val|=((TriWord)ReadTryte(cpu, ternaryADD(addr, 0b0001))<<BITS_PER_TRYTE) ;
                 WriteReg(cpu,r1,val);
                 SetSignTrit(cpu, val);
                 break;
             case OPCODE_LD3       :  // Load Rd <- (Rs+immediate) 27 trits
-                val=ReadTriWord(cpu, TriWord_ADD(ReadModReg(cpu, r2, r2mod), imm11));
+                val=ReadTriWord(cpu, ternaryADD(ReadModReg(cpu, r2, r2mod), imm11));
                 WriteReg(cpu,r1,val);
                 SetSignTrit(cpu, val);
                 break;
             case OPCODE_ST1       :  // Store (Rs1+immediate) <- Rs2 9 trits
-                addr = TriWord_ADD(ReadModReg(cpu, r1, 0), imm11);
+                addr = ternaryADD(ReadModReg(cpu, r1, 0), imm11);
                 val = ReadModReg(cpu, r2, r2mod) & TRYTE_MASK ;
                 WriteTryte(cpu,addr,val);
                 SetSignTrit(cpu, val);
                 break;
             case OPCODE_ST2       :  // Store (Rs1+immediate) <- Rs2 18 trits
-                addr = TriWord_ADD(ReadModReg(cpu, r1, 0), imm11);
+                addr = ternaryADD(ReadModReg(cpu, r1, 0), imm11);
                 val = ReadModReg(cpu, r2, r2mod) & ((1ULL << (2*BITS_PER_TRYTE))-1);
                 WriteTryte(cpu,addr,val & TRYTE_MASK);
-                WriteTryte(cpu,TriWord_ADD(addr, 0b0001),(val >> BITS_PER_TRYTE)& TRYTE_MASK);
+                WriteTryte(cpu,ternaryADD(addr, 0b0001),(val >> BITS_PER_TRYTE)& TRYTE_MASK);
                 SetSignTrit(cpu, val );
                 break;
             case OPCODE_ST3       :  // Store (Rs1+immediate) <- Rs2 27 trits
-                addr = TriWord_ADD(ReadModReg(cpu, r1, 0), imm11);
+                addr = ternaryADD(ReadModReg(cpu, r1, 0), imm11);
                 val = ReadModReg(cpu, r2, r2mod);
                 WriteTriWord(cpu,addr,val);
                 SetSignTrit(cpu, val);
@@ -356,11 +356,11 @@ void runCPU( TriCpu* cpu, int cycles )
                 addr = ReadModReg(cpu, r2, r2mod);
                 val=ReadTriWord(cpu, addr);
                 WriteReg(cpu,r1,val);
-                WriteReg(cpu,r2,TriWord_ADD(addr, imm11));
+                WriteReg(cpu,r2,ternaryADD(addr, imm11));
                 SetSignTrit(cpu, val);
                 break;
             case OPCODE_PSH       :  // Store Rd += immediate; (Rd)  <- Rs
-                addr = TriWord_ADD(ReadModReg(cpu, r1, 0), imm11);
+                addr = ternaryADD(ReadModReg(cpu, r1, 0), imm11);
                 val = ReadModReg(cpu, r2, r2mod);
                 WriteTriWord(cpu,addr,val);
                 WriteReg(cpu,r1,addr);

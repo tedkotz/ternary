@@ -8,7 +8,13 @@ More recently I decided I should juststart implementing something. So I decided 
 
 When/If implementation starts the emulator will be adjusted to reflect those changes. In fact thinking about implementation concerns This system may be m
 
-## emu
+
+## Theory
+
+Notes on the math and logic theory behind this design can be found in the
+[math Readme](math/README.md)
+
+## The Emulator
 My emulator for the ternary computer.
 Currently a hodge-podge of ternary support functions
 
@@ -49,66 +55,77 @@ CPU.
 As the math library is designed to make use of the binary computer it runs on it
 will support 32 Trit operations.
 
+### The ISA
+This has had many revisions as I've look at different architectures over the
+years I've been thinking about it. I always knew I wanted something more on the
+RISC side as I don't want to spend a ton of time implementing instructions. This
+design has pulled many ideas from x86, 68000, 6502, ARM, most recently RISC-V,
+and others. This was then distilled down to a minimal subset that provided the
+functionality that seemed most useful, but still offered a nice symmetry. One
+peculiarity some may notice is the inclusion of a Multiply instruction, but not
+divide. This is something for experience with fixed point DSPs. In practice,
+multiplies are needed to be fast al the time, accessing a multidimentional array
+or an array of structures. Division can often be sufficiently approximated with
+a multiply and shift or implemented in software and avoided. Multiply accumulate
+instructions to speed up matrix operations are probably higher priority.
 
-### Truth Tables
-In binary, there are only 4 single input operations (SET, CLEAR, COPY, NOT). There
-are only two posible input permutations and thus 2^2 possible output state
-permutations. For 2 inputs the number of input permutations goes up to 4 (2^2),
-which gives only 16 (2^4), different possible 2 input functions, most of which
-are not terribly interesting.
+An ISA specification is in the works for now the emulator [cpu.h](emu/cpu.h) has
+a lot of the opcodes and instruction format information.
 
-In ternary this number of possible operations explodes much more quickly. There
-are already 27 (3^3) single input operations. And that shoots up to 19683 (3^9)
-different 2 input operations. Because of this there is a lot more overlap in
-functions in binary. AND covers conjuction(Weak and strong), Minimum, Multiply,
-and Masking. In ternary the question of what is an AND or OR gate becomes more
-complicated, though there are still a number of useful gates in the similar area
-or single digit addition, multiplication, conjucation and disjunction. The math
-can get involved, but it may help to think about it more in terms of logic where
-your states are True(+1), Unknown(0), False(-1). Then you can see how ANDing a
-False with an Unknown is going to be False, because if anything is ANDed with a
-False state the combination is False.
+## Software
+An [emulator](emu/) which contains an library for performing ternary operations
+is the first piece of software written on this project. It is needed to to test
+the design and anything  written for it.
 
-| A | B | AND[MIN] | A * B | OR[MAX] | A + B | Major  | A -> B | A <-> B | A <!> B |
-|---|---|----------|-------|---------|-------|--------|--------|---------|---------|
-| - | - | -        | +     | -       | +     | -      | +      | +       | -       |
-| - | 0 | -        | 0     | 0       | -     | 0      | +      | 0       | 0       |
-| - | + | -        | -     | +       | 0     | 0      | +      | -       | +       |
-| 0 | - | -        | 0     | 0       | -     | 0      | 0      | 0       | 0       |
-| 0 | 0 | 0        | 0     | 0       | 0     | 0      | +      | +       | -       |
-| 0 | + | 0        | 0     | +       | +     | 0      | +      | 0       | 0       |
-| + | - | -        | -     | +       | 0     | 0      | -      | -       | +       |
-| + | 0 | 0        | 0     | +       | +     | 0      | 0      | 0       | 0       |
-| + | + | +        | +     | +       | -     | +      | +      | +       | -       |
+A cross-assembler will be probably be second as it will make writing tests for
+the emulator easier.
 
-If we take the above table and cut out the rows with 0 inputs you'll see some
-familiar operations:
+At some point a simple forth like environment based on a port of
+[JONESFORTH](https://rwmj.wordpress.com/2010/08/07/jonesforth-git-repository/) .
+This environment will be tweaked to better align with the underlying ternary
+architecture. Particularly any binary operation such as shifts would change
+along with the values for True(-1 -> 1) and False(0 -> -1).
 
-| A | B | AND[MIN] | A * B | OR[MAX] | A + B | Major  | A -> B | A <-> B | A <!> B |
-|---|---|----------|-------|---------|-------|--------|--------|---------|---------|
-| - | - | -        | +     | -       | +     | -      | +      | +       | -       |
-| - | + | -        | -     | +       | 0     | 0      | +      | -       | +       |
-| + | - | -        | -     | +       | 0     | 0      | -      | -       | +       |
-| + | + | +        | +     | +       | -     | +      | +      | +       | -       |
-
-The other operations need to cut out the - inputs instead to show up:
-
-| A | B | AND[MIN] | A * B | OR[MAX] | A + B | Major  | A -> B | A <-> B | A <!> B |
-|---|---|----------|-------|---------|-------|--------|--------|---------|---------|
-| 0 | 0 | 0        | 0     | 0       | 0     | 0      | +      | +       | -       |
-| 0 | + | 0        | 0     | +       | +     | 0      | +      | 0       | 0       |
-| + | 0 | 0        | 0     | +       | +     | 0      | 0      | 0       | 0       |
-| + | + | +        | +     | +       | -     | +      | +      | +       | -       |
+Then maybe some software bit and bobs.
+- Hello World
+- A text game.
+- A video game, once I add a framebuffer to the emulator.
+- Bootloader that allows a program to be loaded and executed
+  over the "serial" interface.
+- Assembler that actually runs on target. Maybe more of a debugger.
 
 
-## sw
-Software written for the emulator and initial hand assembled machine code files in a format the emulator can load
+## Hardware
+Schematics, hdl, and other content for actual implementation. These will be a
+little more involved. as there is currently no language for describing ternary
+logic circuits, and no programable logic devices would support them. so the best
+we could get there would be version of the ternary on binary emulator that ran
+on such adevice. what this is more likely to look at is using existing electical
+components to build the elemental gates used in the design and showing how those
+gates could be combined to build a functional system.
 
-## docs
-Documents, notes, and musings on balanced ternary
+In my wildest dreams of this system, I can't imagine getting a large memory ever
+built so an interface or RAM emulator would probably be needed even if I
+wire-wrapped a bunch of custom transitior gates. Maybe a ternary to binary level
+buffer/splitter circuit might end up here. So some ternary state machines could
+interface with SRAM, EEPROM, or just an arduino doing the storage.
 
-## hw
-Schematics, hdl, and other content for actual implementation.
+## History
+Though I didn't know it when I first started working on this problem. There
+actually was a ternary computer that ran a forth like operating system built
+by the Soviets in the 1950s called [Setun](https://en.wikipedia.org/wiki/Setun) .
+I actually don't know a lot about it, but as you could imagine I found it
+interesting that someone else was thinking about a ternary computer with an
+RPN interface, when I heard about it. I didn't look at the details, so I doubt
+there will be much similarity. Based on the era it is probably a much simpler
+system, so maybe I'll look at writing an emulator for it when I'm done with this
+project. Though one probably already exists.
+
+If anyone was curious for the history of this. My inspiration was just the
+simple elegance of balanced number systems, 3 being the smallest postive integer
+base that works. Also that 3 is closer to the base of the natural log e than 2
+is. This means by some reconings that it should be more optimized for the
+storage of information digits needs by symbol differentiation.
 
 ## TODO
 - [ ] Arbitrary length word encoding.

@@ -46,7 +46,7 @@ Tryte ram[RAM_SIZE];
  */
 Tryte ReadAddr(TriWord addr)
 {
-	int64_t offset=TriWord2int(addr & RAM_ADDR_MASK);
+	int64_t offset=ternary2int(addr & RAM_ADDR_MASK);
 	switch(addr)
 	{
 		case ADDR_UART:
@@ -70,11 +70,11 @@ Tryte ReadAddr(TriWord addr)
  */
 void WriteAddr(TriWord addr, Tryte val)
 {
-	int64_t offset=TriWord2int(addr & RAM_ADDR_MASK);
+	int64_t offset=ternary2int(addr & RAM_ADDR_MASK);
 	switch(addr)
 	{
 		case ADDR_UART:
-			putchar(TriWord2int(val));
+			putchar(ternary2int(val));
 			break;
 		case ADDR_RTC2:
 		case ADDR_RTC1:

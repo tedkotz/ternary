@@ -39,7 +39,8 @@
 /* Data **********************************************************************/
 /* Functions *****************************************************************/
 
-
+//disabled to broaden math library support
+#if 0
 /**
  * Main Program entry point.
  *
@@ -116,3 +117,4 @@ int main( int argc, char** argv )
     }
     return 0;
 }
+#endif
