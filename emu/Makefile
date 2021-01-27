@@ -28,6 +28,13 @@ $(PKG): $(OBJS)
 
 pkg: $(PKG)
 
+
+tern-test: ternary.c ternary.h
+	@echo "Generating $@"
+	$(CC) $(LIBS) $(CFLAGS) ternary.c -DTERNARY_MATH_MAIN=1 -o $@
+	$(STRIP) $@
+
+
 $(OBJDIR):
 	$(MKDIR) $(OBJDIR)
 
@@ -71,7 +78,7 @@ clean: clean-obj clean-asm
 	rm -rf *~
 
 clean-pkg: clean clean-dep
-	rm -rf $(PKG)
+	rm -rf $(PKG) tern-test
 
 rebuild: clean-pkg pkg
 

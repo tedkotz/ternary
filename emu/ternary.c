@@ -36,6 +36,8 @@
 
 #include <stdio.h>
 /* Defines *******************************************************************/
+#define TRINT32_MST_MASK (3ULL << (BITS_PER_TRINT32_T-BITS_PER_TRIT))
+
 /* Types *********************************************************************/
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
@@ -342,8 +344,34 @@ trint32_t ternaryADD  ( trint32_t op1, trint32_t op2 )
 
 trint32_t ternaryADC  ( trint32_t op1, trint32_t op2, trit_t* carry )
 {
-    return ternaryADD( op1, ternaryADD( op2, *carry ) );
+    trint32_t op3;
+    trint32_t carryin=*carry;
+    trint32_t carryout=0;
+    // op1 = op1 + carryin
+    while(carryin)
+    {
+        op3=ternaryUNMB(op1, carryin);
+        op1=ternaryADDB(op1, carryin);
+        carryout=ternaryADDB(op3 & TRINT32_MST_MASK, carryout);
+        carryin=ternarySHL(op3, 1);
+    }
+    // op1 = op1 + op2
+    while(op2)
+    {
+        op3=ternaryUNMB(op1, op2);
+        op1=ternaryADDB(op1, op2);
+        carryout=ternaryADDB(op3 & TRINT32_MST_MASK, carryout);
+        op2=ternarySHL(op3, 1);
+    }
+    *carry = carryout >> (BITS_PER_TRINT32_T-BITS_PER_TRIT);
+    return op1;
 }
+// 000 => 0
+// --- => -
+// +++ => +
+// --+ => 0
+// --0 => -
+//
 
 trint32_t ternaryMUL  ( trint32_t op1, trint32_t op2 )
 {
@@ -370,13 +398,13 @@ trint32_t ternaryMUL  ( trint32_t op1, trint32_t op2 )
 //{
 //}
 
-//#define TERNARY_MATH_MAIN 1
-
+// This main can be built with make tern-test
 #if TERNARY_MATH_MAIN
+
 int main( int argc, char** argv )
 {
     //int64_t i;
-    trint32_t A, B;
+    trint32_t A, B, C;
     trit_t carry=N;
 
     printf("A: ");
@@ -395,6 +423,7 @@ int main( int argc, char** argv )
 
     printf("\n\nTritwise 2 input operations:\nMUL(A, B)=");  ternaryPrint( ternaryMULB(A, B), 0 );
     printf("\nADD(A, B)=");  ternaryPrint( ternaryADDB(A, B), 0 );
+
     printf("\nORR(A, B)=");  ternaryPrint( ternaryORRB(A, B), 0 );
     printf("\nAND(A, B)=");  ternaryPrint( ternaryANDB(A, B), 0 );
     printf("\nSET(A, B)=");  ternaryPrint( ternarySETB(A, B), 0 );
@@ -409,7 +438,12 @@ int main( int argc, char** argv )
 
     printf("\n\nArithmetic operations:\nADD(A, B)=%"PRIi64"  ", ternary2int(ternaryADD(A, B)));  ternaryPrint( ternaryADD(A, B), 0 );
     printf("\nSUB(A, B)=%"PRIi64"  ", ternary2int(ternaryADD(A, ternaryNEGB(B))));  ternaryPrint( ternaryADD(A, ternaryNEGB(B)), 0 );
-    printf("\nADC(A, B, -)=%"PRIi64"  ", ternary2int(ternaryADC(A, B, &carry))); carry=N; ternaryPrint( ternaryADC(A, B, &carry), 0 ); carry=N;
+    carry=N; C=ternaryADC(A, B, &carry);
+    printf("\nADC(A, B, -)=%"PRIi64" c-out=%d ", ternary2int(C), trit2int(carry)); ternaryPrint( C, 0 );
+    carry=0; C=ternaryADC(A, B, &carry);
+    printf("\nADC(A, B, 0)=%"PRIi64" c-out=%d ", ternary2int(C), trit2int(carry)); ternaryPrint( C, 0 );
+    carry=1; C=ternaryADC(A, B, &carry);
+    printf("\nADC(A, B, 1)=%"PRIi64" c-out=%d ", ternary2int(C), trit2int(carry)); ternaryPrint( C, 0 );
     printf("\nMUL(A, B)=%"PRIi64"  ", ternary2int(ternaryMUL(A, B)));  ternaryPrint( ternaryMUL(A, B), 0 );
 
     printf("\ndone.\n");
