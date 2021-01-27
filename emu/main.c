@@ -39,8 +39,6 @@
 /* Data **********************************************************************/
 /* Functions *****************************************************************/
 
-//disabled to broaden math library support
-#if 0
 /**
  * Main Program entry point.
  *
@@ -67,17 +65,17 @@ int main( int argc, char** argv )
         {
             case 'r':
                 printf("ADDR: ");
-                TriWordScan( &addr );
+                ternaryScan( &addr );
                 printf("\nVAL: ");
                 val = ReadAddr(addr);
-                TriWordPrint( val, 1 );
-                printf("(%"PRIi64")\n", TriWord2int(val));
+                ternaryPrint( val, TRITS_PER_TRYTE );
+                printf("(%"PRIi64")\n", ternary2int(val));
                 break;
             case 'w':
                 printf("ADDR: ");
-                TriWordScan( &addr );
+                ternaryScan( &addr );
                 printf("\nVAL: ");
-                TriWordScan( &val );
+                ternaryScan( &val );
                 WriteAddr(addr, val);
                 printf("done.\n");
                 break;
@@ -117,4 +115,3 @@ int main( int argc, char** argv )
     }
     return 0;
 }
-#endif

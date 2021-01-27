@@ -245,7 +245,7 @@ void printCpuState(TriCpu* cpu)
     while( 0b00010101 != i )
     {
         printf(" %s %03d : ", reg_names[x+13], x);
-        ternaryPrint(cpu->regs[i], 1);
+        ternaryPrint(cpu->regs[i], TRITS_PER_WORD);
         printf("(%"PRIi64")\n", ternary2int(cpu->regs[i]));
         i=ternaryADD(i, 0b0001);
         ++x;
@@ -256,7 +256,7 @@ void printCpuState(TriCpu* cpu)
     printf("            |Im4|R3+Mod|R2+Mod|R1|OpCode|\n Next INST > ");
     disposable.regs[REG_PC]=0;
     disposable.regs[REG_CLOCK]=0;
-    ternaryPrint(ReadTriWord(&disposable, cpu->regs[REG_PC]),1);
+    ternaryPrint(ReadTriWord(&disposable, cpu->regs[REG_PC]),TRITS_PER_WORD);
     printf("\n");
 }
 

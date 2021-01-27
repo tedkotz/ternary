@@ -23,7 +23,10 @@
  * @author  Ted Kotz <ted@kotz.us>
  * @version 0.1
  *
- * [Description]
+ * This defines  basic ternary logical and mathematical operations.
+ * The approach to this is not to translate the values to binary and then
+ * do binary arithmatic, but to define lookup tables for the basic ternary gates
+ * then combine those to build up the higher level math funtions.
  *
  */
 
@@ -94,10 +97,26 @@ int64_t ternary2int( trint32_t x )
 //	return retVal;
 //}
 
-void ternaryPrint( trint32_t x, int_fast8_t started)
+void ternaryPrint( trint32_t x, int_fast8_t width)
 {
+    int_fast8_t started;
     int_fast8_t i;
-    for(i=(BITS_PER_TRINT32_T-2); i>=0; i-=2)
+    if(width < 1)
+    {
+        i=BITS_PER_TRINT32_T-2;
+        started=0;
+    }
+    else if(width < TRITS_PER_TRINT32_T)
+    {
+        i=(width*2)-2;
+        started=1;
+    }
+    else
+    {
+        i=BITS_PER_TRINT32_T-2;
+        started=1;
+    }
+    for(; i>=0; i-=2)
     {
         switch((x >> i) & 0b011)
         {
@@ -351,7 +370,7 @@ trint32_t ternaryMUL  ( trint32_t op1, trint32_t op2 )
 //{
 //}
 
-#define TERNARY_MATH_MAIN 1
+//#define TERNARY_MATH_MAIN 1
 
 #if TERNARY_MATH_MAIN
 int main( int argc, char** argv )

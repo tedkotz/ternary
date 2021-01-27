@@ -64,7 +64,13 @@ extern trit_t int2trit( int x );
 extern int64_t ternary2int( trint32_t x );
 //extern trint32_t int2ternary( int64_t x, int lvl );
 
-extern void ternaryPrint( trint32_t x, int_fast8_t started);
+/**
+ * Prints a ternary number
+ *
+ * @param x The trinary value to print
+ * @param width the number of least significant trits to print, 0 drops leading 0s
+ */
+extern void ternaryPrint( trint32_t x, int_fast8_t width);
 extern void ternaryScan( trint32_t* x );
 
 // BITWISE 1 OP
