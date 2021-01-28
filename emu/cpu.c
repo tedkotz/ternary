@@ -194,6 +194,7 @@ void SetSignTrit( TriCpu* cpu, TriWord val )
     cpu->regs[REG_FLAGS]=tmp.val;
 }
 
+
 /**
  * [Description]
  *
@@ -287,12 +288,16 @@ void runCPU( TriCpu* cpu, int cycles )
 //    TriWord imm18;
     TriWord addr;
     TriWord val;
+    TriWord val2;
     Tryte opcode;
     Tryte r1;
     Tryte r2;
     Tryte r2mod;
-//    Tryte r3;
-//    Tryte r3mod;
+    Tryte r3;
+    Tryte r3mod;
+    trit_t carry;
+    FlagReg flagReg;
+    flagReg.val=cpu->regs[REG_FLAGS];
 
     while( cycles-- > 0 )
     {
@@ -306,8 +311,8 @@ void runCPU( TriCpu* cpu, int cycles )
         r1 = (inst >> 12 ) & 0x003F;
         r2mod = (inst >> 18 ) & 0x00FF;
         r2 = (inst >> 26 ) & 0x003F;
-//        r3mod = (inst >> 32 ) & 0x00FF;
-//        r3 = (inst >> 40 ) & 0x003F;
+        r3mod = (inst >> 32 ) & 0x00FF;
+        r3 = (inst >> 40 ) & 0x003F;
 //        imm4 = expandImmediate((inst >> 46 ) & 0x00FF);
         imm11 = expandImmediate((inst >> 32 ) & 0x003FFFFF);
 //        imm18 = expandImmediate((inst >> 18 ) & 0x0FFFFFFFFFULL);
@@ -367,25 +372,169 @@ void runCPU( TriCpu* cpu, int cycles )
                 SetSignTrit(cpu, val);
                 break;
 //          case OPCODE_          :  //
-            case OPCODE_ADD_SEN   :  // if S==- , C:Rd = Rs1 - Rs2
-            case OPCODE_ADD_SEZ   :  // if S==0 , C:Rd = Rs1 - Rs2
-            case OPCODE_ADD_SEP   :  // if S==1 , C:Rd = Rs1 - Rs2
-            case OPCODE_ADC       :  // C:Rd = Rs1 - Rs2 + C
-            case OPCODE_ADD       :  // C:Rd = Rs1 - Rs2
+            case OPCODE_ADD_SEN   :  // if S==- , C:Rd = Rs1 + Rs2
+                if( N == flagReg.flags.S )
+                {
+                    carry=0;
+                    val=ternaryADC( ReadModReg(cpu, r2, r2mod), ReadModReg(cpu, r3, r3mod), &carry);
+                    flagReg.flags.C = carry;
+                    WriteReg(cpu,r1,val);
+                    SetSignTrit(cpu, val);
+                }
+                break;
+            case OPCODE_ADD_SEZ   :  // if S==0 , C:Rd = Rs1 + Rs2
+                if( 0 == flagReg.flags.S )
+                {
+                    carry=0;
+                    val=ternaryADC( ReadModReg(cpu, r2, r2mod), ReadModReg(cpu, r3, r3mod), &carry);
+                    flagReg.flags.C = carry;
+                    WriteReg(cpu,r1,val);
+                    SetSignTrit(cpu, val);
+                }
+                break;
+            case OPCODE_ADD_SEP   :  // if S==1 , C:Rd = Rs1 + Rs2
+                if( 1 == flagReg.flags.S )
+                {
+                    carry=0;
+                    val=ternaryADC( ReadModReg(cpu, r2, r2mod), ReadModReg(cpu, r3, r3mod), &carry);
+                    flagReg.flags.C = carry;
+                    WriteReg(cpu,r1,val);
+                    SetSignTrit(cpu, val);
+                }
+                break;
+            case OPCODE_ADC       :  // C:Rd = Rs1 + Rs2 + C
+                carry=flagReg.flags.C;
+                val=ternaryADC( ReadModReg(cpu, r2, r2mod), ReadModReg(cpu, r3, r3mod), &carry);
+                flagReg.flags.C = carry;
+                WriteReg(cpu,r1,val);
+                SetSignTrit(cpu, val);
+                break;
+            case OPCODE_ADD       :  // C:Rd = Rs1 + Rs2
+                carry=0;
+                val=ternaryADC( ReadModReg(cpu, r2, r2mod), ReadModReg(cpu, r3, r3mod), &carry);
+                flagReg.flags.C = carry;
+                WriteReg(cpu,r1,val);
+                SetSignTrit(cpu, val);
+                break;
 //          case OPCODE_          :  //
-            case OPCODE_ADD_SNN   :  // if S!=- , C:Rd = Rs1 - Rs2
-            case OPCODE_ADD_SNZ   :  // if S!=0 , C:Rd = Rs1 - Rs2
-            case OPCODE_ADD_SNP   :  // if S!=1 , C:Rd = Rs1 - Rs2
+            case OPCODE_ADD_SNN   :  // if S!=- , C:Rd = Rs1 + Rs2
+                if( N != flagReg.flags.S )
+                {
+                    carry=0;
+                    val=ternaryADC( ReadModReg(cpu, r2, r2mod), ReadModReg(cpu, r3, r3mod), &carry);
+                    flagReg.flags.C = carry;
+                    WriteReg(cpu,r1,val);
+                    SetSignTrit(cpu, val);
+                }
+                break;
+            case OPCODE_ADD_SNZ   :  // if S!=0 , C:Rd = Rs1 + Rs2
+                if( 0 != flagReg.flags.S )
+                {
+                    carry=0;
+                    val=ternaryADC( ReadModReg(cpu, r2, r2mod), ReadModReg(cpu, r3, r3mod), &carry);
+                    flagReg.flags.C = carry;
+                    WriteReg(cpu,r1,val);
+                    SetSignTrit(cpu, val);
+                }
+                break;
+            case OPCODE_ADD_SNP   :  // if S!=1 , C:Rd = Rs1 + Rs2
+                if( 1 != flagReg.flags.S )
+                {
+                    carry=0;
+                    val=ternaryADC( ReadModReg(cpu, r2, r2mod), ReadModReg(cpu, r3, r3mod), &carry);
+                    flagReg.flags.C = carry;
+                    WriteReg(cpu,r1,val);
+                    SetSignTrit(cpu, val);
+                }
+                break;
             case OPCODE_ADDI_SEN  :  // if S==- , C:Rd = Rs + immediate
+                if( N == flagReg.flags.S )
+                {
+                    carry=0;
+                    val=ternaryADC( ReadModReg(cpu, r2, r2mod), imm11, &carry);
+                    flagReg.flags.C = carry;
+                    WriteReg(cpu,r1,val);
+                    SetSignTrit(cpu, val);
+                    break;
+                }
+                break;
             case OPCODE_ADDI_SEZ  :  // if S==0 , C:Rd = Rs + immediate
+                if( 0 == flagReg.flags.S )
+                {
+                    carry=0;
+                    val=ternaryADC( ReadModReg(cpu, r2, r2mod), imm11, &carry);
+                    flagReg.flags.C = carry;
+                    WriteReg(cpu,r1,val);
+                    SetSignTrit(cpu, val);
+                    break;
+                }
+                break;
             case OPCODE_ADDI_SEP  :  // if S==1 , C:Rd = Rs + immediate
+                if( 1 == flagReg.flags.S )
+                {
+                    carry=0;
+                    val=ternaryADC( ReadModReg(cpu, r2, r2mod), imm11, &carry);
+                    flagReg.flags.C = carry;
+                    WriteReg(cpu,r1,val);
+                    SetSignTrit(cpu, val);
+                    break;
+                }
+                break;
             case OPCODE_ADCI      :  // C:Rd = Rs1 + immediate + C
+                carry=flagReg.flags.C;
+                val=ternaryADC( ReadModReg(cpu, r2, r2mod), imm11, &carry);
+                flagReg.flags.C = carry;
+                WriteReg(cpu,r1,val);
+                SetSignTrit(cpu, val);
+                break;
             case OPCODE_ADDI      :  // C:Rd = Rs1 + immediate
+                carry=0;
+                val=ternaryADC( ReadModReg(cpu, r2, r2mod), imm11, &carry);
+                flagReg.flags.C = carry;
+                WriteReg(cpu,r1,val);
+                SetSignTrit(cpu, val);
+                break;
 //          case OPCODE_          :  //
             case OPCODE_ADDI_SNN  :  // if S!=- , C:Rd = Rs + immediate
+                if( N != flagReg.flags.S )
+                {
+                    carry=0;
+                    val=ternaryADC( ReadModReg(cpu, r2, r2mod), imm11, &carry);
+                    flagReg.flags.C = carry;
+                    WriteReg(cpu,r1,val);
+                    SetSignTrit(cpu, val);
+                    break;
+                }
+                break;
             case OPCODE_ADDI_SNZ  :  // if S!=0 , C:Rd = Rs + immediate
+                if( 0 != flagReg.flags.S )
+                {
+                    carry=0;
+                    val=ternaryADC( ReadModReg(cpu, r2, r2mod), imm11, &carry);
+                    flagReg.flags.C = carry;
+                    WriteReg(cpu,r1,val);
+                    SetSignTrit(cpu, val);
+                    break;
+                }
+                break;
             case OPCODE_ADDI_SNP  :  // if S!=1 , C:Rd = Rs + immediate
+                if( 1 != flagReg.flags.S )
+                {
+                    carry=0;
+                    val=ternaryADC( ReadModReg(cpu, r2, r2mod), imm11, &carry);
+                    flagReg.flags.C = carry;
+                    WriteReg(cpu,r1,val);
+                    SetSignTrit(cpu, val);
+                    break;
+                }
+                break;
             case OPCODE_RTL       :  // R1:R2 = R1:R2 Rotate Left by R3
+                val = ReadModReg(cpu, r1, 0);
+                val2 = ReadModReg(cpu, r2, r2mod);
+                ternaryROL( &val, &val2, ReadModReg(cpu, r3, r3mod), TRITS_PER_WORD );
+                WriteReg(cpu,r1,val);
+                WriteReg(cpu,r2,val2);
+                break;
 //          case OPCODE_          :  //
             case OPCODE_TAND      :  // Rd = Tritwise Rs1 & Rs2
             case OPCODE_TOR       :  // Rd = Tritwise Rs1 | Rs2
@@ -395,6 +544,12 @@ void runCPU( TriCpu* cpu, int cycles )
             case OPCODE_MUL       :  // Rd = Rs1 * Rs2
             case OPCODE_MULU      :  // Rd = (Rs1 * Rs2) >> 27
             case OPCODE_RTLI      :  // R1:R2 = R1:R2 Rotate Left by immed
+                val = ReadModReg(cpu, r1, 0);
+                val2 = ReadModReg(cpu, r2, r2mod);
+                ternaryROL( &val, &val2, imm11, TRITS_PER_WORD );
+                WriteReg(cpu,r1,val);
+                WriteReg(cpu,r2,val2);
+                break;
 //          case OPCODE_          :  //
             case OPCODE_TANDI     :  // Rd = Tritwise Rs1 & immediate
             case OPCODE_TORI      :  // Rd = Tritwise Rs1 | immediate

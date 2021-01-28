@@ -95,6 +95,7 @@ extern trint32_t ternarySGN  ( trint32_t op1 );
 
 // ARITHMETIC 2 OPS
 extern trint32_t ternarySHL  ( trint32_t op1, trint32_t op2 );
+extern void      ternaryROL  ( trint32_t* op1, trint32_t* op2, trint32_t rotate, int triwordsize );
 //extern trint32_t ternaryRCL  ( trint32_t op1, trint32_t op2, trit_t* carry );
 extern trint32_t ternaryADD  ( trint32_t op1, trint32_t op2 );
 extern trint32_t ternaryADC  ( trint32_t op1, trint32_t op2, trit_t* carry );

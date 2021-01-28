@@ -124,15 +124,15 @@ typedef enum TriOpcode
     OPCODE_PSH       = 0b111111110100,  // Store Rd += immediate; (Rd)  <- Rs
 //  OPCODE_          = 0b111111110101,  //
     //                   __--__--__--
-    OPCODE_ADD_SEN   = 0b111111001111,  // if S==- , C:Rd = Rs1 - Rs2
-    OPCODE_ADD_SEZ   = 0b111111001100,  // if S==0 , C:Rd = Rs1 - Rs2
-    OPCODE_ADD_SEP   = 0b111111001101,  // if S==1 , C:Rd = Rs1 - Rs2
-    OPCODE_ADC       = 0b111111000011,  // C:Rd = Rs1 - Rs2 + C
-    OPCODE_ADD       = 0b111111000000,  // C:Rd = Rs1 - Rs2
+    OPCODE_ADD_SEN   = 0b111111001111,  // if S==- , C:Rd = Rs1 + Rs2
+    OPCODE_ADD_SEZ   = 0b111111001100,  // if S==0 , C:Rd = Rs1 + Rs2
+    OPCODE_ADD_SEP   = 0b111111001101,  // if S==1 , C:Rd = Rs1 + Rs2
+    OPCODE_ADC       = 0b111111000011,  // C:Rd = Rs1 + Rs2 + C
+    OPCODE_ADD       = 0b111111000000,  // C:Rd = Rs1 + Rs2
 //  OPCODE_          = 0b111111000001,  //
-    OPCODE_ADD_SNN   = 0b111111000111,  // if S!=- , C:Rd = Rs1 - Rs2
-    OPCODE_ADD_SNZ   = 0b111111000100,  // if S!=0 , C:Rd = Rs1 - Rs2
-    OPCODE_ADD_SNP   = 0b111111000101,  // if S!=1 , C:Rd = Rs1 - Rs2
+    OPCODE_ADD_SNN   = 0b111111000111,  // if S!=- , C:Rd = Rs1 + Rs2
+    OPCODE_ADD_SNZ   = 0b111111000100,  // if S!=0 , C:Rd = Rs1 + Rs2
+    OPCODE_ADD_SNP   = 0b111111000101,  // if S!=1 , C:Rd = Rs1 + Rs2
     //                   __--__--__--
     OPCODE_ADDI_SEN  = 0b111111011111,  // if S==- , C:Rd = Rs + immediate
     OPCODE_ADDI_SEZ  = 0b111111011100,  // if S==0 , C:Rd = Rs + immediate

@@ -307,6 +307,36 @@ trint32_t ternarySHL  ( trint32_t op1, trint32_t op2 )
     }
 }
 
+void      ternaryROL  ( trint32_t* op1, trint32_t* op2, trint32_t rotate, int triwordsize )
+{
+    const int maxShift = triwordsize * 2;
+    const int wordMask = (1ULL << maxShift) - 1;
+    trint32_t op1_in=(*op1) & wordMask;
+    trint32_t op2_in=(*op2) & wordMask;
+    // Map trit rotate to a minimal shift in bits
+    int bshift=(ternary2int(rotate) * 2)  % (maxShift * 2);
+    if(bshift<0)
+    {
+        bshift += maxShift;
+    }
+    else
+    {
+        bshift -= maxShift;
+    }
+
+    if( bshift < 0 )
+    {
+        bshift = -bshift;
+        *op1= ((op1_in >> bshift) | (op2_in << ( maxShift - bshift))) & wordMask;
+        *op2= ((op2_in >> bshift) | (op1_in << ( maxShift - bshift))) & wordMask;
+    }
+    else
+    {
+        *op1= ((op1_in << bshift) | (op2_in >> ( maxShift - bshift))) & wordMask;
+        *op2= ((op2_in << bshift) | (op1_in >> ( maxShift - bshift))) & wordMask;
+    }
+}
+
 //trint32_t ternaryRCL  ( trint32_t op1, trint32_t op2, trit_t* carry )
 //{
 //    int shift=(ternary2int(op2) % (TRITS_PER_TRINT32_T + 1))*2;
@@ -404,13 +434,29 @@ trint32_t ternaryMUL  ( trint32_t op1, trint32_t op2 )
 int main( int argc, char** argv )
 {
     //int64_t i;
-    trint32_t A, B, C;
+    trint32_t A, B, C, D, E;
     trit_t carry=N;
 
     printf("A: ");
     ternaryScan( &A );
     printf("B: ");
     ternaryScan( &B );
+
+    // Run through a bunch or rotate tests first.
+    E = 0b11110000;
+    while( E != 0b01010000 )
+    {
+        printf("\nROL( A, B, ");
+        ternaryPrint(E, 5);
+        printf(")=");
+        C=A;
+        D=B;
+        ternaryROL(&C, &D, E, 15);
+        ternaryPrint(C, 30);
+        printf(" ");
+        ternaryPrint(D, 30);
+        E = ternaryADD( E, 1);
+    }
 
     printf("\nA = %"PRIi64"  ", ternary2int(A) );  ternaryPrint( A, 0);
     printf("\nB = %"PRIi64"  ", ternary2int(B));  ternaryPrint( B, 0);
