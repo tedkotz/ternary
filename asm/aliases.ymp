@@ -1,0 +1,48 @@
+
+#define PC N1
+
+#define MV( dest, src )  ADDI( dest, src, 0 )
+#define MVI( dest, imm )                         \
+#if (imm < MAX_11TRIT) && (imm > -MAX_11TRIT)    \
+    ADDI( dest, Z, imm )                         \
+#else                                            \
+    POP( dest, PC, 3)                            \
+    WORD( imm )                                  \
+#endif
+
+#define JMP( reg )  MV( PC, reg)
+#define JMPI( addr )  MVI( PC, addr)
+
+#define SWP( R1, R2 ) RTLI( R1, R2, 27)
+
+
+#define NEG( dest, src )  ADDI( dest, -src, 0 )
+
+
+
+// MV Rd, Rs     | ADD Rd, Rs, R0
+// MV Rd, immed  | ADDI Rd, R0, immed
+// MV Rd, imm27  | POP Rd, PC+3
+//               | imm27
+// NEG Rd, Rs    | SUB Rd, R0, Rs
+// TNOT Rd, Rs   | SUB Rd, R0, Rs
+
+// SWP R1, R2    | RTL R1, R2, #27
+// SHL Rd, Rs    | RTL R0, Rd, Rs
+// MVC2S         | ADDC R0, R0, R0
+// CLRCS         | ADDR R0, R0, R0
+// CMP R1, R2    | SUB R0, R1, R2
+// TST Rs        | SUB R0, Rs, R0
+// BEQ rel       | ADDCSEZ PC, PC, rel
+// BNE rel       | ADDCSNZ PC, PC, rel
+// BLT rel       | ADDCSEN PC, PC, rel
+// BGE rel       | ADDCSNN PC, PC, rel
+// BLE rel       | ADDCSNP PC, PC, rel
+// BGT rel       | ADDCSEP PC, PC, rel
+// BRA rel       | ADD PC, PC, rel
+// JMP X         | MV PC, X
+// CAL X         | MV RR, X
+//               | SWP RR, PC
+// RET           | MV PC, RR
+
+

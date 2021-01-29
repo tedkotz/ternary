@@ -4,7 +4,8 @@ Assembly
 ## Files
 | Files      | Description                                                    |
 -------------|----------------------------------------------------------------|
-|yampp.py    | Yet Another Macro Preprocessor used to provide macros          |
+|yamp.py     | Yet Another Macro Preprocessor used to provide macros          |
+|aliases.ymp | Standard set of macros for use with assembler                  |
 
 
 ## Code
