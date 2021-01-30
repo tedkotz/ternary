@@ -33,11 +33,28 @@
 #include "cpu.h"
 #include "mem.h"
 #include <stdio.h>
+#include <ctype.h>
 /* Defines *******************************************************************/
 /* Types *********************************************************************/
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
 /* Functions *****************************************************************/
+static int fileToMem( char* fname )
+{
+    FILE* filein=NULL;
+    int returnVal=-3;
+    filein = fopen(fname,"r");
+    if(filein == NULL)
+    {
+        printf("Error in opening file \"%s\".", fname);
+    }
+    else
+    {
+        returnVal=readFileIntoMem(filein, 1);
+        fclose(filein);
+    }
+    return returnVal;
+}
 
 /**
  * Main Program entry point.
@@ -48,12 +65,22 @@
  */
 int main( int argc, char** argv )
 {
+    char name[80];
     char c='\r';
+    int i;
     TriCpu cpu;
     TriWord addr;
     TriWord val;
     TriCpu disposable;
     resetMem();
+    if( argc > 1 )
+    {
+        i=fileToMem(argv[1]);
+        if(i)
+        {
+            return i;
+        }
+    }
     resetCPU(&disposable);
     resetCPU(&cpu);
     printCpuState(&cpu);
@@ -79,7 +106,7 @@ int main( int argc, char** argv )
                 WriteAddr(addr, val);
                 printf("done.\n");
                 break;
-            case 'd':
+            case 's':
                 getchar();
                 printCpuState(&cpu);
                 break;
@@ -93,13 +120,35 @@ int main( int argc, char** argv )
                 resetMem();
                 printCpuState(&cpu);
                 break;
+            case 'f':
+                printf("filename: ");
+                do
+                {
+                    c=getchar();
+                }
+                while( isspace(c) );
+                i=0;
+                while( !isspace(c) )
+                {
+                    if(i<sizeof(name)-1)
+                    {
+                        name[i++]=c;
+                    }
+                    c=getchar();
+                }
+                name[i]='\0';
+                if(0==fileToMem( name ))
+                {
+                    printf("Done. Press c to Reset CPU or s to Print CPU State.\n");
+                }
+                break;
             case 'h':
             case '?':
                 getchar();
                 printf("Help for Ternary Computer Emulator \n");
                 printf("NOTE: Addresses and values are entered in balanced ternary(10-). \n");
                 printf(" q : Quit\n");
-                printf(" d : Print CPU State\n");
+                printf(" s : Print CPU State\n");
                 printf(" r <ADDR> : Peek value of Tryte at Address\n");
                 printf(" w <ADDR> <VAL> : Poke Value to Tryte at Address\n");
                 printf(" c : Reset CPU\n");

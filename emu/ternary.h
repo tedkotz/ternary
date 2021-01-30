@@ -42,6 +42,7 @@
 #define BITS_PER_TRINT16_T ( TRITS_PER_TRINT16_T * BITS_PER_TRIT)
 #define TRINT32_MASK ((1ULL << BITS_PER_TRINT32_T) - 1)
 #define TRINT16_MASK ((1ULL << BITS_PER_TRINT16_T) - 1)
+#define TRIT_MASK (3)
 
 /* Types *********************************************************************/
 typedef uint64_t trint32_t;
@@ -61,6 +62,7 @@ typedef uint_fast8_t trit_t;
 extern int trit2int( trit_t x );
 extern trit_t int2trit( int x );
 
+extern trit_t char2trit ( char c );
 extern int64_t ternary2int( trint32_t x );
 //extern trint32_t int2ternary( int64_t x, int lvl );
 

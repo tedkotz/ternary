@@ -80,6 +80,41 @@ trit_t int2trit( int x )
     return (x==-1) ? N : x;
 }
 
+trit_t char2trit ( char c )
+{
+    switch(c)
+    {
+        case '-':
+        case '_':
+        case 'n':
+        case 'N':
+            return N;
+            break;
+
+        case '0':
+        case ')':
+        case 'z':
+        case 'Z':
+            return 0;
+            break;
+
+        case '1':
+        case '!':
+        case '+':
+        case '=':
+        case 'p':
+        case 'P':
+            return 1;
+            break;
+
+        default:
+            break;
+    }
+    //return invalid value to indicate invalid character
+    return 2;
+}
+
+
 int64_t ternary2int( trint32_t x )
 {
     int64_t total=0;
@@ -148,44 +183,21 @@ void ternaryScan( trint32_t* x )
     trint32_t dst=0;
     int_fast8_t state=2, count=TRITS_PER_TRINT32_T;
     char c;
+    trit_t t;
 
     while( state && count )
     {
         scanf("%c",&c);
-        switch(c)
+        t=char2trit(c) & 0x03;
+        if( 2 != t )
         {
-            case '-':
-            case '_':
-            case 'n':
-            case 'N':
-                state=1;
-                --count;
-                dst = (dst<<2)|N;
-                break;
-
-            case '0':
-            case ')':
-            case 'z':
-            case 'Z':
-                state=1;
-                count--;
-                dst = (dst<<2)|0;
-                break;
-
-            case '1':
-            case '!':
-            case '+':
-            case '=':
-            case 'p':
-            case 'P':
-                state=1;
-                --count;
-                dst = (dst<<2)|1;
-                break;
-
-            default:
-                if(state==1) state=0;
-                break;
+            state=1;
+            --count;
+            dst = (dst<<BITS_PER_TRIT)|t;
+        }
+        else if(state==1)
+        {
+            state=0;
         }
     }
     *x=dst;

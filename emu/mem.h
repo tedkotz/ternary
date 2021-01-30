@@ -31,6 +31,7 @@
 #define   TERNARY_MEM_H
 /* Includes ******************************************************************/
 #include "cpu.h"
+#include <stdio.h>
 
 /* Defines *******************************************************************/
 // 3^11 Trites of RAM
@@ -99,6 +100,15 @@ extern void WriteAddr(TriWord addr, Tryte val);
  * @return
  */
 extern void resetMem( void );
+
+/**
+ * [Description]
+ *
+ * @param
+ * @return
+ */
+extern int readFileIntoMem( FILE* fin , int verbose);
+
 
 #endif /* TERNARY_MEM_H */
 

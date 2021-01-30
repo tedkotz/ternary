@@ -339,20 +339,20 @@ void runCPU( TriCpu* cpu, int cycles )
                 SetSignTrit(cpu, val);
                 break;
             case OPCODE_ST1       :  // Store (Rs1+immediate) <- Rs2 9 trits
-                addr = ternaryADD(ReadModReg(cpu, r1, 0), imm11);
+                addr = ternaryADD(ReadModReg(cpu, r1, OPMOD_NOP), imm11);
                 val = ReadModReg(cpu, r2, r2mod) & TRYTE_MASK ;
                 WriteTryte(cpu,addr,val);
                 SetSignTrit(cpu, val);
                 break;
             case OPCODE_ST2       :  // Store (Rs1+immediate) <- Rs2 18 trits
-                addr = ternaryADD(ReadModReg(cpu, r1, 0), imm11);
+                addr = ternaryADD(ReadModReg(cpu, r1, OPMOD_NOP), imm11);
                 val = ReadModReg(cpu, r2, r2mod) & ((1ULL << (2*BITS_PER_TRYTE))-1);
                 WriteTryte(cpu,addr,val & TRYTE_MASK);
                 WriteTryte(cpu,ternaryADD(addr, 0b0001),(val >> BITS_PER_TRYTE)& TRYTE_MASK);
                 SetSignTrit(cpu, val );
                 break;
             case OPCODE_ST3       :  // Store (Rs1+immediate) <- Rs2 27 trits
-                addr = ternaryADD(ReadModReg(cpu, r1, 0), imm11);
+                addr = ternaryADD(ReadModReg(cpu, r1, OPMOD_NOP), imm11);
                 val = ReadModReg(cpu, r2, r2mod);
                 WriteTriWord(cpu,addr,val);
                 SetSignTrit(cpu, val);
@@ -365,7 +365,7 @@ void runCPU( TriCpu* cpu, int cycles )
                 SetSignTrit(cpu, val);
                 break;
             case OPCODE_PSH       :  // Store Rd += immediate; (Rd)  <- Rs
-                addr = ternaryADD(ReadModReg(cpu, r1, 0), imm11);
+                addr = ternaryADD(ReadModReg(cpu, r1, OPMOD_NOP), imm11);
                 val = ReadModReg(cpu, r2, r2mod);
                 WriteTriWord(cpu,addr,val);
                 WriteReg(cpu,r1,addr);
@@ -529,7 +529,7 @@ void runCPU( TriCpu* cpu, int cycles )
                 }
                 break;
             case OPCODE_RTL       :  // R1:R2 = R1:R2 Rotate Left by R3
-                val = ReadModReg(cpu, r1, 0);
+                val = ReadModReg(cpu, r1, OPMOD_NOP);
                 val2 = ReadModReg(cpu, r2, r2mod);
                 ternaryROL( &val, &val2, ReadModReg(cpu, r3, r3mod), TRITS_PER_WORD );
                 WriteReg(cpu,r1,val);
@@ -544,7 +544,7 @@ void runCPU( TriCpu* cpu, int cycles )
             case OPCODE_MUL       :  // Rd = Rs1 * Rs2
             case OPCODE_MULU      :  // Rd = (Rs1 * Rs2) >> 27
             case OPCODE_RTLI      :  // R1:R2 = R1:R2 Rotate Left by immed
-                val = ReadModReg(cpu, r1, 0);
+                val = ReadModReg(cpu, r1, OPMOD_NOP);
                 val2 = ReadModReg(cpu, r2, r2mod);
                 ternaryROL( &val, &val2, imm11, TRITS_PER_WORD );
                 WriteReg(cpu,r1,val);
