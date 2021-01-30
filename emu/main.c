@@ -39,7 +39,7 @@
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
 /* Functions *****************************************************************/
-static int fileToMem( char* fname )
+static int fileToMem( char* fname , int verbose)
 {
     FILE* filein=NULL;
     int returnVal=-3;
@@ -50,7 +50,7 @@ static int fileToMem( char* fname )
     }
     else
     {
-        returnVal=readFileIntoMem(filein, 1);
+        returnVal=readFileIntoMem(filein, verbose);
         fclose(filein);
     }
     return returnVal;
@@ -75,7 +75,7 @@ int main( int argc, char** argv )
     resetMem();
     if( argc > 1 )
     {
-        i=fileToMem(argv[1]);
+        i=fileToMem(argv[1], 1);
         if(i)
         {
             return i;
@@ -137,7 +137,7 @@ int main( int argc, char** argv )
                     c=getchar();
                 }
                 name[i]='\0';
-                if(0==fileToMem( name ))
+                if(0==fileToMem( name , 1))
                 {
                     printf("Done. Press c to Reset CPU or s to Print CPU State.\n");
                 }
