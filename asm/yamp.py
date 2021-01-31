@@ -31,10 +31,15 @@ def process_line ( x ):
     return line + '\n';
 
 def process_file ( outfile, infile, filename ):
-    line = 0
-    outfile.write( '#line {0} "{1}"\n'.format(line + 1, filename) )
+    linenumber = 0
+    outfile.write( '#line {0} "{1}"\n'.format(linenumber + 1, filename) )
     for line in infile:
         outfile.write(process_line(line))
+        # if (line contains #include)
+        #     parse filename
+        #     with open(filename, 'r') as infile:
+        #         process_file( outfile, infile, args.input )
+        #         outfile.write( '#line {0} "{1}"\n'.format(linenumber + 1, filename) )
 
 
 # main

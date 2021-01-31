@@ -52,50 +52,50 @@ typedef trint16_t Tryte;
 
 typedef enum TriReg
 {
-	REG_GP_13      = 0b111111,
-	REG_GP_12      = 0b111100,
-	REG_GP_11      = 0b111101,
-	REG_GP_10      = 0b110011,
-	REG_GP_09      = 0b110000,
-	REG_GP_08      = 0b110001,
-	REG_GP_07      = 0b110111,
-	REG_GP_06      = 0b110100,
-	REG_GP_05      = 0b110101,
-	REG_RESERVED   = 0b001111,
-	REG_CLOCK      = 0b001100,
-	REG_FLAGS      = 0b001101,
-	REG_PC         = 0b000011,
-	REG_ZERO       = 0b000000,
-	REG_GP01       = 0b000001,
-	REG_GP02       = 0b000111,
-	REG_GP03       = 0b000100,
-	REG_GP04       = 0b000101,
-	REG_GP05       = 0b011111,
-	REG_GP06       = 0b011100,
-	REG_GP07       = 0b011101,
-	REG_GP08       = 0b010011,
-	REG_GP09       = 0b010000,
-	REG_GP10       = 0b010001,
-	REG_GP11       = 0b010111,
-	REG_GP12       = 0b010100,
-	REG_GP13       = 0b010101,
+    REG_N13        = 0b111111,
+    REG_N12        = 0b111100,
+    REG_N11        = 0b111101,
+    REG_N10        = 0b110011,
+    REG_N09        = 0b110000,
+    REG_N08        = 0b110001,
+    REG_N07        = 0b110111,
+    REG_N06        = 0b110100,
+    REG_N05        = 0b110101,
+    REG_N04        = 0b001111,
+    REG_CLOCK      = 0b001100,
+    REG_FLAGS      = 0b001101,
+    REG_PC         = 0b000011,
+    REG_ZERO       = 0b000000,
+    REG_P01        = 0b000001,
+    REG_P02        = 0b000111,
+    REG_P03        = 0b000100,
+    REG_P04        = 0b000101,
+    REG_P05        = 0b011111,
+    REG_P06        = 0b011100,
+    REG_P07        = 0b011101,
+    REG_P08        = 0b010011,
+    REG_P09        = 0b010000,
+    REG_P10        = 0b010001,
+    REG_P11        = 0b010111,
+    REG_P12        = 0b010100,
+    REG_P13        = 0b010101,
 } TriReg;
 //#define	NUM_TRIREGS (3*3*3)
 #define	NUM_TRIREGS (0b111111)
 
 typedef struct TriFlags
 {
-	trint32_t S :2 ; // Sign
-	trint32_t C :2 ; // Carry
-	trint32_t V :2 ; // Overflow
-	trint32_t P :2 ; // Parity
-	trint32_t I :2 ; // Interrupts
+    trint32_t S :2 ; // Sign
+    trint32_t C :2 ; // Carry
+    trint32_t V :2 ; // Overflow
+    trint32_t P :2 ; // Parity
+    trint32_t I :2 ; // Interrupts
 } TriFlags;
 
 typedef union FlagReg
 {
-	TriWord val;
-	TriFlags flags;
+    TriWord val;
+    TriFlags flags;
 } FlagReg;
 
 
@@ -106,7 +106,7 @@ typedef struct TriCpu
 //	TriWord D;
 //	TriWord valA;
 //	TriWord valB;
-	TriWord regs[NUM_TRIREGS];
+    TriWord regs[NUM_TRIREGS];
 //	uint8_t running;
 } TriCpu;
 

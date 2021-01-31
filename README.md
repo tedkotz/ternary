@@ -132,7 +132,8 @@ storage of information digits needs by symbol differentiation.
     - an all zero symbol cannot occur inside a non-zero number
     - an all zero symbol is the only legal way to represent 0
     - Only the high trit in the first symbol should be needed to deterime if the number
-      is extendeed or not.
+      is extended or not.
+    - Proposal: High trit is 0 means single tryte, 1 means mor eto follow, -1 means last tryte of multi tryte word
 
 - [ ] Floating point number encoding
     - Sign Trit is also high Trit in mantissa
@@ -146,11 +147,11 @@ storage of information digits needs by symbol differentiation.
     - Negative infinity
     - NaN
 
-- [ ] Trinary Print should support different fixed widths
-- [ ] Add disassembler to emulator monitor
+- [x] Trinary Print should support different fixed widths
+- [x] Add disassembler to emulator monitor
 - [x] Load RAM from File
 - [ ] Assembler
-- [ ] Expand math operations to cover a full 32 Trits
+- [x] Expand math operations to cover a full 32 Trits
 - [ ] Trinary I/O should be more generic
     - [ ] Work with strings
     - [ ] Work with balanced base 27 input
