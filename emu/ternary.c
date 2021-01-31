@@ -42,6 +42,14 @@
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
 
+//                    A     X 1 0-1
+#define TRIGATE_INC   (0b0010110100)
+#define TRIGATE_DEC   (0b0010001101)
+#define TRIGATE_NOT   (0b0010110001)
+#define TRIGATE_FLT   (0b0010010000)
+#define TRIGATE_LAX   (0b0010010100)
+#define TRIGATE_ABS   (0b0010010001)
+
 //                                       A 0  0  0  0    1  1  1  1   XXXXXXX   -1 -1 -1 -1
 //                                       B 0  1  X -1    0  1  X -1              0  1  X -1
 static const trit_t trigate_min[4][4] = {{ 0, 0, 2, N},{ 0, 1, 2, N},{2,2,2,2},{ N, N, 2, N}};
@@ -52,13 +60,7 @@ static const trit_t trigate_set[4][4] = {{ 0, 1, 2, N},{ 1, 1, 2, N},{2,2,2,2},{
 static const trit_t trigate_imp[4][4] = {{ 1, 1, 2, 0},{ 0, 1, 2, N},{2,2,2,2},{ 1, 1, 2, 1}};
 static const trit_t trigate_unm[4][4] = {{ 0, 0, 2, 0},{ 0, 1, 2, 0},{2,2,2,2},{ 0, 0, 2, N}};
 
-//                                   A 0  1  X -1
-static const trit_t trigate_inc[4] = { 1, N, 2, 0};  // Tritwise Increment
-static const trit_t trigate_dec[4] = { N, 0, 2, 1};  // Tritwise Decrement
-static const trit_t trigate_not[4] = { 0, N, 2, 1};  // Tritwise NOT / Negation
-static const trit_t trigate_flt[4] = { 0, 1, 2, 0};  // Tritwise Flatten
-//static const trit_t trigate_lax[4] = { 1, 1, 2, 0};
-static const trit_t trigate_abs[4] = { 0, 1, 2, 1};  // Tritwise Decrement
+
 
 /* Functions *****************************************************************/
 
@@ -122,7 +124,7 @@ int64_t ternary2int( trint32_t x )
     for(i=58; i>=0; i-=2)
     {
         total *= 3;
-        total += trit2int( (x >> i) & 3 );
+        total += trit2int( (x >> i) & TRIT_MASK );
     }
     return total;
 }
@@ -155,9 +157,9 @@ void ternaryPrint( trint32_t x, int_fast8_t width)
     }
     for(; i>=0; i-=2)
     {
-        switch((x >> i) & 0b011)
+        switch((x >> i) & TRIT_MASK)
         {
-            case 3:
+            case N:
                 printf("-");
                 started=1;
                 break;
@@ -188,7 +190,7 @@ void ternaryScan( trint32_t* x )
     while( state && count )
     {
         scanf("%c",&c);
-        t=char2trit(c) & 0x03;
+        t=char2trit(c) & TRIT_MASK;
         if( 2 != t )
         {
             state=1;
@@ -204,40 +206,46 @@ void ternaryScan( trint32_t* x )
 }
 
 // BITWISE 1 OP
-static trint32_t apply_tritwise_gate1 ( const trit_t gate[4],  trint32_t op1 )
+static trit_t apply_trit_gate1 ( uint_fast8_t gate,  trit_t op1 )
+{
+    uint_fast8_t shift = BITS_PER_TRIT * ((op1 + 1) & TRIT_MASK);
+    return (gate >> shift) & TRIT_MASK;
+}
+
+static trint32_t apply_tritwise_gate1 ( uint_fast8_t gate,  trint32_t op1 )
 {
     trint32_t dst = 0;
     uint_fast8_t i;
     for(i=0; i<BITS_PER_TRINT32_T; i+=BITS_PER_TRIT)
     {
-        dst |= ((trint32_t)gate[(op1 >> i)&3])<<i;
+        dst |= ((trint32_t)apply_trit_gate1(gate, (op1 >> i) & TRIT_MASK))<<i;
     }
     return dst;
 }
 
 trint32_t ternaryINCB( trint32_t op1 )
 {
-    return apply_tritwise_gate1(trigate_inc, op1);
+    return apply_tritwise_gate1(TRIGATE_INC, op1);
 }
 
 trint32_t ternaryDECB( trint32_t op1 )
 {
-    return apply_tritwise_gate1(trigate_dec, op1);
+    return apply_tritwise_gate1(TRIGATE_DEC, op1);
 }
 
 trint32_t ternaryNEGB( trint32_t op1 )
 {
-    return apply_tritwise_gate1(trigate_not, op1);
+    return apply_tritwise_gate1(TRIGATE_NOT, op1);
 }
 
 trint32_t ternaryFLTB( trint32_t op1 )
 {
-    return apply_tritwise_gate1(trigate_flt, op1);
+    return apply_tritwise_gate1(TRIGATE_FLT, op1);
 }
 
 trint32_t ternaryABSB( trint32_t op1 )
 {
-    return apply_tritwise_gate1(trigate_abs, op1);
+    return apply_tritwise_gate1(TRIGATE_ABS, op1);
 }
 
 // BITWISE 2 OPS
@@ -247,7 +255,7 @@ static trint32_t apply_tritwise_gate2 ( const trit_t gate[4][4],  trint32_t op1,
     uint_fast8_t i;
     for(i=0; i<BITS_PER_TRINT32_T; i+=BITS_PER_TRIT)
     {
-        dst |= ((trint32_t)gate[(op1 >> i)&3][(op2 >> i)&3])<<i;
+        dst |= ((trint32_t)gate[(op1 >> i)&TRIT_MASK][(op2 >> i)&3])<<i;
     }
     return dst;
 }
