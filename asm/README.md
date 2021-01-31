@@ -11,15 +11,15 @@ Assembly
 ## Code
 
 The assemby code is formated to work well with an extended C-style preprocessor.
-This alloes pseudo instruction aliases to be easily introduced and seemlessly
+This allows pseudo instruction aliases to be easily introduced and seemlessly
 integrated.
 
 
 Instructions fall into one of 3 forms, matching the bit ordering options.
 ```
-    INST( R1, R2+MOD, R3+MOD );
-    INST( R1, R2+MOD, immediate );
-    INST( R1, immediate );
+    INST1( R1, immediate );
+    INST2( R1, R2+MOD, immediate );
+    INST3( R1, R2+MOD, R3+MOD );
 ```
 Multiple instructions can be placed on a single line using the semicolons as
 seperators.
@@ -58,8 +58,12 @@ The preprocessor supports a bunch of #directives and defines.
 | `SPLIT()`        | Splits token into multiple single character tokens       |
 | `MERGE()`        | Merges list of tokens into 1 token                       |
 | `defined()`      | true, false if is defined preprocessor symbol            |
+| `//`             | Comment to end of line                                   |
+| `/*`             | Begin block comment                                      |
+| `*/`             | End block comment                                        |
+
+| CLI              | Description                                              |
+|------------------|----------------------------------------------------------|
 | `-D`             | Add define at command line                               |
 | `-I`             | Add include path at command line                         |
 | `--include`      | Add include file at command line                         |
-
-
