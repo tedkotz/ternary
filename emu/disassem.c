@@ -215,52 +215,41 @@ static InstructionFormat printOpcode(TriOpcode op)
 {
     switch (op)
     {
-        case OPCODE_LD1       : printf("LD1");return (INSTFORMAT_2REG);
-        case OPCODE_LD2       : printf("LD2");return (INSTFORMAT_2REG);
-        case OPCODE_LD3       : printf("LD3");return (INSTFORMAT_2REG);
-        case OPCODE_ST1       : printf("ST1");return (INSTFORMAT_2REG);
-        case OPCODE_ST2       : printf("ST2");return (INSTFORMAT_2REG);
-        case OPCODE_ST3       : printf("ST3");return (INSTFORMAT_2REG);
-        case OPCODE_POP       : printf("POP");return (INSTFORMAT_2REG);
-        case OPCODE_PSH       : printf("PSH");return (INSTFORMAT_2REG);
-//      case OPCODE_          : printf("        ");return (INSTFORMAT_2REG);
-        case OPCODE_ADD_SEN   : printf("ADD.SEN");return (INSTFORMAT_3REG);
-        case OPCODE_ADD_SEZ   : printf("ADD.SEZ");return (INSTFORMAT_3REG);
-        case OPCODE_ADD_SEP   : printf("ADD.SEP");return (INSTFORMAT_3REG);
-        case OPCODE_ADC       : printf("ADC");return (INSTFORMAT_3REG);
-        case OPCODE_ADD       : printf("ADD");return (INSTFORMAT_3REG);
-//      case OPCODE_          : printf("        ");return (INSTFORMAT_3REG);
-        case OPCODE_ADD_SNN   : printf("ADD.SNN");return (INSTFORMAT_3REG);
-        case OPCODE_ADD_SNZ   : printf("ADD.SNZ");return (INSTFORMAT_3REG);
-        case OPCODE_ADD_SNP   : printf("ADD.SNP");return (INSTFORMAT_3REG);
-        case OPCODE_ADDI_SEN  : printf("ADDI.SEN");return (INSTFORMAT_2REG);
-        case OPCODE_ADDI_SEZ  : printf("ADDI.SEZ");return (INSTFORMAT_2REG);
-        case OPCODE_ADDI_SEP  : printf("ADDI.SEP");return (INSTFORMAT_2REG);
-        case OPCODE_ADCI      : printf("ADCI");return (INSTFORMAT_2REG);
-        case OPCODE_ADDI      : printf("ADDI");return (INSTFORMAT_2REG);
-//      case OPCODE_          : printf("        ");return (INSTFORMAT_2REG);
-        case OPCODE_ADDI_SNN  : printf("ADDI.SNN");return (INSTFORMAT_2REG);
-        case OPCODE_ADDI_SNZ  : printf("ADDI.SNZ");return (INSTFORMAT_2REG);
-        case OPCODE_ADDI_SNP  : printf("ADDI.SNP");return (INSTFORMAT_2REG);
-        case OPCODE_RTL       : printf("RTL");return (INSTFORMAT_3REG);
-//      case OPCODE_          : printf("        ");return (INSTFORMAT_2REG);
-        case OPCODE_TAND      : printf("TAND");return (INSTFORMAT_3REG);
-        case OPCODE_TOR       : printf("TOR");return (INSTFORMAT_3REG);
-        case OPCODE_TMAJ      : printf("TMAJ");return (INSTFORMAT_3REG);
-        case OPCODE_TADD      : printf("TADD");return (INSTFORMAT_3REG);
-        case OPCODE_TMUL      : printf("TMUL");return (INSTFORMAT_3REG);
-        case OPCODE_MUL       : printf("MUL");return (INSTFORMAT_3REG);
-        case OPCODE_MULU      : printf("MULU");return (INSTFORMAT_3REG);
-        case OPCODE_RTLI      : printf("RTLI");return (INSTFORMAT_2REG);
-//      case OPCODE_          : printf("        ");return (INSTFORMAT_2REG);
-        case OPCODE_TANDI     : printf("TANDI");return (INSTFORMAT_2REG);
-        case OPCODE_TORI      : printf("TORI");return (INSTFORMAT_2REG);
-        case OPCODE_TMAJI     : printf("TMAJI");return (INSTFORMAT_2REG);
-        case OPCODE_TADDI     : printf("TADDI");return (INSTFORMAT_2REG);
-        case OPCODE_TMULI     : printf("TMULI");return (INSTFORMAT_2REG);
-//      case OPCODE_          : printf("        ");return (INSTFORMAT_2REG);
-//      case OPCODE_          : printf("        ");return (INSTFORMAT_2REG);
-        case OPCODE_NOP       : printf("NOP");return (INSTFORMAT_NOP);
+        case OPCODE_LD1       : printf("LD1");       return (INSTFORMAT_2REG);
+        case OPCODE_LD2       : printf("LD2");       return (INSTFORMAT_2REG);
+        case OPCODE_LD3       : printf("LD3");       return (INSTFORMAT_2REG);
+        case OPCODE_ST1       : printf("ST1");       return (INSTFORMAT_2REG);
+        case OPCODE_ST2       : printf("ST2");       return (INSTFORMAT_2REG);
+        case OPCODE_ST3       : printf("ST3");       return (INSTFORMAT_2REG);
+        case OPCODE_POP       : printf("POP");       return (INSTFORMAT_2REG);
+        case OPCODE_PSH       : printf("PSH");       return (INSTFORMAT_2REG);
+//      case OPCODE_          : printf("        ");  return (INSTFORMAT_2REG);
+        case OPCODE_ADC       : printf("ADC");       return (INSTFORMAT_3REG);
+        case OPCODE_ADD       : printf("ADD");       return (INSTFORMAT_3REG);
+        case OPCODE_ADS       : printf("ADS");       return (INSTFORMAT_3REG);
+        case OPCODE_ADCI      : printf("ADCI");      return (INSTFORMAT_2REG);
+        case OPCODE_ADDI      : printf("ADDI");      return (INSTFORMAT_2REG);
+        case OPCODE_ADSI      : printf("ADSI");      return (INSTFORMAT_1REG_2IMM);
+        case OPCODE_MUL       : printf("MUL");       return (INSTFORMAT_3REG);
+        case OPCODE_MULU      : printf("MULU");      return (INSTFORMAT_3REG);
+//      case OPCODE_          : printf("        ");  return (INSTFORMAT_2REG);
+        case OPCODE_RTL       : printf("RTL");       return (INSTFORMAT_3REG);
+//      case OPCODE_          : printf("        ");  return (INSTFORMAT_2REG);
+        case OPCODE_TAND      : printf("TAND");      return (INSTFORMAT_3REG);
+        case OPCODE_TOR       : printf("TOR");       return (INSTFORMAT_3REG);
+        case OPCODE_TMAJ      : printf("TMAJ");      return (INSTFORMAT_3REG);
+        case OPCODE_TADD      : printf("TADD");      return (INSTFORMAT_3REG);
+        case OPCODE_TMUL      : printf("TMUL");      return (INSTFORMAT_3REG);
+        case OPCODE_RTLI      : printf("RTLI");      return (INSTFORMAT_2REG);
+//      case OPCODE_          : printf("        ");  return (INSTFORMAT_2REG);
+        case OPCODE_TANDI     : printf("TANDI");     return (INSTFORMAT_2REG);
+        case OPCODE_TORI      : printf("TORI");      return (INSTFORMAT_2REG);
+        case OPCODE_TMAJI     : printf("TMAJI");     return (INSTFORMAT_2REG);
+        case OPCODE_TADDI     : printf("TADDI");     return (INSTFORMAT_2REG);
+        case OPCODE_TMULI     : printf("TMULI");     return (INSTFORMAT_2REG);
+//      case OPCODE_          : printf("        ");  return (INSTFORMAT_2REG);
+//      case OPCODE_          : printf("        ");  return (INSTFORMAT_2REG);
+        case OPCODE_NOP       : printf("NOP");       return (INSTFORMAT_NOP);
         default:
             printf("Unknown Opcode");return (INSTFORMAT_NOP);
     }
@@ -277,6 +266,7 @@ void parseInstruction( TriOpInstruction* fields, TriWord inst )
     // | 4 Immediate | 7 R3+Mod | 7 R2+Mod | 3 R1 | 6 OpCode |
     // | 11 Immediate           | 7 R2+Mod | 3 R1 | 6 OpCode |
     // | 18 Immediate                      | 3 R1 | 6 OpCode |
+    // | 9 Immediate2    | 9 Immediate1    | 3 R1 | 6 OpCode |
     fields->opcode = inst & 0x0FFF;
     fields->r1 = (inst >> 12 ) & 0x003F;
     fields->r2mod = (inst >> 18 ) & 0x00FF;
@@ -285,6 +275,8 @@ void parseInstruction( TriOpInstruction* fields, TriWord inst )
     fields->r3 = (inst >> 40 ) & 0x003F;
     //fields->imm4 = expandImmediate((inst >> 46 ) & 0x00FF);
     fields->imm11 = expandImmediate((inst >> 32 ) & 0x003FFFFF);
+    fields->imm9_1 = expandImmediate((inst >> 18 ) & 0x003FFFF);
+    fields->imm9_2 = expandImmediate((inst >> 36 ) & 0x003FFFF);
     //fields->imm18 = expandImmediate((inst >> 18 ) & 0x0FFFFFFFFFULL);
 }
 
@@ -324,6 +316,14 @@ void printInstruction( TriWord inst )
             printf(", ");
             printRegister(fields.r3);
             printRegMod(fields.r3mod);
+            break;
+        case INSTFORMAT_1REG_2IMM:
+            printf("  ");
+            printRegister(fields.r1);
+            printf(", #");
+            ternaryPrint(fields.imm9_1, 0);
+            printf(", #");
+            ternaryPrint(fields.imm9_2, 0);
             break;
 
         //default:

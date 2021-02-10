@@ -54,6 +54,8 @@
 //                                       B 0  1  X -1    0  1  X -1              0  1  X -1
 static const trit_t trigate_min[4][4] = {{ 0, 0, 2, N},{ 0, 1, 2, N},{2,2,2,2},{ N, N, 2, N}};
 static const trit_t trigate_max[4][4] = {{ 0, 1, 2, 0},{ 1, 1, 2, 1},{2,2,2,2},{ 0, 1, 2, N}};
+static const trit_t trigate_and[4][4] = {{ N, 0, 2, N},{ 0, 1, 2, N},{2,2,2,2},{ N, N, 2, N}};
+static const trit_t trigate_orr[4][4] = {{ 1, 1, 2, 0},{ 1, 1, 2, 1},{2,2,2,2},{ 0, 1, 2, N}};
 static const trit_t trigate_mul[4][4] = {{ 0, 0, 2, 0},{ 0, 1, 2, N},{2,2,2,2},{ 0, N, 2, 1}};
 static const trit_t trigate_add[4][4] = {{ 0, 1, 2, N},{ 1, N, 2, 0},{2,2,2,2},{ N, 0, 2, 1}};
 static const trit_t trigate_set[4][4] = {{ 0, 1, 2, N},{ 1, 1, 2, N},{2,2,2,2},{ N, 1, 2, N}};
@@ -273,10 +275,20 @@ trint32_t ternaryMULB ( trint32_t op1, trint32_t op2 )
 
 trint32_t ternaryANDB ( trint32_t op1, trint32_t op2 )
 {
-    return apply_tritwise_gate2(trigate_min, op1, op2);
+    return apply_tritwise_gate2(trigate_and, op1, op2);
 }
 
 trint32_t ternaryORRB ( trint32_t op1, trint32_t op2 )
+{
+    return apply_tritwise_gate2(trigate_orr, op1, op2);
+}
+
+trint32_t ternaryMINB ( trint32_t op1, trint32_t op2 )
+{
+    return apply_tritwise_gate2(trigate_min, op1, op2);
+}
+
+trint32_t ternaryMAXB ( trint32_t op1, trint32_t op2 )
 {
     return apply_tritwise_gate2(trigate_max, op1, op2);
 }

@@ -124,25 +124,25 @@ typedef enum TriOpcode
     OPCODE_PSH       = 0b111111110100,  // Store Rd += immediate; (Rd)  <- Rs
 //  OPCODE_          = 0b111111110101,  //
     //                   __--__--__--
-    OPCODE_ADD_SEN   = 0b111111001111,  // if S==- , C:Rd = Rs1 + Rs2
-    OPCODE_ADD_SEZ   = 0b111111001100,  // if S==0 , C:Rd = Rs1 + Rs2
-    OPCODE_ADD_SEP   = 0b111111001101,  // if S==1 , C:Rd = Rs1 + Rs2
-    OPCODE_ADC       = 0b111111000011,  // C:Rd = Rs1 + Rs2 + C
-    OPCODE_ADD       = 0b111111000000,  // C:Rd = Rs1 + Rs2
-//  OPCODE_          = 0b111111000001,  //
-    OPCODE_ADD_SNN   = 0b111111000111,  // if S!=- , C:Rd = Rs1 + Rs2
-    OPCODE_ADD_SNZ   = 0b111111000100,  // if S!=0 , C:Rd = Rs1 + Rs2
-    OPCODE_ADD_SNP   = 0b111111000101,  // if S!=1 , C:Rd = Rs1 + Rs2
+    OPCODE_ADC       = 0b111111001111,  // C:Rd = Rs1 + Rs2 + C
+    OPCODE_ADD       = 0b111111001100,  // C:Rd = Rs1 + Rs2
+    OPCODE_ADS       = 0b111111001101,  // if S==1 then C:Rd = Rd + Rs1; if S==- then C:Rd = Rd + Rs2
+    OPCODE_ADCI      = 0b111111000011,  // C:Rd = Rs1 + immediate + C
+    OPCODE_ADDI      = 0b111111000000,  // C:Rd = Rs1 + immediate
+    OPCODE_ADSI      = 0b111111000001,  // if S==1 then C:Rd = Rd + imm1; if S==- then C:Rd = Rd + imm2
+    OPCODE_MUL       = 0b111111000111,  // Rd = Rs1 * Rs2
+    OPCODE_MULU      = 0b111111000100,  // Rd = (Rs1 * Rs2) >> 27
+//  OPCODE_          = 0b111111000101,  //
     //                   __--__--__--
-    OPCODE_ADDI_SEN  = 0b111111011111,  // if S==- , C:Rd = Rs + immediate
-    OPCODE_ADDI_SEZ  = 0b111111011100,  // if S==0 , C:Rd = Rs + immediate
-    OPCODE_ADDI_SEP  = 0b111111011101,  // if S==1 , C:Rd = Rs + immediate
-    OPCODE_ADCI      = 0b111111010011,  // C:Rd = Rs1 + immediate + C
-    OPCODE_ADDI      = 0b111111010000,  // C:Rd = Rs1 + immediate
+//  OPCODE_          = 0b111111011111,  //
+//  OPCODE_          = 0b111111011100,  //
+//  OPCODE_          = 0b111111011101,  //
+//  OPCODE_          = 0b111111010011,  //
+//  OPCODE_          = 0b111111010000,  //
 //  OPCODE_          = 0b111111010001,  //
-    OPCODE_ADDI_SNN  = 0b111111010111,  // if S!=- , C:Rd = Rs + immediate
-    OPCODE_ADDI_SNZ  = 0b111111010100,  // if S!=0 , C:Rd = Rs + immediate
-    OPCODE_ADDI_SNP  = 0b111111010101,  // if S!=1 , C:Rd = Rs + immediate
+//  OPCODE_          = 0b111111010111,  //
+//  OPCODE_          = 0b111111010100,  //
+//  OPCODE_          = 0b111111010101,  //
     //                   __--__--__--
     OPCODE_RTL       = 0b111100111111,  // R1:R2 = R1:R2 Rotate Left by R3
 //  OPCODE_          = 0b111100111100,  //
@@ -151,8 +151,8 @@ typedef enum TriOpcode
     OPCODE_TMAJ      = 0b111100110000,  // Rd = Tritwise Majority
     OPCODE_TADD      = 0b111100110001,  // Rd = Tritwise Rs1 + Rs2
     OPCODE_TMUL      = 0b111100110111,  // Rd = Tritwise Rs1 * Rs2
-    OPCODE_MUL       = 0b111100110100,  // Rd = Rs1 * Rs2
-    OPCODE_MULU      = 0b111100110101,  // Rd = (Rs1 * Rs2) >> 27
+    OPCODE_TMIN      = 0b111100110100,  // Rd = Tritwise MIN(Rs1, Rs2)
+    OPCODE_TMAX      = 0b111100110101,  // Rd = Tritwise MAX(Rs1, Rs2)
     //                   __--__--__--
     OPCODE_RTLI      = 0b111101111111,  // R1:R2 = R1:R2 Rotate Left by immed
 //  OPCODE_          = 0b111101111100,  //
@@ -161,8 +161,8 @@ typedef enum TriOpcode
     OPCODE_TMAJI     = 0b111101110000,  // Rd = Tritwise Majority
     OPCODE_TADDI     = 0b111101110001,  // Rd = Tritwise Rs1 + immediate
     OPCODE_TMULI     = 0b111101110111,  // Rd = Tritwise Rs1 * immediate
-//  OPCODE_          = 0b111101110100,  //
-//  OPCODE_          = 0b111101110101,  //
+    OPCODE_TMINI     = 0b111101110100,  // Rd = Tritwise MIN(Rs1, immediate)
+    OPCODE_TMAXI     = 0b111101110101,  // Rd = Tritwise MAX(Rs1, immediate)
 
     OPCODE_NOP       = 0b000000000000,  // NOP
 
@@ -202,6 +202,7 @@ typedef enum
 // | 4 Immediate | 7 R3+Mod | 7 R2+Mod | 3 R1 | 6 OpCode |
 // | 11 Immediate           | 7 R2+Mod | 3 R1 | 6 OpCode |
 // | 18 Immediate                      | 3 R1 | 6 OpCode |
+// | 9 Immediate     | 9 Immediate     | 3 R1 | 6 OpCode |
 
 
 // 4 bit Immeditate

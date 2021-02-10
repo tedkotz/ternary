@@ -87,6 +87,8 @@ extern trint32_t ternaryADDB ( trint32_t op1, trint32_t op2 );
 extern trint32_t ternaryMULB ( trint32_t op1, trint32_t op2 );
 extern trint32_t ternaryANDB ( trint32_t op1, trint32_t op2 );
 extern trint32_t ternaryORRB ( trint32_t op1, trint32_t op2 );
+extern trint32_t ternaryMINB ( trint32_t op1, trint32_t op2 );
+extern trint32_t ternaryMAXB ( trint32_t op1, trint32_t op2 );
 extern trint32_t ternarySETB ( trint32_t op1, trint32_t op2 );
 extern trint32_t ternaryIMPB ( trint32_t op1, trint32_t op2 );
 extern trint32_t ternaryUNMB ( trint32_t op1, trint32_t op2 );

@@ -36,10 +36,11 @@
 /* Defines *******************************************************************/
 typedef enum InstructionFormat
 {
-    INSTFORMAT_NOP  = 0,
-    INSTFORMAT_1REG = 1,
-    INSTFORMAT_2REG = 2,
-    INSTFORMAT_3REG = 3,
+    INSTFORMAT_NOP,
+    INSTFORMAT_1REG,
+    INSTFORMAT_2REG,
+    INSTFORMAT_3REG,
+    INSTFORMAT_1REG_2IMM,
 } InstructionFormat;
 
 /* Types *********************************************************************/
@@ -53,6 +54,8 @@ typedef struct TriOpInstruction
     OpModifiers r3mod;
 //    TriWord imm4;
     TriWord imm11;
+    TriWord imm9_1;
+    TriWord imm9_2;
 //    TriWord imm18;
 }TriOpInstruction;
 

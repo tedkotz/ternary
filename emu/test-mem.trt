@@ -1,8 +1,8 @@
 # Set initiailization vector
---: 100;
+--: 10-;
 
 # Start code
-100:
+10-:
 
 # POP R_5, PC+3
 -11----1-;
