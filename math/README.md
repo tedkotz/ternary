@@ -68,23 +68,23 @@ False state the combination is False.
 | + | + | +   | +   | +   | +   | +  | -   | +     | +    | +     | -       |
 
 If we take the above table and cut out the rows with 0 inputs you'll see some
-familiar operations:
+familiar boolean operations:
 
-| A | B | MIN | AND | A * B | MAX | OR | A + B | Major  | A -> B | A <-> B | A <!> B |
-|---|---|-----|-----|-------|-----|----|-------|--------|--------|---------|---------|
-| - | - | -   | -   | +     | -   | -  | +     | -      | +      | +       | -       |
-| - | + | -   | -   | -     | +   | +  | 0     | 0      | +      | -       | +       |
-| + | - | -   | -   | -     | +   | +  | 0     | 0      | -      | -       | +       |
-| + | + | +   | +   | +     | +   | +  | -     | +      | +      | +       | -       |
+| A | B | MIN | AND | A*B | MAX | OR | A+B | UNAM  | A->B | A<->B | A<-!->B |
+|---|---|-----|-----|-----|-----|----|-----|-------|------|-------|---------|
+| - | - | -   | -   | +   | -   | -  | +   | -     | +    | +     | -       |
+| - | + | -   | -   | -   | +   | +  | 0   | 0     | +    | -     | +       |
+| + | - | -   | -   | -   | +   | +  | 0   | 0     | -    | -     | +       |
+| + | + | +   | +   | +   | +   | +  | -   | +     | +    | +     | -       |
 
 The other operations need to cut out the - inputs instead to show up:
 
-| A | B | MIN | AND | A * B | MAX | OR | A + B | Major  | A -> B | A <-> B | A <!> B |
-|---|---|-----|-----|-------|-----|----|-------|--------|--------|---------|---------|
-| 0 | 0 | 0   | -   | 0     | 0   | +  | 0     | 0      | +      | +       | -       |
-| 0 | + | 0   | 0   | 0     | +   | +  | +     | 0      | +      | 0       | 0       |
-| + | 0 | 0   | 0   | 0     | +   | +  | +     | 0      | 0      | 0       | 0       |
-| + | + | +   | +   | +     | +   | +  | -     | +      | +      | +       | -       |
+| A | B | MIN | AND | A*B | MAX | OR | A+B | UNAM  | A->B | A<->B | A<-!->B |
+|---|---|-----|-----|-----|-----|----|-----|-------|------|-------|---------|
+| 0 | 0 | 0   | -   | 0   | 0   | +  | 0   | 0     | +    | +     | -       |
+| 0 | + | 0   | 0   | 0   | +   | +  | +   | 0     | +    | 0     | 0       |
+| + | 0 | 0   | 0   | 0   | +   | +  | +   | 0     | 0    | 0     | 0       |
+| + | + | +   | +   | +   | +   | +  | -   | +     | +    | +     | -       |
 
 
 
@@ -101,7 +101,7 @@ Ternary has more 1 input gates than binary and many more are useful. The are 3^3
 | - | - | + |  -11   |       | Neg(Ceil), F-test                               |
 | - | 0 | - |  -10   | Abn   | Neg(Abs)                                        |
 | - | 0 | 0 |  -9    |       | Neg(Flat)                                       |
-| - | 0 | + |  -8    | Neg   |                                                 |
+| - | 0 | + |  -8    | Neg   | TF-swap                                         |
 | - | + | - |  -7    | isZ   | Z-test                                          |
 | - | + | 0 |  -6    | Inc   |                                                 |
 | - | + | + |  -5    |       | Neg(Floor)                                      |
@@ -111,11 +111,11 @@ Ternary has more 1 input gates than binary and many more are useful. The are 3^3
 | 0 | 0 | - |  -1    |       | F-filter                                        |
 | 0 | 0 | 0 |  0     | Clear | Z-filter                                        |
 | 0 | 0 | + |  1     |       | Flat(Neg), F-select                             |
-| 0 | + | - |  2     |       | Inc(Neg) or Neg(Dec)                            |
+| 0 | + | - |  2     |       | Inc(Neg) or Neg(Dec), TZ-swap                   |
 | 0 | + | 0 |  3     |       | Inc(Abn)??, Z-select                            |
 | 0 | + | + |  4     |       | Lax(Neg)                                        |
 | + | - | - |  5     | Floor | T-test                                          |
-| + | - | 0 |  6     |       | Dec(Neg) or Neg(Inc)                            |
+| + | - | 0 |  6     |       | Dec(Neg) or Neg(Inc), FZ-swap                   |
 | + | - | + |  7     |       | Neg(isZ)                                        |
 | + | 0 | - |  8     | NOP   |                                                 |
 | + | 0 | 0 |  9     | Flat  | Lax(Floor), T-filter, T-select                  |
@@ -142,6 +142,11 @@ The these gates are most intuitively expressed as combinations of NEG, INC and D
     DEC(NEG(A)) = NEG(INC(A) = Gate 6
 Each gate is its own complement. which can be illustrated by combining the two descriptions of gate2 as an example.
     INC(NEG(NEG(DEC(A)))) = INC(DEC(A)) = A
+Looking more closely at what these gates actually do reveals their symmetry with
+the NEG Gate. They can all be seen as pivots about one of the three values. In
+NEG + and - rotate around an unchanging 0. Gate 2 has + and 0 rotating around
+an unchanging -. Finally gate 6 completes the set by having 0 and - rotate
+around +.
 
 
 #### Information destroying gates
@@ -156,7 +161,8 @@ The most extreeme form of information losing gates, these completely disreguard 
 ### Multiple Input Gates
 When you get to 2 input gate ternary logic explodes to 3^(3^2)=19683 while binary stays
 with a more reasonable 2^2^2=16. This makes an exhaustive analysis of 2-input ternary
-logic functions.
+logic functions while possible unrealistic. We can instead investigate some of
+the more interesting operations and how the interconnect.
 
 #### AND/MIN Gate
 
@@ -240,12 +246,66 @@ be more complex in covering all the gates.
 We start with stating that workign in discrete values any N-input function can
 be defined in terms of a condition and an N-1 input function
 ```
-                      / x[n] = -, F(x0,x1,...,x[n-1],-)
-F(x0,x1,...,x[n]) =  {  x[n] = 0, F(x0,x1,...,x[n-1],0)
-                      \ x[n] = +, F(x0,x1,...,x[n-1],+)
+For any F(x0,x1,...,x[n])
+Fn(x0,x1,...,x[n-1]) = F(x0,x1,...,x[n-1], -)
+Fz(x0,x1,...,x[n-1]) = F(x0,x1,...,x[n-1], 0)
+Fp(x0,x1,...,x[n-1]) = F(x0,x1,...,x[n-1], +)
+                      / x[n] = +, Fp(x0,x1,...,x[n-1])
+F(x0,x1,...,x[n]) =  {  x[n] = 0, Fz(x0,x1,...,x[n-1])
+                      \ x[n] = -, Fn(x0,x1,...,x[n-1])
 ```
+This requires a way to do the three way conditional. There are several ways that
+come to mind to do that. Fundamentally you need a test function, masking and
+summation operations. This could be done with isF, isZ, isT, Max and Min. Or
+the Flat versions of the test ops(F-Select, Z-Select & T-Select), MUL and ADD.
+```
+switch(A,B,C,D) = Max( Min( isT(A), B ), Min( isZ(A), C ), Min( isF(A), D ) )
+switch(A,B,C,D) = isT(A) & B | isZ(A) & C | isF(A) & D
+switch(A,B,C,D) = Tsel(A) * B + Zsel(A) * B + Fsel(A) * D
+```
+Which then combines with the above to give us a general path, though not
+necessarily most efficient one, to reduce any N input function to collection of arbitarily
+smaller order function, and the combination of functions needed to define the switch
+above.
+```
+F(x0,x1,...,x[n]) = switch(x[n], Fp(x0,x1,...,x[n-1]), Fz(x0,x1,...,x[n-1]), Fn(x0,x1,...,x[n-1]))
+```
+This shows that we could reduce everything to the siwtch and single input functions.
+As we showed above we only need 3 single input functions to cover all single
+input functions. which means we can stop iterating this down when we get to
+single input functions. switch still needs its componant parts, but the test
+functions are already sigle input function so we have those covered. This leaves
+the masking and summation two input functions. This gets us down to 5 operations,
+but these 5 gates may have some overlap depending on selection.
+```
+DEC(A) = ADD(A, -)
+NEG(A) = MUL(A, -) = ADD( A, A)
+LAX(A) = MUL(ADD(A, +), ADD(A, +))
 
+MIN(A, B) = NEG(MAX(NEG(A),NEG(B)))
+LAX(A) =  MAX(DEC(DEC(A)),DEC(NEG((A))))
 
+MAX(A, B) = NEG(MIN(NEG(A),NEG(B)))
+LAX(A) =  NEG(MIN(DEC(DEC(A)),DEC(NEG((A)))))
+
+AND(A, B) = NEG(OR(NEG(A),NEG(B)))
+LAX(A) = DEC(NEG(OR( A, A)))
+
+OR (A, B) = NEG(AND(NEG(A),NEG(B)))
+LAX(A) = DEC(AND( NEG(A), NEG(A)))
+```
+This shows 5 different minimal functionally complete operation sets with 3 ops.
+1. ADD, MUL, -1
+2. MAX, NEG, DEC
+3. MIN, NEG, DEC
+4. AND, NEG, DEC
+5. OR,  NEG, DEC
+
+As the MAX or the MIN of anything with itself is unchanged, it provides the easy
+opportunity to merge the negative to them to get the number of operations down
+by one more to NMIN or NMAX plus DEC. So if hardware were produced that could
+do those 2 operations and interconnect, it could be used to construct any
+ternary operation.
 
 Links
 -----
