@@ -33,8 +33,12 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 
 /* Defines *******************************************************************/
+#define MAX_STRING_SIZE 256
+
+#define strcpy_s( A, B, C ) strcpy( A, C)
 /* Types *********************************************************************/
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
@@ -103,15 +107,19 @@ void resetMem( void )
  * See Header
  *
  */
-int readFileIntoMem( FILE* fin , int verbose)
+int readFileIntoMem(FILE* fin, const char* fname, int verbose)
 {
     TriWord addr=0;
     TriWord accum=0;
     trit_t t;
     int line=1;
     int pos=0;
-    char filename[80] = "-";
+    int number;
+    char filename[MAX_STRING_SIZE] = "-";
+    char tmp[MAX_STRING_SIZE];
     int c;
+    int i;
+    strcpy_s(filename, MAX_STRING_SIZE, fname);
     for(;;)
     {
         ++pos;
@@ -141,6 +149,74 @@ int readFileIntoMem( FILE* fin , int verbose)
 
             case '#':
                 // comments, maybe pragmas and line updates
+                // can we find a line number directive
+                // Dump white space
+                c=fgetc(fin);
+                while( c==' ' || c =='\t' )
+                {
+                    c=fgetc(fin);
+                }
+                if( c=='l' )
+                {
+                    c=fgetc(fin);
+                    if( c=='i' )
+                    {
+                        c=fgetc(fin);
+                        if( c=='n' )
+                        {
+                            c=fgetc(fin);
+                            if( c=='e' )
+                            {
+                                c=fgetc(fin);
+                                while( c==' ' || c =='\t' )
+                                {
+                                    c=fgetc(fin);
+                                }
+                            }
+                        }
+                    }
+                }
+                number=0;
+                // Check for number
+                while( c>='0' && c <= '9' )
+                {
+                    number = number * 10 + c - '0';
+                    c=fgetc(fin);
+                }
+                if(number != 0 )
+                {
+                    // throw out white space
+                    while( c==' ' || c =='\t' )
+                    {
+                        c=fgetc(fin);
+                    }
+                    if(c=='\n')
+                    {
+                        // a number by itself is a line override
+                        line = number-1;
+                    }
+                    else if(c=='"')
+                    {
+                        //extract filename
+                        i=0;
+                        c=fgetc(fin);
+                        while( (i < (MAX_STRING_SIZE - 1)) &&
+                            (c != '\"') && (c != '\n') && (c != EOF))
+                        {
+                            tmp[i++]=c;
+                            c=fgetc(fin);
+                        }
+                        if(c=='\"')
+                        {
+                            tmp[i++]=0;
+                            line=number-1;
+                            strcpy_s(filename, MAX_STRING_SIZE, tmp);
+                        }
+                    }
+                }
+                //FALLTHRU to throw out rest of line
+            case '/':
+                // C++ style comments
                 while( c!=EOF && c !='\n' )
                 {
                     c=fgetc(fin);

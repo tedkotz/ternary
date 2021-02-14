@@ -1,7 +1,3 @@
-//gcc -xc -E ../asm/test.tsm -o test.out
-
-#include "assembler.inc"
-
 // Set initiailization vector
 --: 10-;
 

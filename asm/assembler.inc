@@ -3,6 +3,8 @@
 // Fix endianess of triwords
 #define TRIWORD( A, B, C) C;B;A
 
+#define TRYTE( A ) A
+
 #define NOP 000 000 000; 000 000 000; 000 000 000
 
 #define R2MODFORMAT( MOD ) TOP##MOD BOT##MOD

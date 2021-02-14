@@ -107,7 +107,7 @@ extern void resetMem( void );
  * @param
  * @return
  */
-extern int readFileIntoMem( FILE* fin , int verbose);
+extern int readFileIntoMem(FILE* fin, const char* fname, int verbose);
 
 
 #endif /* TERNARY_MEM_H */

@@ -36,6 +36,7 @@
 *.x86_64
 *.hex
 tern-cpu-emu
+asm/out/
 
 # Debug files
 *.dSYM/
@@ -51,3 +52,4 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+

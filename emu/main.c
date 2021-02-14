@@ -39,7 +39,7 @@
 /* Interfaces ****************************************************************/
 /* Data **********************************************************************/
 /* Functions *****************************************************************/
-static int fileToMem( char* fname , int verbose)
+static int fileToMem( const char* fname , int verbose)
 {
     FILE* filein=NULL;
     int returnVal=-3;
@@ -50,7 +50,7 @@ static int fileToMem( char* fname , int verbose)
     }
     else
     {
-        returnVal=readFileIntoMem(filein, verbose);
+        returnVal=readFileIntoMem(filein, fname, verbose);
         fclose(filein);
     }
     return returnVal;
@@ -153,6 +153,7 @@ int main( int argc, char** argv )
                 printf(" w <ADDR> <VAL> : Poke Value to Tryte at Address\n");
                 printf(" c : Reset CPU\n");
                 printf(" m : Reset Memory\n");
+                printf(" f : Read file into memory\n");
                 printf(" ? : help\n");
                 break;
             default:
