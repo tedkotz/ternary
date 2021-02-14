@@ -8,7 +8,7 @@ default: asm/test
 define SUBMAKE
 
 $(1):
-	$(MAKE) -C $$(@D)/ $$(@F)
+	$$(MAKE) -C $$(@D)/ $$(@F)
 
 endef
 
