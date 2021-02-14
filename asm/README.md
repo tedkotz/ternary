@@ -43,12 +43,12 @@ The preprocessor supports a bunch of #directives and defines.
 | `#line`          | Sets line number for debugging / analysis purposes       |
 | `#error`         | Emits an error and terminates if processed               |
 | `#warning`       | Emits a warning and carries on if processed              |
-| `#assert`        | Emits an error and terminates if clause is true          |
+| `#assert`        | Emits an error and terminates if clause is false         |
 | `#for in`        | Allows repititive inclusion of parts of file             |
 | `#endfor`        |                                                          |
 | `#enum`          | Allows C-style enum to be treated as macros              |
 | `#`              |                                                          |
-| `##`             |                                                          |
+| `##`             | Concatenate tokens                                       |
 | `...`            | Variadic arguments to macro                              |
 | `__FILE__`       |                                                          |
 | `__LINE__`       |                                                          |

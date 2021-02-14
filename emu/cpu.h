@@ -154,15 +154,15 @@ typedef enum TriOpcode
     OPCODE_TMIN      = 0b111100110100,  // Rd = Tritwise MIN(Rs1, Rs2)
     OPCODE_TMAX      = 0b111100110101,  // Rd = Tritwise MAX(Rs1, Rs2)
     //                   __--__--__--
-    OPCODE_RTLI      = 0b111101111111,  // R1:R2 = R1:R2 Rotate Left by immed
-//  OPCODE_          = 0b111101111100,  //
-    OPCODE_TANDI     = 0b111101111101,  // Rd = Tritwise Rs1 & immediate
-    OPCODE_TORI      = 0b111101110011,  // Rd = Tritwise Rs1 | immediate
-    OPCODE_TMAJI     = 0b111101110000,  // Rd = Tritwise Majority
-    OPCODE_TADDI     = 0b111101110001,  // Rd = Tritwise Rs1 + immediate
-    OPCODE_TMULI     = 0b111101110111,  // Rd = Tritwise Rs1 * immediate
-    OPCODE_TMINI     = 0b111101110100,  // Rd = Tritwise MIN(Rs1, immediate)
-    OPCODE_TMAXI     = 0b111101110101,  // Rd = Tritwise MAX(Rs1, immediate)
+    OPCODE_RTLI      = 0b111100001111,  // R1:R2 = R1:R2 Rotate Left by immed
+//  OPCODE_          = 0b111100001100,  //
+    OPCODE_TANDI     = 0b111100001101,  // Rd = Tritwise Rs1 & immediate
+    OPCODE_TORI      = 0b111100000011,  // Rd = Tritwise Rs1 | immediate
+    OPCODE_TMAJI     = 0b111100000000,  // Rd = Tritwise Majority
+    OPCODE_TADDI     = 0b111100000001,  // Rd = Tritwise Rs1 + immediate
+    OPCODE_TMULI     = 0b111100000111,  // Rd = Tritwise Rs1 * immediate
+    OPCODE_TMINI     = 0b111100000100,  // Rd = Tritwise MIN(Rs1, immediate)
+    OPCODE_TMAXI     = 0b111100000101,  // Rd = Tritwise MAX(Rs1, immediate)
 
     OPCODE_NOP       = 0b000000000000,  // NOP
 
