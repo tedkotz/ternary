@@ -1,0 +1,85 @@
+// This is an attempt to right an emulator for the emulator.
+// it proves Turing completeness by implementing the known complete OISC computer based on the SUBLEQ instruction:
+//  subleq a, b, c   ; Mem[b] = Mem[b] - Mem[a]
+//                   ; if (Mem[b] ≤ 0) goto c
+// I'm making one slight modification to make it easier to code instead of jumping
+// to c it relative branches to PC+c which makes it easier to code as the
+// unconditional advance just requires C to be 0.
+//  subleq a, b, c   ; Mem[b] = Mem[b] - Mem[a]
+//                   ; if (Mem[b] ≤ 0) goto PC += c
+// This emulator has the following register allocations
+// P1 will be the PC
+// P2 will store a
+// P3 will store b
+// P4 will store c
+// P5 will store Mem[b]
+// P6 will store Mem[a]
+
+// Set initiailization vector
+nn: nnnnn;
+
+// Start code emulator runs out of negative address space
+nnnnn:
+// Postive address space can be used by the SUBLEQ system
+// start program counter at adddress 2
+ADDI( P01, ZERO, _NOP, 11n);
+
+// Make sure zero is at address 0
+ST3( ZERO, ZERO, _NOP, 0);
+
+// Fetch a
+POP( P02, P01, _NOP, 10);
+
+// Fetch b
+POP( P03, P01, _NOP, 10);
+
+// Fetch c
+POP( P04, P01, _NOP, 10);
+
+// Fetch Mem[b]
+LD3( P05, P03, _NOP, 0);
+
+// Fetch Mem[a]
+LD3( P06, P02, _NOP, 0);
+
+// calculate Mem[b]-Mem[a]
+ADD( P05, P05, _NOP, P06, _NEG );
+
+// Store result
+ST3( P03, P05, _NOP, 0);
+
+// move to next SUBLEQ instruction if >0
+ADSI( PC, 0n010, 0 );
+
+// If <=0 set PC for jump
+ADD( P01, P01, _NOP, P04, _NOP);
+
+// loop to next instruction
+ADDI( PC, PC, _NOP, 0n0n0);
+
+// Start of  SUBLEQ instructions
+11n:
+// ADD A(@1000-) and B(@1001-)
+// subleq a, Z
+TRIWORD( 0,0,1000-);
+TRIWORD( 0,0,0);
+TRIWORD( 0,0,0);
+// subleq Z, b
+TRIWORD( 0,0,0);
+TRIWORD( 0,0,1001-);
+TRIWORD( 0,0,0);
+// subleq Z, Z
+TRIWORD( 0,0,0);
+TRIWORD( 0,0,0);
+TRIWORD( 0,0,0);
+
+
+
+
+// Data
+1000-:
+TRIWORD( 0,0,111);
+TRIWORD( 0,0,10);
+
+
+
