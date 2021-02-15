@@ -1,0 +1,34 @@
+//Pushes the first 60 fibinocci NUmbers on the stack
+
+// Set initiailization vector
+--: 10-;
+
+// Start code
+10-:
+
+//Set Stack Pointer
+POP( N05, PC, _NOP, +0);
+TRIWORD( 0,0, ------);
+
+// Put 60 in P4 +-+-0
+ADDI( P04, ZERO, _NOP, +-+-0);
+// Put 0 in P1
+ADDI( P01, ZERO, _NOP, 0);
+// Put 1 in P2
+ADDI( P02, ZERO, _NOP, 1);
+// Loop_Label: P3 = P1 + P2
+ADD( P03,  P01, _NOP, P02, _NOP);
+// Push P1
+PSH( N05, P01, _NOP, -0);
+// P1 = P2
+ADDI( P01, P02, _NOP, 0);
+// P2 = P3
+ADDI( P02, P03, _NOP, 0);
+// DEC P4
+ADDI( P04, P04, _NOP, 0-);
+// BRANCH >0 -6 instructions
+ADSI( PC, 0-+00, 0);
+// HALT
+ADDI( PC, PC, _NOP, 0-0);
+
+

@@ -225,7 +225,7 @@ void printCpuState(TriCpu* cpu)
     {
         printf(" %s %03d : ", reg_names[x+13], x);
         ternaryPrint(cpu->regs[i], TRITS_PER_WORD);
-        printf("(%"PRIi64")\n", ternary2int(cpu->regs[i]));
+        printf("(%"PRIi64")\n", ternary2int(TRIWORD_MASK&(cpu->regs[i])));
         i=ternaryADD(i, 0b0001);
         ++x;
     }

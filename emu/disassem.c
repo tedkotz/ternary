@@ -45,13 +45,13 @@
  */
 static TriWord expandImmediate( TriWord input )
 {
-    if( 0b00111111 == input )
+    if( 0b00001111 == input )
     {
-        return (-1LL) & ((1ULL << 54) - 1);
+        return (-1LL) & TRIWORD_MASK;
     }
     else if ( 0b00010101 == input )
     {
-        return (-1LL) & ((1ULL << 54) - 1);
+        return (0b00010101010101010101010101010101010101010101010101010101ULL);
     }
     else
     {
