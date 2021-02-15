@@ -45,7 +45,7 @@
  */
 static TriWord expandImmediate( TriWord input )
 {
-    if( 0b00001111 == input )
+    if( 0b00111111 == input )
     {
         return (-1LL) & TRIWORD_MASK;
     }

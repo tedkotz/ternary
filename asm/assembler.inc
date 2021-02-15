@@ -10,14 +10,13 @@
 #define R2MODFORMAT( MOD ) TOP##MOD BOT##MOD
 
 #define INST2( OPCODE, R1, R2, R2MOD, IMM ) \
-  TRIWORD( IMM -, -- R2 R2MODFORMAT(R2MOD), R1 OPCODE )
+  TRIWORD( IMM TOP_IMS(IMM), BOT_IMS(IMM) R2 R2MODFORMAT(R2MOD), R1 OPCODE )
 
 #define INST3( OPCODE, R1, R2, R2MOD, R3, R3MOD ) \
   TRIWORD( R3 TOP##R3MOD, BOT##R3MOD R2 R2MODFORMAT(R2MOD), R1 OPCODE )
 
 #define INST1_2IMM( OPCODE, R1, IMM1, IMM2 ) \
-  TRIWORD( IMM2 ---, IMM1 ---, R1 OPCODE )
-
+  TRIWORD( IMM2 TOP_IMS(IMM2) BOT_IMS(IMM2), IMM1 TOP_IMS(IMM1) BOT_IMS(IMM1), R1 OPCODE )
 
 #define N13    ---
 #define N12    --0
@@ -71,6 +70,25 @@
 #define BOT_NOP 00
 #define BOT_SHL --
 
+// MACRO chicanery to detect Immediate value of 0, this is why Immediate values
+// can't contain + or -
+#define _CAT( A, B ) A ## B
+#define CAT( A, B ) _CAT(A, B)
+#define SECOND(a, b, ...) b
+
+#define _POP_(...) SECOND(__VA_ARGS__, 1)
+
+#define _PUSH_0 ~, 0
+
+#define BOOL(A) _POP_( _PUSH_##A )
+
+#define TOP_IMS_0 0
+#define BOT_IMS_0 00
+#define TOP_IMS_1 n
+#define BOT_IMS_1 nn
+
+#define TOP_IMS(A) CAT(TOP_IMS_,BOOL(A))
+#define BOT_IMS(A) CAT(BOT_IMS_,BOOL(A))
 
 #define LD1( DST, SRC, MOD,  IMM ) \
   INST2( ------, DST, SRC, MOD, IMM )
