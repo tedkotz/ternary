@@ -133,8 +133,51 @@
   INST1_2IMM( ---00+, R1, IMM1, IMM2 )
 
 #define RTL( R1, R2, R2MOD, R3, R3MOD ) \
-  INST3( --0---, R1, R2, R2MOD, R3, R3MOD )
+  INST3( ---+--, R1, R2, R2MOD, R3, R3MOD )
+
+#define TAND( R1, R2, R2MOD, R3, R3MOD ) \
+  INST3( ---+-+, R1, R2, R2MOD, R3, R3MOD )
+
+#define TOR TORR
+#define TORR( R1, R2, R2MOD, R3, R3MOD ) \
+  INST3( ---+0-, R1, R2, R2MOD, R3, R3MOD )
+
+#define TMAJ( R1, R2, R2MOD, R3, R3MOD ) \
+  INST3( ---+00, R1, R2, R2MOD, R3, R3MOD )
+
+#define TADD( R1, R2, R2MOD, R3, R3MOD ) \
+  INST3( ---+0+, R1, R2, R2MOD, R3, R3MOD )
+
+#define TMUL( R1, R2, R2MOD, R3, R3MOD ) \
+  INST3( ---0+-, R1, R2, R2MOD, R3, R3MOD )
+
+#define TMIN( R1, R2, R2MOD, R3, R3MOD ) \
+  INST3( ---0+0, R1, R2, R2MOD, R3, R3MOD )
+
+#define TMAX( R1, R2, R2MOD, R3, R3MOD ) \
+  INST3( ---0++, R1, R2, R2MOD, R3, R3MOD )
 
 #define RTLI( DST, SRC, MOD,  IMM ) \
-  INST2( --00--, DST, SRC, MOD, IMM )
+  INST2( --0---, DST, SRC, MOD, IMM )
 
+#define TANDI( DST, SRC, MOD,  IMM ) \
+  INST2( --0--+, DST, SRC, MOD, IMM )
+
+#define TORI TORRI
+#define TORRI( DST, SRC, MOD,  IMM ) \
+  INST2( --0-0-, DST, SRC, MOD, IMM )
+
+#define TMAJI( DST, SRC, MOD,  IMM ) \
+  INST2( --0-00, DST, SRC, MOD, IMM )
+
+#define TADDI( DST, SRC, MOD,  IMM ) \
+  INST2( --0-0+, DST, SRC, MOD, IMM )
+
+#define TMULI( DST, SRC, MOD,  IMM ) \
+  INST2( --0-+-, DST, SRC, MOD, IMM )
+
+#define TMINI( DST, SRC, MOD,  IMM ) \
+  INST2( --0-+0, DST, SRC, MOD, IMM )
+
+#define TMAXI( DST, SRC, MOD,  IMM ) \
+  INST2( --0-++, DST, SRC, MOD, IMM )

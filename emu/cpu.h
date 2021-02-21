@@ -132,37 +132,27 @@ typedef enum TriOpcode
     OPCODE_ADSI      = 0b111111000001,  // if S==1 then C:Rd = Rd + imm1; if S==- then C:Rd = Rd + imm2
     OPCODE_MUL       = 0b111111000111,  // Rd = Rs1 * Rs2
     OPCODE_MULU      = 0b111111000100,  // Rd = (Rs1 * Rs2) >> 27
-//  OPCODE_          = 0b111111000101,  //
+    OPCODE_MULI      = 0b111111000101,  // Rd = Rs1 * immediate
     //                   __--__--__--
-//  OPCODE_          = 0b111111011111,  //
+    OPCODE_RTL       = 0b111111011111,  // R1:R2 = R1:R2 Rotate Left by R3
 //  OPCODE_          = 0b111111011100,  //
-//  OPCODE_          = 0b111111011101,  //
-//  OPCODE_          = 0b111111010011,  //
-//  OPCODE_          = 0b111111010000,  //
-//  OPCODE_          = 0b111111010001,  //
-//  OPCODE_          = 0b111111010111,  //
-//  OPCODE_          = 0b111111010100,  //
-//  OPCODE_          = 0b111111010101,  //
+    OPCODE_TAND      = 0b111111011101,  // Rd = Tritwise Rs1 & Rs2
+    OPCODE_TOR       = 0b111111010011,  // Rd = Tritwise Rs1 | Rs2
+    OPCODE_TMAJ      = 0b111111010000,  // Rd = Tritwise Majority
+    OPCODE_TADD      = 0b111111010001,  // Rd = Tritwise Rs1 + Rs2
+    OPCODE_TMUL      = 0b111111010111,  // Rd = Tritwise Rs1 * Rs2
+    OPCODE_TMIN      = 0b111111010100,  // Rd = Tritwise MIN(Rs1, Rs2)
+    OPCODE_TMAX      = 0b111111010101,  // Rd = Tritwise MAX(Rs1, Rs2)
     //                   __--__--__--
-    OPCODE_RTL       = 0b111100111111,  // R1:R2 = R1:R2 Rotate Left by R3
+    OPCODE_RTLI      = 0b111100111111,  // R1:R2 = R1:R2 Rotate Left by immed
 //  OPCODE_          = 0b111100111100,  //
-    OPCODE_TAND      = 0b111100111101,  // Rd = Tritwise Rs1 & Rs2
-    OPCODE_TOR       = 0b111100110011,  // Rd = Tritwise Rs1 | Rs2
-    OPCODE_TMAJ      = 0b111100110000,  // Rd = Tritwise Majority
-    OPCODE_TADD      = 0b111100110001,  // Rd = Tritwise Rs1 + Rs2
-    OPCODE_TMUL      = 0b111100110111,  // Rd = Tritwise Rs1 * Rs2
-    OPCODE_TMIN      = 0b111100110100,  // Rd = Tritwise MIN(Rs1, Rs2)
-    OPCODE_TMAX      = 0b111100110101,  // Rd = Tritwise MAX(Rs1, Rs2)
-    //                   __--__--__--
-    OPCODE_RTLI      = 0b111100001111,  // R1:R2 = R1:R2 Rotate Left by immed
-//  OPCODE_          = 0b111100001100,  //
-    OPCODE_TANDI     = 0b111100001101,  // Rd = Tritwise Rs1 & immediate
-    OPCODE_TORI      = 0b111100000011,  // Rd = Tritwise Rs1 | immediate
-    OPCODE_TMAJI     = 0b111100000000,  // Rd = Tritwise Majority
-    OPCODE_TADDI     = 0b111100000001,  // Rd = Tritwise Rs1 + immediate
-    OPCODE_TMULI     = 0b111100000111,  // Rd = Tritwise Rs1 * immediate
-    OPCODE_TMINI     = 0b111100000100,  // Rd = Tritwise MIN(Rs1, immediate)
-    OPCODE_TMAXI     = 0b111100000101,  // Rd = Tritwise MAX(Rs1, immediate)
+    OPCODE_TANDI     = 0b111100111101,  // Rd = Tritwise Rs1 & immediate
+    OPCODE_TORI      = 0b111100110011,  // Rd = Tritwise Rs1 | immediate
+    OPCODE_TMAJI     = 0b111100110000,  // Rd = Tritwise Majority
+    OPCODE_TADDI     = 0b111100110001,  // Rd = Tritwise Rs1 + immediate
+    OPCODE_TMULI     = 0b111100110111,  // Rd = Tritwise Rs1 * immediate
+    OPCODE_TMINI     = 0b111100110100,  // Rd = Tritwise MIN(Rs1, immediate)
+    OPCODE_TMAXI     = 0b111100110101,  // Rd = Tritwise MAX(Rs1, immediate)
 
     OPCODE_NOP       = 0b000000000000,  // NOP
 

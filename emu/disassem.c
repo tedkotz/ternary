@@ -232,7 +232,8 @@ static InstructionFormat printOpcode(TriOpcode op)
         case OPCODE_ADSI      : printf("ADSI");      return (INSTFORMAT_1REG_2IMM);
         case OPCODE_MUL       : printf("MUL");       return (INSTFORMAT_3REG);
         case OPCODE_MULU      : printf("MULU");      return (INSTFORMAT_3REG);
-//      case OPCODE_          : printf("        ");  return (INSTFORMAT_2REG);
+        case OPCODE_MULI      : printf("MULI");      return (INSTFORMAT_2REG);
+
         case OPCODE_RTL       : printf("RTL");       return (INSTFORMAT_3REG);
 //      case OPCODE_          : printf("        ");  return (INSTFORMAT_2REG);
         case OPCODE_TAND      : printf("TAND");      return (INSTFORMAT_3REG);
@@ -240,6 +241,8 @@ static InstructionFormat printOpcode(TriOpcode op)
         case OPCODE_TMAJ      : printf("TMAJ");      return (INSTFORMAT_3REG);
         case OPCODE_TADD      : printf("TADD");      return (INSTFORMAT_3REG);
         case OPCODE_TMUL      : printf("TMUL");      return (INSTFORMAT_3REG);
+        case OPCODE_TMIN      : printf("TMIN");      return (INSTFORMAT_3REG);
+        case OPCODE_TMAX      : printf("TMAX");      return (INSTFORMAT_3REG);
         case OPCODE_RTLI      : printf("RTLI");      return (INSTFORMAT_2REG);
 //      case OPCODE_          : printf("        ");  return (INSTFORMAT_2REG);
         case OPCODE_TANDI     : printf("TANDI");     return (INSTFORMAT_2REG);
@@ -247,8 +250,9 @@ static InstructionFormat printOpcode(TriOpcode op)
         case OPCODE_TMAJI     : printf("TMAJI");     return (INSTFORMAT_2REG);
         case OPCODE_TADDI     : printf("TADDI");     return (INSTFORMAT_2REG);
         case OPCODE_TMULI     : printf("TMULI");     return (INSTFORMAT_2REG);
-//      case OPCODE_          : printf("        ");  return (INSTFORMAT_2REG);
-//      case OPCODE_          : printf("        ");  return (INSTFORMAT_2REG);
+        case OPCODE_TMINI     : printf("TMINI");     return (INSTFORMAT_2REG);
+        case OPCODE_TMAXI     : printf("TMAXI");     return (INSTFORMAT_2REG);
+
         case OPCODE_NOP       : printf("NOP");       return (INSTFORMAT_NOP);
         default:
             printf("Unknown Opcode");return (INSTFORMAT_NOP);

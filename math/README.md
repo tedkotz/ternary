@@ -309,7 +309,7 @@ ternary operation.
 
 Links
 -----
-
+- <https://en.wikipedia.org/wiki/Radix_economy>
 - <https://en.wikipedia.org/wiki/Balanced_ternary>
 - <https://en.wikipedia.org/wiki/Ternary_numeral_system>
 - <https://en.wikipedia.org/wiki/Many-valued_logic>
@@ -317,4 +317,7 @@ Links
 - <https://en.wikipedia.org/wiki/BL_(logic)>
 - <https://en.wikipedia.org/wiki/MV-algebra>
 - <https://en.wikipedia.org/wiki/%C5%81ukasiewicz_logic>
+- <https://en.wikipedia.org/wiki/Fuzzy_logic>
+- <https://en.wikipedia.org/wiki/T-norm_fuzzy_logics>
+
 

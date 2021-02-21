@@ -34,7 +34,10 @@
 #include <stdio.h>
 
 /* Defines *******************************************************************/
-// 3^11 Trites of RAM
+// 3^11 Trytes of RAM - simlar address space to a 16-bit memory
+//                      15-trit might make sense as well as it it divisible by 3
+//                      and would require the same number of total address and
+//                      data lines as an 8-bit era cpu
 #define RAM_SIZE 177147
 #define BASE_OFFSET (RAM_SIZE/2)
 #define RAM_ADDR_MASK ((1<<(11*2))-1)

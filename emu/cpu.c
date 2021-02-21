@@ -397,19 +397,17 @@ void runCPU( TriCpu* cpu, int cycles )
                         break;
                 }
                 break;
-//          case OPCODE_MUL       :  // Rd = Rs1 * Rs2
+            case OPCODE_MUL       :  // Rd = Rs1 * Rs2
+                val=ternaryMUL( ReadModReg(cpu, inst.r2, inst.r2mod), ReadModReg(cpu, inst.r3, inst.r3mod));
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
 //          case OPCODE_MULU      :  // Rd = (Rs1 * Rs2) >> 27
-//          case OPCODE_          :  //
-
-//          case OPCODE_          :  //
-//          case OPCODE_          :  //
-//          case OPCODE_          :  //
-//          case OPCODE_          :  //
-//          case OPCODE_          :  //
-//          case OPCODE_          :  //
-//          case OPCODE_          :  //
-//          case OPCODE_          :  //
-//          case OPCODE_          :  //
+            case OPCODE_MULI      :  // Rd = Rs1 * immediate
+                val=ternaryMUL( ReadModReg(cpu, inst.r2, inst.r2mod), inst.imm11);
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
 
             case OPCODE_RTL       :  // R1:R2 = R1:R2 Rotate Left by R3
                 val = ReadModReg(cpu, inst.r1, OPMOD_NOP);
@@ -420,11 +418,41 @@ void runCPU( TriCpu* cpu, int cycles )
                 break;
 //          case OPCODE_          :  //
             case OPCODE_TAND      :  // Rd = Tritwise Rs1 & Rs2
-            case OPCODE_TOR       :  // Rd = Tritwise Rs1 | Rs2
-            case OPCODE_TMAJ      :  // Rd = Tritwise Majority
-            case OPCODE_TADD      :  // Rd = Tritwise Rs1 + Rs2
-            case OPCODE_TMUL      :  // Rd = Tritwise Rs1 * Rs2
+                val=ternaryANDB( ReadModReg(cpu, inst.r2, inst.r2mod), ReadModReg(cpu, inst.r3, inst.r3mod));
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
                 break;
+            case OPCODE_TOR       :  // Rd = Tritwise Rs1 | Rs2
+                val=ternaryORRB( ReadModReg(cpu, inst.r2, inst.r2mod), ReadModReg(cpu, inst.r3, inst.r3mod));
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
+            case OPCODE_TMAJ      :  // Rd = Tritwise Majority
+                val=ternaryUNMB( ReadModReg(cpu, inst.r2, inst.r2mod), ReadModReg(cpu, inst.r3, inst.r3mod));
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
+            case OPCODE_TADD      :  // Rd = Tritwise Rs1 + Rs2
+                val=ternaryADDB( ReadModReg(cpu, inst.r2, inst.r2mod), ReadModReg(cpu, inst.r3, inst.r3mod));
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
+            case OPCODE_TMUL      :  // Rd = Tritwise Rs1 * Rs2
+                val=ternaryMULB( ReadModReg(cpu, inst.r2, inst.r2mod), ReadModReg(cpu, inst.r3, inst.r3mod));
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
+            case OPCODE_TMIN      :  // Rd = Tritwise MIN(Rs1, Rs2)
+                val=ternaryMINB( ReadModReg(cpu, inst.r2, inst.r2mod), ReadModReg(cpu, inst.r3, inst.r3mod));
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
+            case OPCODE_TMAX      :  // Rd = Tritwise MAX(Rs1, Rs2)
+                val=ternaryMAXB( ReadModReg(cpu, inst.r2, inst.r2mod), ReadModReg(cpu, inst.r3, inst.r3mod));
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
+
             case OPCODE_RTLI      :  // R1:R2 = R1:R2 Rotate Left by immed
                 val = ReadModReg(cpu, inst.r1, OPMOD_NOP);
                 val2 = ReadModReg(cpu, inst.r2, inst.r2mod);
@@ -434,12 +462,40 @@ void runCPU( TriCpu* cpu, int cycles )
                 break;
 //          case OPCODE_          :  //
             case OPCODE_TANDI     :  // Rd = Tritwise Rs1 & immediate
+                val=ternaryANDB( ReadModReg(cpu, inst.r2, inst.r2mod), inst.imm11 );
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
             case OPCODE_TORI      :  // Rd = Tritwise Rs1 | immediate
+                val=ternaryORRB( ReadModReg(cpu, inst.r2, inst.r2mod), inst.imm11 );
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
             case OPCODE_TMAJI     :  // Rd = Tritwise Majority
+                val=ternaryUNMB( ReadModReg(cpu, inst.r2, inst.r2mod), inst.imm11 );
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
             case OPCODE_TADDI     :  // Rd = Tritwise Rs1 + immediate
+                val=ternaryADDB( ReadModReg(cpu, inst.r2, inst.r2mod), inst.imm11 );
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
             case OPCODE_TMULI     :  // Rd = Tritwise Rs1 * immediate
-//          case OPCODE_          :  //
-//          case OPCODE_          :  //
+                val=ternaryMULB( ReadModReg(cpu, inst.r2, inst.r2mod), inst.imm11 );
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
+            case OPCODE_TMINI     :  // Rd = Tritwise MIN(Rs1, immediate)
+                val=ternaryMINB( ReadModReg(cpu, inst.r2, inst.r2mod), inst.imm11 );
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
+            case OPCODE_TMAXI     :  // Rd = Tritwise MAX(Rs1, immediate)
+                val=ternaryMAXB( ReadModReg(cpu, inst.r2, inst.r2mod), inst.imm11 );
+                WriteReg(cpu,inst.r1,val);
+                SetSignTrit(cpu, val);
+                break;
             default:
                 printf("\nInvalid  Opcode: %X\n", inst.opcode);
 
