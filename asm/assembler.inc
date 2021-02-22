@@ -50,25 +50,21 @@
 #define FLAGS  N02
 #define PC     N01
 
-#define TOP_NEG --
-#define TOP_INC --
-#define TOP_DEC --
-#define TOP_ABN --
-#define TOP_ABS --
-#define TOP_FLT --
-#define TOP_SHR --
-#define TOP_NOP 00
-#define TOP_SHL --
+#define TOP_NEG 0-
+#define TOP_INC 0-
+#define TOP_DEC 00
+#define TOP_ABN 0-
+#define TOP_ABS 0+
+#define TOP_FLT 0+
+#define TOP_NOP 0+
 
-#define BOT_NEG --
-#define BOT_INC -0
+#define BOT_NEG 0+
+#define BOT_INC +0
 #define BOT_DEC -+
 #define BOT_ABN 0-
-#define BOT_ABS 00
-#define BOT_FLT 0+
-#define BOT_SHR --
-#define BOT_NOP 00
-#define BOT_SHL --
+#define BOT_ABS 0+
+#define BOT_FLT 00
+#define BOT_NOP 0-
 
 // MACRO chicanery to detect Immediate value of 0, this is why Immediate values
 // can't contain + or -

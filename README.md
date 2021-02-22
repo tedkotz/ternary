@@ -156,7 +156,7 @@ storage of information digits needs by symbol differentiation.
     - [ ] Work with strings
     - [ ] Work with balanced base 27 input
 - [ ] expand Register PreModifier to cover all 27 possible single input functions
-- [ ] Look into 5 trit for Reg Mod pre op bits (all 27 functions + shift by +/- 18, 9, 3?, 1, 0
+- [ ] Look into 5 trit for Reg Mod pre op bits (all 27 functions + shift by +/- 18, 9, 3, 1, 0)
 - [ ] Look into a 9 trit instruction word size
     - less registers 9 is still a good number, if we drop some of the specialty regs like flags
     - No Pre Op Register mods
@@ -164,4 +164,5 @@ storage of information digits needs by symbol differentiation.
     - immediate values are additional 1,2,3 trytes
     - maybe drop register size to 9 trits? is even that realistically implementable
 - [ ] Arithmetic Min/Max operations.
+- [ ] Division optimized conditional add/sub  operation
 

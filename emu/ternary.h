@@ -76,6 +76,7 @@ extern void ternaryPrint( trint32_t x, int_fast8_t width);
 extern void ternaryScan( trint32_t* x );
 
 // BITWISE 1 OP
+extern trint32_t apply_tritwise_gate1 ( uint_fast8_t gate,  trint32_t op1 );
 extern trint32_t ternaryINCB( trint32_t op1 );
 extern trint32_t ternaryDECB( trint32_t op1 );
 extern trint32_t ternaryNEGB( trint32_t op1 );

@@ -161,31 +161,15 @@ typedef enum TriOpcode
 
 typedef enum
 {
-    OPMOD_NEG = 0b11111111,
-    OPMOD_INC = 0b11111100,
-    OPMOD_DEC = 0b11111101,
-    OPMOD_ABN = 0b11110011,
-    OPMOD_ABS = 0b11110000,
-    OPMOD_FLT = 0b11110001,
-//  OPMOD_SHR = 0b11000001,
-    OPMOD_NOP = 0b00000000,
-//  OPMOD_SHL = 0b01000011,
+//                  1 0 -1
+    OPMOD_NEG = 0b00110001,
+    OPMOD_INC = 0b00110100,
+    OPMOD_DEC = 0b00001101,
+    OPMOD_ABN = 0b00110011,
+    OPMOD_ABS = 0b00010001,
+    OPMOD_FLT = 0b00010000,
+    OPMOD_NOP = 0b00010011,
 } OpModifiers;
-
-// Proposal allow every possible 1 input transform (there are 27)
-//  typedef enum
-//  {
-//  //                  1 0 -1
-//      OPMOD_NEG = 0b11110001,
-//      OPMOD_INC = 0b11110100,
-//      OPMOD_DEC = 0b11001101,
-//      OPMOD_ABN = 0b11110011,
-//      OPMOD_ABS = 0b11010001,
-//      OPMOD_FLT = 0b11010000,
-//      OPMOD_NOP = 0b11010011,
-//  //  OPMOD_SHR = 0b00000000,
-//  //  OPMOD_SHL = 0b01000000,
-//  } OpModifiers;
 
 
 

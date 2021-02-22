@@ -166,8 +166,8 @@ static void printRegister( TriReg reg )
  */
 static void printRegMod( Tryte mod )
 {
-    int shift=ternary2int(mod);
-    switch( mod )
+    Tryte op=mod & ((1<<(3 * BITS_PER_TRIT)) - 1);
+    switch( op )
     {
         case OPMOD_NEG :
             printf("_NEG");
@@ -190,18 +190,29 @@ static void printRegMod( Tryte mod )
         case OPMOD_NOP :
             break;
         default:
-            if (shift > 26 || shift < -26 )
-            {
-                printf("_UNK");
-            }
-            else if( shift < 0 )
-            {
-                printf(">>%d", -shift);
-            }
-            else
-            {
-                printf("<<%d", shift);
-            }
+            printf("_");
+            ternaryPrint(op, 3);
+            break;
+    }
+
+    // choose shift
+    switch ( ( mod >> (3 * BITS_PER_TRIT) ) & TRIT_MASK )
+    {
+        case N:
+            printf(">>9");
+            break;
+
+        case 0:
+            // Do nothing
+            break;
+
+        case 1:
+            printf("<<9");
+            break;
+
+        default:
+            printf("><UNK");
+            printf("\nInvalid  mod: %X\n", mod);
     }
 }
 

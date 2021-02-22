@@ -137,48 +137,32 @@ void WriteTryte( TriCpu* cpu, TriWord addr , Tryte val )
  */
 TriWord ReadModReg( TriCpu* cpu, Tryte reg, Tryte mod )
 {
-    int32_t shift=ternary2int(mod);
     TriWord val=0;
     if( 0 != reg )
     {
         val = cpu->regs[reg];
     }
 
-    switch (mod)
+    // choose shift
+    switch ( ( mod >> (3 * BITS_PER_TRIT) ) & TRIT_MASK )
     {
-        case OPMOD_NEG:
-            return ternaryNEGB(val);
+        case N:
+            val = val >> (9 * BITS_PER_TRIT);
+            break;
 
-        case OPMOD_INC:
-            return ternaryINCB(val);
+        case 0:
+            // Do nothing
+            break;
 
-        case OPMOD_DEC:
-            return ternaryDECB(val);
-
-        case OPMOD_ABN:
-            return ternaryNEGB(ternaryABSB(val));
-
-        case OPMOD_ABS:
-            return ternaryABSB(val);
-
-        case OPMOD_FLT:
-            return ternaryFLTB(val);
+        case 1:
+            val = val << (9 * BITS_PER_TRIT);
+            break;
 
         default:
-            if (shift > 26 || shift < -26 )
-            {
-                printf("\nInvalid  mod: %X\n", mod);
-                return val;
-            }
-            else if( shift < 0 )
-            {
-                return val >> (-2 * shift);
-            }
-            else
-            {
-                return (val << (2 * shift)) & ((1ULL << 54) - 1);
-            }
+            printf("\nInvalid  mod: %X\n", mod);
     }
+
+    return apply_tritwise_gate1( mod & ((1<<(3 * BITS_PER_TRIT)) - 1), val );
 }
 
 /**

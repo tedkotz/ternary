@@ -214,7 +214,7 @@ static trit_t apply_trit_gate1 ( uint_fast8_t gate,  trit_t op1 )
     return (gate >> shift) & TRIT_MASK;
 }
 
-static trint32_t apply_tritwise_gate1 ( uint_fast8_t gate,  trint32_t op1 )
+trint32_t apply_tritwise_gate1 ( uint_fast8_t gate,  trint32_t op1 )
 {
     trint32_t dst = 0;
     uint_fast8_t i;
