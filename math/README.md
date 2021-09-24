@@ -13,12 +13,6 @@ In Ternary Logic the extra value can used to indicate uncertainty.  The Logic Va
 | -1   | False         | -,N,F,0%                           |
 
 
-
-| 0 | (+) |  ~   |
-|---|-----|------|
-| - | OR  | Neg  |
-| 0 | Add | N2   |
-
 Interesting Gates
 -----------------
 
@@ -44,7 +38,7 @@ False state the combination is False.
 |Op        |Description                                                       |
 |----------|------------------------------------------------------------------|
 |MIN       |Arithmetic Minimum, weak conjunction                              |
-|AND       |Strong conjunction -(-A|-B)                                       |
+|AND       |Strong Conjunction -(-A OR -B)                                    |
 |A*B       |Arithmetic Multiply                                               |
 |MAX       |Arithmetic Maximum, weak disjunction                              |
 |OR        |Strong Disjunction                                                |
@@ -52,7 +46,7 @@ False state the combination is False.
 |UNAM      |Unamimous                                                         |
 |A->B      |Implies                                                           |
 |A<-->B    |Equivalence                                                       |
-|A<-!->B   |Not equivalence                                                   |
+|A<-!->B   |Not equivalence, XOR                                              |
 
 
 | A | B | MIN | AND | A*B | MAX | OR | A+B | UNAM  | A->B | A<->B | A<-!->B |
@@ -85,9 +79,6 @@ The other operations need to cut out the - inputs instead to show up:
 | 0 | + | 0   | 0   | 0   | +   | +  | +   | 0     | +    | 0     | 0       |
 | + | 0 | 0   | 0   | 0   | +   | +  | +   | 0     | 0    | 0     | 0       |
 | + | + | +   | +   | +   | +   | +  | -   | +     | +    | +     | -       |
-
-
-
 
 
 ### Single Input Gates
@@ -138,10 +129,14 @@ These gates can arithmetically be thought of as single trit increment or decreme
 
 ##### Gate 2 & 6
 The these gates are most intuitively expressed as combinations of NEG, INC and DEC.
+```
     INC(NEG(A)) = NEG(DEC(A) = Gate 2
     DEC(NEG(A)) = NEG(INC(A) = Gate 6
+```
 Each gate is its own complement. which can be illustrated by combining the two descriptions of gate2 as an example.
+```
     INC(NEG(NEG(DEC(A)))) = INC(DEC(A)) = A
+```
 Looking more closely at what these gates actually do reveals their symmetry with
 the NEG Gate. They can all be seen as pivots about one of the three values. In
 NEG + and - rotate around an unchanging 0. Gate 2 has + and 0 rotating around
@@ -150,13 +145,13 @@ around +.
 
 
 #### Information destroying gates
-These gates have less possible output states that input states. and thus lose information.  They cannot be reversed thus do not have a complementary action. Once an information destroying gate is brought into the sequence the entire sequence become information destroying and can't be reversed, thus the sequence wil map to single one of these 21 information destroying gates.
+These gates have less possible output states that input states. and thus lose information.  They cannot be reversed thus do not have a complementary action. Once an information destroying gate is brought into the sequence the entire sequence becomes information destroying and can't be reversed, thus the sequence will map to single one of these 21 information destroying gates.
 1. Absolute Value (-1->1, 0->0, 1->1)
 2. Flatten Strict (-1->0, 0->0, 1->1)
 3. Flatten Lax    (-1->0, 0->1, 1->1)
 
 ##### True, False and Clear
-The most extreeme form of information losing gates, these completely disreguard the input. Thus in a chain of operations anything applied before them is meaningless, much like multipling by 0, and the final output of the sequence will always be fixed meanign the whole sequence map to one of these 3 gates.
+The most extreme form of information losing gates, these completely disreguard the input. Thus in a chain of operations anything applied before them is meaningless, much like multipling by 0, and the final output of the sequence will always be fixed meaning the whole sequence maps to one of these 3 gates.
 
 ### Multiple Input Gates
 When you get to 2 input gate ternary logic explodes to 3^(3^2)=19683 while binary stays
@@ -176,6 +171,8 @@ The balanced ternary full adder has the same two outputs(carry and sum) as a bin
 
 ### Functional Completeness
 
+If the goal is to implement this system, it can be nice to know what is the minimum set of operations needed to create any arbitrarily complicated function.
+
 #### Single Input Completeness
 
 The goal here is determining what subset of the single input gates do we need to create any single input gate.
@@ -190,13 +187,13 @@ G2(A)  = NEG(DEC(A))
 G6(A)  = DEC(NEG(A))
 ```
 
-The gates that ignore there input only one is needed to as whatever gates we keep above can do the transformation. For now let's keep False as it can easily be turned int othe other two with INC and NEG.
+The gates that ignore their input only one is needed to as whatever gates we keep above can do the transformation. For now let's keep TRUE as it can easily be turned into the other two with DEC and NEG.
 ```
 FALSE(A) = NEG(TRUE(A))
 CLEAR(A) = DEC(TRUE(A))
 ```
 
-The remaining 18 gates. will need something to get reach them. I think any one of them should be able to be turned into all of them using the above transitions.
+The remaining 18 gates. will need something to get to reach them. I think any one of them should be able to be turned into all of them using the above transitions.
 I'm going to select LAX, or Saturated Addition, because I like that it has a simple definition for TRUE so we can cut that out as well.
 ```
 TRUE(A) = LAX(LAX(A))
@@ -243,7 +240,7 @@ be more complex in covering all the gates.
 
 #### General Completeness
 
-We start with stating that workign in discrete values any N-input function can
+We start with stating that working in discrete values any N-input function can
 be defined in terms of a condition and an N-1 input function
 ```
 For any F(x0,x1,...,x[n])
@@ -261,7 +258,7 @@ the Flat versions of the test ops(F-Select, Z-Select & T-Select), MUL and ADD.
 ```
 switch(A,B,C,D) = Max( Min( isT(A), B ), Min( isZ(A), C ), Min( isF(A), D ) )
 switch(A,B,C,D) = isT(A) & B | isZ(A) & C | isF(A) & D
-switch(A,B,C,D) = Tsel(A) * B + Zsel(A) * B + Fsel(A) * D
+switch(A,B,C,D) = Tsel(A) * B + Zsel(A) * C + Fsel(A) * D
 ```
 Which then combines with the above to give us a general path, though not
 necessarily most efficient one, to reduce any N input function to collection of arbitarily
@@ -270,11 +267,11 @@ above.
 ```
 F(x0,x1,...,x[n]) = switch(x[n], Fp(x0,x1,...,x[n-1]), Fz(x0,x1,...,x[n-1]), Fn(x0,x1,...,x[n-1]))
 ```
-This shows that we could reduce everything to the siwtch and single input functions.
+This shows that we could reduce everything to the switch and single input functions.
 As we showed above we only need 3 single input functions to cover all single
 input functions. which means we can stop iterating this down when we get to
-single input functions. switch still needs its componant parts, but the test
-functions are already sigle input function so we have those covered. This leaves
+single input functions. switch still needs its component parts, but the test
+functions are already single input function so we have those covered. This leaves
 the masking and summation two input functions. This gets us down to 5 operations,
 but these 5 gates may have some overlap depending on selection.
 ```
@@ -304,7 +301,7 @@ This shows 5 different minimal functionally complete operation sets with 3 ops.
 As the MAX or the MIN of anything with itself is unchanged, it provides the easy
 opportunity to merge the negative to them to get the number of operations down
 by one more to NMIN or NMAX plus DEC. So if hardware were produced that could
-do those 2 operations and interconnect, it could be used to construct any
+implement those 2 operations and interconnect, it could be used to construct any
 ternary operation.
 
 Links
