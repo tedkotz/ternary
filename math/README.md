@@ -372,17 +372,61 @@ ternary design to make better use of a narrower linear region of amplifiers.
 ##### QAM-3
 Putting the origin on the vertex between three hexes makes QAM-3 have an
 identical constellation to 3PSK. This is similar to the way that QPSK could
-be seen as QAM-4 in binary encodings.
+be seen as QAM-4 in a binary encoding.
+```
+QAM-4             QAM-16
+       |Q                |Q
+       |             [][]|[][]
+     []|[]           [][]|[][]
+-------+------    -------+------
+     []|[]    I      [][]|[][]  I
+       |             [][]|[][]
+       |                 |
+
+QAM-3
+       |Q
+       |
+      _|
+     /+\_
+_____\_/0\____
+     /-\_/    I
+     \_/
+       |
+       |
+       |
+```
 
 ##### QAM-27
 If you extend QAM-3 with 2 more rings of hexagons, the 3 rings will contain
 27 hexagons. That is enough for 3 trits of data.
+```
+QAM-27
+         |Q
+         |
+        _|
+      _/3\_
+    _/3\_/3\_
+   /3\_/2\_/3\_
+   \_/2\_/2\_/3\
+   /3\_/1\_/2\_/
+___\_/2\_/1\_/3\___
+   /3\_/1\_/2\_/   I
+   \_/2\_/2\_/3\
+   /3\_/2\_/3\_/
+   \_/3\_/3\_/
+     \_/3\_/
+       \_/
+         |
+         |
+         |
+```
 
 ##### QAM-[3^(2k-1)]
 Stacking hexagons in this fashion allows any odd power of three to be
-used for constellation definition. So it could easily generate QAM-243, QAM-2187
-or the next one with a number of trits divisible by 3 QAM-19683. Which would
-require very high SNR?
+used for constellation definition. So it could easily generate QAM-243 (3^5),
+QAM-2187(3^7) or the next one with a number of trits divisible by 3,
+QAM-19683 (3^9). Which would require very high SNR.
+
 
 
 Links
