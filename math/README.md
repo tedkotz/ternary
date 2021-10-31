@@ -407,8 +407,30 @@ ________\____/   0  \________
 
 ##### QAM-27
 If you extend QAM-3 with 2 more rings of hexagons, the 3 rings will contain
-27 hexagons. That is enough for 3 trits of data.
+27 hexagons. That is enough for 3 trits of data. This is similar to how QAM-16
+is QAM-4 with an extra ring of squares. This illustrates how the hex based QAM
+constellation maintains a more circular shape, more densely packed toward the
+origin.
+
 ```
+QAM-16
+             |Q
+    ____ ____|____ ____
+   |  2 |  2 |  2 |  2 |
+   |    |    |    |    |
+    ---- ----|---- ----
+   |  2 |  1 |  1 |  2 |
+   |    |    |    |    |
+-------------+------------
+   |  2 |  1 |  1 |  2 |  I
+   |    |    |    |    |
+    ---- ----|---- ----
+   |  2 |  2 |  2 |  2 |
+   |____|____|____|____|
+             |
+             |
+
+
 QAM-27
             |Q
             |
