@@ -310,7 +310,8 @@ Modulation Techniques
 Just as there are symmetries with binary gates ane logic so too are there
 symmetries with binary coding methods. The additional value means that receivers
 need to be more discriminating, however also one trit per symbol is more
-information than 1 bit. One trit is approximately 1.6 (lg(3)/lg(2)) bits of data.
+information than 1 bit. One trit is slightly less than 1.6 (lg(3)/lg(2)) bits of
+data.
 
 ### Amplitude Modulation
 Just as a binary system could have a symbol amplitude for mark and space
@@ -336,10 +337,29 @@ interesting.
 | -1   | -120 or 270 degrees  |
 
 
-3 is the largest number of phase states that can rotate around the circle with
-no needs to pass thru another valid phase state to get to its destination. The
+3 is the largest number of phase states that can rotate around a circle with
+no need to pass thru another valid phase state to get to its destination. The
 phase can always either stay the same, move clockwise straight to the next
 symbol or move counterclockwise directly to the next symbol.
+
+```
+3 Phase Shift Keying
+           |Q
+    +1     |
+      o    |
+       \   |
+        \  |
+         \ |
+          \|
+-----------+==========o------
+          /|           0    I
+         / |
+        /  |
+       /   |
+      o    |
+    -1     |
+           |
+```
 
 ##### 3-DPSK
 | Trit | Phase differential   |
@@ -348,11 +368,11 @@ symbol or move counterclockwise directly to the next symbol.
 |  1   |  120 degrees         |
 | -1   | -120 degrees         |
 
-If it is desired to not have to synchronize carrier phase between the
+If it is desired to not require synchronized carrier phase between the
 transmitter and receiver, the signal can be differentially encoded following a
-similar diagram to the 3PSK. Just instead a 0 causes no change in phase. While
-a 1 or -1 cause a 120 degree phase rotation, counterclockwise or clockwise
-respectively.
+similar diagram to the 3PSK, but the phase is a change instead of absolute. A 0
+would cause no change in phase. While a 1 or -1 cause a 120 degree phase
+rotation, counterclockwise or clockwise respectively.
 
 ##### 9-PSK
 8-PSK is used, but not considered overly reliable, but is consider usable. 9-PSK
