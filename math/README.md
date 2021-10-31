@@ -304,6 +304,87 @@ by one more to NMIN or NMAX plus DEC. So if hardware were produced that could
 implement those 2 operations and interconnect, it could be used to construct any
 ternary operation.
 
+Modulation Techniques
+---------------------
+
+Just as there are symmetries with binary gates ane logic so too are there
+symmetries with binary coding methods. The additional value means that receivers
+need to be more discriminating, however also one trit per symbol is more
+information than 1 bit. One trit is approximately 1.6 (lg(3)/lg(2)) bits of data.
+
+### Amplitude Modulation
+Just as a binary system could have a symbol amplitude for mark and space
+indicating "0" and "1", or 4 levels to send 2 bits per symbol, three amplitude
+levels could be used to send a trit. This could be seen as being more directly
+compatible with a ternary serial signal, but is not very interesting.
+
+### Frequency Modulation
+This is very similar to the amplitude in which each symbol could instead have one
+of 3 orthogonal frequency shifts selected. This does increase the bandwidth
+required. The trade between spectral efficiency and error reduction due to
+frequency diversity could be an interesting thing to look at.
+
+### Phase Shift Keying
+Splitting up the phase space between different symbol values starts to be more
+interesting.
+
+##### 3-PSK
+| Trit | Phase                |
+|------|----------------------|
+|  0   |    0 degrees         |
+|  1   |  120 degrees         |
+| -1   | -120 or 270 degrees  |
+
+
+3 is the largest number of phase states that can rotate around the circle with
+no needs to pass thru another valid phase state to get to its destination. The
+phase can always either stay the same, move clockwise straight to the next
+symbol or move counterclockwise directly to the next symbol.
+
+##### 3-DPSK
+| Trit | Phase differential   |
+|------|----------------------|
+|  0   |    0 degrees         |
+|  1   |  120 degrees         |
+| -1   | -120 degrees         |
+
+If it is desired to not have to synchronize carrier phase between the
+transmitter and receiver, the signal can be differentially encoded following a
+similar diagram to the 3PSK. Just instead a 0 causes no change in phase. While
+a 1 or -1 cause a 120 degree phase rotation, counterclockwise or clockwise
+respectively.
+
+##### 9-PSK
+8-PSK is used, but not considered overly reliable, but is consider usable. 9-PSK
+would be even more sensitive to phase noise, but only slightly with a phase angle
+of 40 degrees instead of 45 degrees. Interestingly, an odd number of points on
+the phase diagram circle means that the direct path between the points never has
+to transition though the origin.
+
+#### Ternary QAM
+Ternary gets very interesting when looking at Amplitude phase encoding. While
+binary readily maps to symbols at the center points of tessellated squares in the
+IQ space, ternary more readily maps to tessellated hexagons. As hexagons are the
+most efficient way to pack a 2 dimensional space this has potential benefits.
+Also as hexagonally stacked rings are closer in magnitude, it should allow a
+ternary design to make better use of a narrower linear region of amplifiers.
+
+##### QAM-3
+Putting the origin on the vertex between three hexes makes QAM-3 have an
+identical constellation to 3PSK. This is similar to the way that QPSK could
+be seen as QAM-4 in binary encodings.
+
+##### QAM-27
+If you extend QAM-3 with 2 more rings of hexagons, the 3 rings will contain
+27 hexagons. That is enough for 3 trits of data.
+
+##### QAM-[3^(2k-1)]
+Stacking hexagons in this fashion allows any odd power of three to be
+used for constellation definition. So it could easily generate QAM-243, QAM-2187
+or the next one with a number of trits divisible by 3 QAM-19683. Which would
+require very high SNR?
+
+
 Links
 -----
 - <https://en.wikipedia.org/wiki/Radix_economy>
