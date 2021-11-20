@@ -2,9 +2,9 @@
 
 This is a storage point for work and research in to computing using balanced ternary.
 
-I've been thinking about ternary computing for a long time. Looking into what the base gates would be. Figuring out how to implement those with transitor circuits. Determining how best to do arithematic and control.
+I've been thinking about ternary computing for a long time. Looking into what the base gates would be. Figuring out how to implement those with transitor circuits. Determining how best to do arithmetic and control.
 
-More recently I decided I should juststart implementing something. So I decided to build an emulator for a 30-Trit (later changed to 27) balanced ternary  computer. For which I will then write some basic test software and then try to port forth to. This basic operating environment will then be used for further research and project creation. The goal being to create a set of software that could be run on an implementation of the base instruction set architecture.
+More recently I decided I should just start implementing something. So I decided to build an emulator for a 30-Trit (later changed to 27) balanced ternary  computer. For which I will then write some basic test software and then try to port forth to. This basic operating environment will then be used for further research and project creation. The goal being to create a set of software that could be run on an implementation of the base instruction set architecture.
 
 When/If implementation starts the emulator will be adjusted to reflect those changes. In fact thinking about implementation concerns This system may be m
 
